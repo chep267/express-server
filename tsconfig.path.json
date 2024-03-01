@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "paths": {
+            "@src/*": ["./src/*"],
+            "@config/*": ["./src/configs/*"],
+            "@constant/*": ["./src/constants/*"],
+            "@controller/*": ["./src/controllers/*"],
+            "@model/*": ["./src/models/*"],
+            "@route/*": ["./src/routes/*"],
+            "@service/*": ["./src/services/*"],
+            "@util/*": ["./src/utils/*"]
+        }
+    }
+}
