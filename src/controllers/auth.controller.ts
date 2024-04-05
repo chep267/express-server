@@ -163,11 +163,30 @@ const register = async (
     }
 };
 
+const recover = async (req: Omit<Request, 'body'> & { body: { email: string } }, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ message: 'Missing email or password!' });
+    }
+    try {
+        const user = await UserModel.getUser({ email });
+        /** recover fail */
+        if (!user) {
+            return res.status(409).json({ message: "Account doesn't exists!" });
+        }
+        /** recover success */
+        return res.status(200).json({ message: 'ok' });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const apiAuth = {
     verify,
     signin,
     signout,
     refresh,
     restart,
-    register
+    register,
+    recover
 };

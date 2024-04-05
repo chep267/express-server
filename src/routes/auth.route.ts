@@ -18,3 +18,4 @@ authRouter.post(PathAuthApi.signin, apiAuth.signin);
 authRouter.post(PathAuthApi.signout, apiAuth.signout);
 authRouter.post(PathAuthApi.restart, apiAuth.restart);
 authRouter.post(PathAuthApi.register, apiAuth.register);
+authRouter.post(PathAuthApi.recover, apiAuth.recover);
