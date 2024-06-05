@@ -85,11 +85,8 @@ const signin = async (
     }
 };
 
-const signout = async (req: Omit<Request, 'body'> & { body: { uid: string } }, res: Response) => {
-    const { uid } = req.body;
-    if (!uid) {
-        return res.status(400).json({ message: 'Missing uid!' });
-    }
+const signout = async (req: Request, res: Response) => {
+    const uid = req.cookies[AppKey.uid];
     try {
         await UserModel.updateUser({ uid, data: { refreshToken: '' } });
     } catch (error) {
