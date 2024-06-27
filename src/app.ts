@@ -12,7 +12,7 @@ import cors from 'cors';
 import logger from 'morgan';
 
 /** configs */
-import { chepDB, dbConfig } from '@config/database.js';
+import { mongoose as chepDB, dbConfig } from '@config/database.js';
 
 /** routes */
 import { baseRouter } from '@route/base.route.js';
@@ -29,7 +29,7 @@ const clientHost = process.env.CHEP_CLIENT_HOST;
 const app = express();
 app.use(cors({ origin: `https://${clientHost}:${clientPort}`, credentials: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(logger('dev'));
 app.use(baseRouter);
@@ -45,10 +45,10 @@ https
             key: fs.readFileSync('./src/utils/server.key'),
             cert: fs.readFileSync('./src/utils/server.cert')
         },
-        app
+        app as any
     )
     .listen(serverPort, () => {
         console.log(connected(`chep-server https start in port: ${serverPort}`));
     });
 
-chepDB.connect(dbConfig.uri, { dbName: dbConfig.name }).then();
+chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();
