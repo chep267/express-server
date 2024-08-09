@@ -4,8 +4,8 @@
  *
  */
 
-export const AppKey = Object.freeze({
+export const AppKey = {
     accessToken: 'accessToken',
     refreshToken: 'refreshToken',
     uid: 'uid'
-});
+} as const;

@@ -10,4 +10,4 @@ export const PathAuthApi = {
     restart: '/auth/restart',
     register: '/auth/register',
     recover: '/auth/recover'
-};
+} as const;
