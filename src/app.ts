@@ -23,11 +23,23 @@ import { testRouter } from '@route/test.route.js';
 import { connected } from '@util/log.mts';
 
 const serverPort = process.env.CHEP_SERVER_PORT;
-const clientPort = process.env.CHEP_CLIENT_PORT;
-const clientHost = process.env.CHEP_CLIENT_HOST;
+const whitelist = `${process.env.CHEP_SERVER_WHITE_LIST}`;
 
 const app = express();
-app.use(cors({ origin: `https://${clientHost}:${clientPort}`, credentials: true }));
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (origin && whitelist.split(';').includes(origin)) {
+                callback(null, true);
+            } else {
+                console.log('origin:', origin, 'not allowed');
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true
+    })
+);
+// app.use(cors({ origin: `https://${clientHost}:${clientVuePort}`, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
