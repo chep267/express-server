@@ -6,7 +6,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
 /** models */
-import { UserModel } from '@model/user.model.js';
+import { UserModel } from '@model/user.model';
 
 const create = async (
     req: Omit<Request, 'body'> & { body: { email: string; password: string } },

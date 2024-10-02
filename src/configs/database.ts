@@ -8,7 +8,7 @@
 import mongoose from 'mongoose';
 
 /** utils */
-import { connected, disconnected, error, termination } from '@util/log.mjs';
+import { connected, disconnected, error, termination } from '@util/log.mts';
 
 export const dbConfig = {
     name: `${process.env.CHEP_SERVER_DB_NAME}`,

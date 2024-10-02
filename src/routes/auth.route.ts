@@ -8,10 +8,10 @@
 import { Router } from 'express';
 
 /** controllers */
-import { apiAuth } from '@controller/auth.controller.ts';
+import { apiAuth } from '@controller/auth.controller';
 
 /** constants */
-import { PathAuthApi } from '@constant/PathAuthApi.js';
+import { PathAuthApi } from '@constant/PathAuthApi';
 
 export const authRouter = Router();
 

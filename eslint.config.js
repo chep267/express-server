@@ -6,37 +6,39 @@
 
 /** libs */
 import globals from 'globals';
-import pluginJs from '@eslint/js';
+import eslint from '@eslint/js';
 import tsEslint from 'typescript-eslint';
-import eslintPluginPrettier from 'eslint-plugin-prettier';
+import pluginPrettier from 'eslint-plugin-prettier';
 
-export default [
-    { files: ['**/*.{js,mjs,cjs,ts}'] },
-    { languageOptions: { globals: globals.node } },
-    pluginJs.configs.recommended,
-    ...tsEslint.configs.recommended,
-    {
-        plugins: {
-            prettier: eslintPluginPrettier
-        },
-        rules: {
-            '@typescript-eslint/no-explicit-any': 'warn',
-            '@typescript-eslint/no-unused-vars': 'warn',
-            'prettier/prettier': [
-                'warn',
-                {
-                    arrowParens: 'always',
-                    semi: true,
-                    trailingComma: 'none',
-                    tabWidth: 4,
-                    endOfLine: 'auto',
-                    useTabs: false,
-                    singleQuote: true,
-                    printWidth: 120,
-                    jsxSingleQuote: true
-                }
-            ]
-        },
-        ignores: ['**/node_modules/', '**/dist/']
+export default tsEslint.config({
+    ignores: ['dist/*', 'node_modules/*'],
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx,vue}'],
+    extends: [eslint.configs.recommended, ...tsEslint.configs.recommended],
+    plugins: {
+        prettier: pluginPrettier
+    },
+    languageOptions: {
+        globals: globals.node,
+        parserOptions: {
+            parser: '@typescript-eslint/parser'
+        }
+    },
+    rules: {
+        '@typescript-eslint/no-explicit-any': 'warn',
+        '@typescript-eslint/no-unused-vars': 'warn',
+        'prettier/prettier': [
+            'warn',
+            {
+                arrowParens: 'always',
+                semi: true,
+                trailingComma: 'none',
+                tabWidth: 4,
+                endOfLine: 'auto',
+                useTabs: false,
+                singleQuote: true,
+                printWidth: 120,
+                jsxSingleQuote: true
+            }
+        ]
     }
-];
+});

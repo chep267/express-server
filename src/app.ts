@@ -13,12 +13,12 @@ import cors from 'cors';
 import logger from 'morgan';
 
 /** configs */
-import { mongoose as chepDB, dbConfig } from '@config/database.js';
+import { mongoose as chepDB, dbConfig } from '@config/database';
 
 /** routes */
-import { baseRouter } from '@route/base.route.js';
-import { authRouter } from '@route/auth.route.js';
-import { testRouter } from '@route/test.route.js';
+import { baseRouter } from '@route/base.route';
+import { authRouter } from '@route/auth.route';
+import { testRouter } from '@route/test.route';
 
 /** utils */
 import { connected } from '@util/log.mts';
@@ -58,7 +58,7 @@ https
             key: fs.readFileSync('./src/utils/server.key'),
             cert: fs.readFileSync('./src/utils/server.cert')
         },
-        app as any
+        app as never
     )
     .listen(serverPort, () => {
         console.log(connected(`chep-server https start in port: ${serverPort}`));

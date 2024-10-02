@@ -5,14 +5,14 @@
  */
 
 /** models */
-import { UserModel } from '@model/user.model.ts';
+import { UserModel } from '@model/user.model';
 
 /** constants */
-import { AppKey } from '@constant/AppKey.js';
-import { accessTokenExpiredTime, accessTokenRefreshTime, refreshTokenExpiredTime } from '@constant/env.js';
+import { AppKey } from '@constant/AppKey';
+import { accessTokenExpiredTime, accessTokenRefreshTime, refreshTokenExpiredTime } from '@constant/env';
 
 /** utils */
-import { genToken, renewToken, validatePassword, validateToken } from '@util/auth.ts';
+import { genToken, renewToken, validatePassword, validateToken } from '@util/auth';
 
 /** types */
 import type { NextFunction, Request, Response } from 'express';

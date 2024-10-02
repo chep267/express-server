@@ -9,8 +9,8 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 /** constants */
-import { AppKey } from '@constant/AppKey.js';
-import { accessTokenExpiredTime, jwtSecretKey, refreshTokenExpiredTime } from '@constant/env.js';
+import { AppKey } from '@constant/AppKey';
+import { accessTokenExpiredTime, jwtSecretKey, refreshTokenExpiredTime } from '@constant/env';
 
 export const genToken = (uid: string, type: typeof AppKey.accessToken | typeof AppKey.refreshToken) => {
     const iat = Date.now();
@@ -38,7 +38,7 @@ export const renewToken = (
             },
             jwtSecretKey
         );
-    } catch (e) {
+    } catch {
         return genToken(uid, type);
     }
 };
@@ -52,7 +52,7 @@ export const validateToken = (uid?: string, token?: string) => {
         // console.log('now: ', new Date(now));
         // console.log('expired: ', new Date(exp));
         return verified.uid === uid && now < exp;
-    } catch (e) {
+    } catch {
         return false;
     }
 };
