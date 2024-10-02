@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "NodeNext", // Quy định output module được sử dụng
         "moduleResolution": "NodeNext",
-        "target": "ES2022", // Target output cho code
+        "target": "ES2023", // Target output cho code
         "outDir": "dist", // Đường dẫn output cho thư mục build
         "esModuleInterop": true,
         "allowJs": true,
@@ -23,9 +23,7 @@
         "esm": true,
         "require": ["tsconfig-paths/register"]
     },
-    "files": [
-      "src/type.d.ts"
-    ], // Các file dùng để defined global type cho dự án
+    "files": ["src/type.d.ts"], // Các file dùng để defined global type cho dự án
     "extends": "./tsconfig.path.json",
     "include": ["src/**/*"] // Đường dẫn include cho các file cần build
 }

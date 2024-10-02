@@ -30,7 +30,7 @@ const app = express();
 app.use(
     cors({
         origin: function (origin, callback) {
-            if (origin && whitelist.split(';').includes(origin)) {
+            if (!origin || whitelist.split(';').includes(origin)) {
                 callback(null, true);
             } else {
                 console.log('origin:', origin, 'not allowed');

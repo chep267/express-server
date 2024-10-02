@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": ".", // Đường dẫn base cho các import
         "paths": {
             "@src/*": ["./src/*"],
             "@config/*": ["./src/configs/*"],
