@@ -48,7 +48,7 @@ app.use(logger('dev'));
 app.use(baseRouter);
 app.use(authRouter);
 app.use(testRouter);
-app.use((_req, res) => {
+app.use((req, res) => {
     res.status(404).json('This api not found!');
 });
 

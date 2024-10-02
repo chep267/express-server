@@ -72,7 +72,12 @@ const signin = async (
             return res.status(401).json({ message: 'Email and password are incorrect!' });
         }
         /** signin success */
-        const { _id, password: hash, refreshToken: _rf, ...userData } = user;
+        const {
+            _id, // eslint-disable-line @typescript-eslint/no-unused-vars
+            password: hash, // eslint-disable-line @typescript-eslint/no-unused-vars
+            refreshToken: rf, // eslint-disable-line @typescript-eslint/no-unused-vars
+            ...userData
+        } = user;
         const accessToken = genToken(userData.uid, AppKey.accessToken);
         const refreshToken = genToken(userData.uid, AppKey.refreshToken);
         await UserModel.updateUser({ uid: userData.uid, data: { refreshToken } });
@@ -89,7 +94,7 @@ const signout = async (req: Request, res: Response) => {
     const uid = req.cookies[AppKey.uid];
     try {
         await UserModel.updateUser({ uid, data: { refreshToken: '' } });
-    } catch (error) {
+    } catch {
         // do logging
     } finally {
         clearToken(res);
@@ -111,9 +116,9 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
         const accessToken = genToken(uid, AppKey.accessToken);
         const refreshToken = renewToken(uid, AppKey.refreshToken, cookieRefreshToken);
         const {
-            _id,
-            password,
-            refreshToken: rf,
+            _id, // eslint-disable-line
+            password, // eslint-disable-line
+            refreshToken: rf, // eslint-disable-line
             ...userData
         } = await UserModel.updateUser({ uid, data: { refreshToken } });
         setToken(res, { uid, accessToken, refreshToken });
