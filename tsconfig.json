@@ -17,14 +17,25 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
 
+        "baseUrl": ".", // Đường dẫn base cho các import
+        "paths": {
+            "@src/*": ["./src/*"],
+            "@config/*": ["./src/configs/*"],
+            "@constant/*": ["./src/constants/*"],
+            "@controller/*": ["./src/controllers/*"],
+            "@model/*": ["./src/models/*"],
+            "@route/*": ["./src/routes/*"],
+            "@service/*": ["./src/services/*"],
+            "@util/*": ["./src/utils/*"]
+        }
     },
+
     "ts-node": {
         "esm": true,
         "require": ["tsconfig-paths/register"]
     },
     "files": ["src/type.d.ts"], // Các file dùng để defined global type cho dự án
-    "extends": "./tsconfig.path.json",
     "include": ["src/**/*"] // Đường dẫn include cho các file cần build
 }

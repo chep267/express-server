@@ -5,7 +5,7 @@
  */
 
 export const AppKey = {
-    accessToken: 'accessToken',
-    refreshToken: 'refreshToken',
-    uid: 'uid'
+    accessToken: 'chep-server-express-accessToken',
+    refreshToken: 'chep-server-express-refreshToken',
+    uid: 'chep-server-express-uid'
 } as const;
