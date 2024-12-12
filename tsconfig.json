@@ -16,6 +16,7 @@
         "allowSyntheticDefaultImports": true, // Cho phép import default mà không cần `default`.
         "noImplicitAny": false, // (Tùy chọn) Bật/tắt lỗi cho các giá trị không khai báo kiểu `any`.
         "incremental": true, // Tăng tốc độ build lại bằng cách lưu trạng thái build.
+        "noEmit":  true,
         "allowImportingTsExtensions": true,
 
         "baseUrl": ".", // Cấu hình cơ sở cho các alias.
