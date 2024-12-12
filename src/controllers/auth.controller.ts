@@ -50,10 +50,11 @@ const verify = (req: Request, res: Response, next: NextFunction) => {
     const uid = req.cookies[AppKey.uid];
     /** verify fail */
     if (!validateToken(uid, accessToken)) {
-        return res.status(403).json({ message: "You don't have permission!" });
+        res.status(403).json({ message: "You don't have permission!" });
+    } else {
+        /** verify success */
+        next();
     }
-    /** verify success */
-    return next();
 };
 
 const signin = async (
