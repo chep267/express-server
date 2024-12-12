@@ -4,7 +4,7 @@
  *
  */
 
-export const PathAuthApi = {
+export const AuthApiPath = {
     signin: '/auth/signin',
     signout: '/auth/signout',
     restart: '/auth/restart',

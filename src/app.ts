@@ -12,6 +12,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
 
+/** constant */
+import { AppEnv } from '@constant/AppEnv';
+
 /** configs */
 import { mongoose as chepDB, dbConfig } from '@config/database';
 
@@ -23,14 +26,11 @@ import { testRouter } from '@route/test.route';
 /** utils */
 import { connected } from '@util/log.mts';
 
-const serverPort = process.env.CHEP_SERVER_PORT;
-const whitelist = `${process.env.CHEP_SERVER_WHITE_LIST}`;
-
 const app = express();
 app.use(
     cors({
         origin: function (origin, callback) {
-            if (!origin || whitelist.split(';').includes(origin)) {
+            if (!origin || AppEnv.appWhiteList.split(';').includes(origin)) {
                 callback(null, true);
             } else {
                 console.log('origin:', origin, 'not allowed');
@@ -60,8 +60,8 @@ https
         },
         app as never
     )
-    .listen(serverPort, () => {
-        console.log(connected(`chep-server https start in port: ${serverPort}`));
+    .listen(AppEnv.appPort, () => {
+        console.log(connected(`chep-server https start in port: ${AppEnv.appPort}`));
     });
 
 chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();

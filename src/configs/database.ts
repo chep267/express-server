@@ -7,16 +7,20 @@
 /** libs */
 import mongoose from 'mongoose';
 
+/** constant */
+import { AppEnv } from '@constant/AppEnv';
+
 /** utils */
 import { connected, disconnected, error, termination } from '@util/log.mts';
 
 export const dbConfig = {
-    name: `${process.env.CHEP_SERVER_DB_NAME}`,
-    uri: `${process.env.CHEP_SERVER_DB_URI}`,
-    host: `${process.env.CHEP_SERVER_DB_HOST}`,
-    port: `${process.env.CHEP_SERVER_DB_PORT}`
+    name: AppEnv.dbName,
+    uri: AppEnv.dbUri,
+    host: AppEnv.dbHost,
+    port: AppEnv.dbPort
 };
 
+console.log('dbConfig: ', dbConfig);
 mongoose.connection.on('connected', function () {
     console.log(connected('Mongoose default connection is open to', dbConfig.uri));
 });

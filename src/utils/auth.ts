@@ -10,33 +10,29 @@ import bcrypt from 'bcryptjs';
 
 /** constants */
 import { AppKey } from '@constant/AppKey';
-import { accessTokenExpiredTime, jwtSecretKey, refreshTokenExpiredTime } from '@constant/env';
+import { AppEnv } from '@constant/AppEnv';
 
 export const genToken = (uid: string, type: typeof AppKey.accessToken | typeof AppKey.refreshToken) => {
     const iat = Date.now();
-    const exp = iat + (type === AppKey.accessToken ? accessTokenExpiredTime : refreshTokenExpiredTime);
+    const exp = iat + (type === AppKey.accessToken ? AppEnv.appAccessTokenExpiredTime : AppEnv.appRefreshTokenExpiredTime);
     const data = {
         uid,
         iat,
         exp,
         type
     };
-    return jwt.sign(data, jwtSecretKey);
+    return jwt.sign(data, AppEnv.appJwtSecretKey);
 };
 
-export const renewToken = (
-    uid: string,
-    type: typeof AppKey.accessToken | typeof AppKey.refreshToken,
-    token: string
-) => {
+export const renewToken = (uid: string, type: typeof AppKey.accessToken | typeof AppKey.refreshToken, token: string) => {
     try {
-        const verified = jwt.verify(token, jwtSecretKey) as JwtPayload;
+        const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
         return jwt.sign(
             {
                 ...verified,
                 iat: Date.now()
             },
-            jwtSecretKey
+            AppEnv.appJwtSecretKey
         );
     } catch {
         return genToken(uid, type);
@@ -46,7 +42,7 @@ export const renewToken = (
 export const validateToken = (uid?: string, token?: string) => {
     if (!uid || !token) return false;
     try {
-        const verified = jwt.verify(token, jwtSecretKey) as JwtPayload;
+        const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
         const now = Date.now();
         const exp = verified.exp || 0;
         // console.log('now: ', new Date(now));

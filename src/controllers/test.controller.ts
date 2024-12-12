@@ -6,12 +6,12 @@
 
 import type { Request, Response } from 'express';
 
-const feed = (req: Request, res: Response) => {
-    return res.status(200).json({ message: 'feed', status: 200 });
+const feed = (_req: Request, res: Response) => {
+    res.status(200).json({ message: 'feed', status: 200 });
 };
 
-const messenger = (req: Request, res: Response) => {
-    return res.status(200).json({ message: 'messenger', status: 200 });
+const messenger = (_req: Request, res: Response) => {
+    res.status(200).json({ message: 'messenger', status: 200 });
 };
 
 export const apiTest = {

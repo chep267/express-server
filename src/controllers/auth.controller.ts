@@ -9,7 +9,7 @@ import { UserModel } from '@model/user.model';
 
 /** constants */
 import { AppKey } from '@constant/AppKey';
-import { accessTokenExpiredTime, accessTokenRefreshTime, refreshTokenExpiredTime } from '@constant/env';
+import { AppEnv } from '@constant/AppEnv';
 
 /** utils */
 import { genToken, renewToken, validatePassword, validateToken } from '@util/auth';
@@ -26,19 +26,19 @@ const clearToken = (res: Response) => {
 const setToken = (res: Response, data: { uid: string; accessToken: string; refreshToken: string }) => {
     const { uid, accessToken, refreshToken } = data;
     res.cookie(AppKey.uid, uid, {
-        maxAge: Number(accessTokenExpiredTime),
+        maxAge: AppEnv.appAccessTokenExpiredTime,
         httpOnly: true,
         secure: true,
         sameSite: 'strict'
     });
     res.cookie(AppKey.accessToken, accessToken, {
-        maxAge: Number(accessTokenExpiredTime),
+        maxAge: AppEnv.appAccessTokenExpiredTime,
         httpOnly: true,
         secure: true,
         sameSite: 'strict'
     });
     res.cookie(AppKey.refreshToken, refreshToken, {
-        maxAge: Number(refreshTokenExpiredTime),
+        maxAge: AppEnv.appRefreshTokenExpiredTime,
         httpOnly: true,
         secure: true,
         sameSite: 'strict'
@@ -84,7 +84,7 @@ const signin = async (
         setToken(res, { uid: userData.uid, accessToken, refreshToken });
         return res
             .status(200)
-            .json({ message: 'ok', data: { user: userData, token: { exp: accessTokenRefreshTime } } });
+            .json({ message: 'ok', data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } });
     } catch (error) {
         next(error);
     }
@@ -124,7 +124,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
         setToken(res, { uid, accessToken, refreshToken });
         return res
             .status(200)
-            .json({ message: 'ok', data: { user: userData, token: { exp: accessTokenRefreshTime } } });
+            .json({ message: 'ok', data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } });
     } catch (error) {
         next(error);
     }

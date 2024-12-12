@@ -11,12 +11,22 @@ import { Router } from 'express';
 import { apiAuth } from '@controller/auth.controller';
 
 /** constants */
-import { PathAuthApi } from '@constant/PathAuthApi';
+import { AuthApiPath } from '@constant/AuthApiPath';
 
 export const authRouter = Router();
 
-authRouter.post(PathAuthApi.signin, apiAuth.signin);
-authRouter.post(PathAuthApi.signout, apiAuth.signout);
-authRouter.post(PathAuthApi.restart, apiAuth.restart);
-authRouter.post(PathAuthApi.register, apiAuth.register);
-authRouter.post(PathAuthApi.recover, apiAuth.recover);
+authRouter.post(AuthApiPath.signin, (req, res, next) => {
+    apiAuth.signin(req, res, next).then();
+});
+authRouter.post(AuthApiPath.signout, (req, res) => {
+    apiAuth.signout(req, res).then();
+});
+authRouter.post(AuthApiPath.restart, (req, res, next) => {
+    apiAuth.restart(req, res, next).then();
+});
+authRouter.post(AuthApiPath.register, (req, res, next) => {
+    apiAuth.register(req, res, next).then();
+});
+authRouter.post(AuthApiPath.recover, (req, res, next) => {
+    apiAuth.recover(req, res, next).then();
+});

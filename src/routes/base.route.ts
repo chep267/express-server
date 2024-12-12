@@ -11,6 +11,6 @@ const serverPort = process.env.CHEP_SERVER_PORT;
 
 export const baseRouter = Router();
 
-baseRouter.get('/', (req, res) => {
+baseRouter.get('/', (_req, res) => {
     res.status(200).json(`chep-server start in port: ${serverPort}`);
 });
