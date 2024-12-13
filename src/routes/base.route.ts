@@ -7,10 +7,15 @@
 /** libs */
 import { Router } from 'express';
 
-const serverPort = process.env.CHEP_SERVER_PORT;
+/** constant */
+import { AppEnv } from '@constant/AppEnv';
 
 export const baseRouter = Router();
 
 baseRouter.get('/', (_req, res) => {
-    res.status(200).json(`chep-server start in port: ${serverPort}`);
+    res.status(200).json(`chep-server start in port: ${AppEnv.appPort}`);
+});
+
+baseRouter.get('/dong', (_req, res) => {
+    res.status(200).json(`hello dong`);
 });
