@@ -11,7 +11,7 @@ import mongoose from 'mongoose';
 import { AppEnv } from '@constant/AppEnv';
 
 /** utils */
-import { connected, disconnected, error, termination } from '@util/log.mts';
+import { connected, disconnected, error, termination } from '@util/log';
 
 export const dbConfig = {
     name: AppEnv.dbName,
@@ -20,7 +20,6 @@ export const dbConfig = {
     port: AppEnv.dbPort
 };
 
-console.log('dbConfig: ', dbConfig);
 mongoose.connection.on('connected', function () {
     console.log(connected('Mongoose default connection is open to', dbConfig.uri));
 });

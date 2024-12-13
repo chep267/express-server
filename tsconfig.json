@@ -3,8 +3,6 @@
         "target": "ES2022",                          // Mục tiêu JavaScript phiên bản ES2022
         "module": "ESNext",                          // Sử dụng ESModules để tương thích hiện đại
         "moduleResolution": "node",                  // Module resolution theo Node.js
-        "outDir": "./dist",                          // Thư mục chứa file build
-        "rootDir": "./src",                          // Thư mục gốc của mã nguồn
         "strict": true,                              // Bật chế độ nghiêm ngặt của TypeScript
         "esModuleInterop": true,                     // Hỗ trợ import/export với CommonJS modules
         "skipLibCheck": true,                        // Bỏ qua kiểm tra kiểu cho file .d.ts
@@ -17,10 +15,12 @@
         "noUnusedLocals": true,                      // Cảnh báo nếu có biến không sử dụng
         "noUnusedParameters": true,                  // Cảnh báo nếu có tham số không sử dụng
         "noFallthroughCasesInSwitch": true,          // Phát hiện lỗi khi case switch không có break
-        "noEmit": true,                              // Không xuất file JavaScript
-        "allowImportingTsExtensions": true,          // Cho phép import với đuôi .mts
+//        "noEmit": true,                              // Không xuất file JavaScript
+//        "allowImportingTsExtensions": true,          // Cho phép import với đuôi .mts
 
-        "baseUrl": ".", // Cấu hình cơ sở cho các alias.
+        "outDir": "./dist",                          // Thư mục chứa file build
+        "rootDir": "./src",                          // Thư mục gốc của mã nguồn
+        "baseUrl": "./", // Cấu hình cơ sở cho các alias.
         "paths": {
             "@src/*": ["src/*"],
             "@config/*": ["src/configs/*"],
@@ -32,11 +32,6 @@
             "@util/*": ["src/utils/*"]
         }
     },
-    "include": [
-        "src/**/*.ts"                                // Bao gồm tất cả file .ts trong thư mục src
-    ],
-    "exclude": [
-        "node_modules",                              // Loại trừ node_modules
-        "dist"                                       // Loại trừ thư mục build
-    ]
+    "include": ["src"],
+    "exclude": ["node_modules"]
 }

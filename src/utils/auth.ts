@@ -45,8 +45,6 @@ export const validateToken = (uid?: string, token?: string) => {
         const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
         const now = Date.now();
         const exp = verified.exp || 0;
-        // console.log('now: ', new Date(now));
-        // console.log('expired: ', new Date(exp));
         return verified.uid === uid && now < exp;
     } catch {
         return false;
