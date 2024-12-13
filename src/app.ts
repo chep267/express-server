@@ -9,7 +9,7 @@ import express from 'express';
 import https from 'https';
 import fs from 'fs';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
+// import cors from 'cors';
 import logger from 'morgan';
 
 /** constant */
@@ -27,18 +27,18 @@ import { testRouter } from '@route/test.route';
 import { connected } from '@util/log';
 
 const app = express();
-app.use(
-    cors({
-        origin: function (origin, callback) {
-            if (!origin || AppEnv.appWhiteList.split(';').includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
-        credentials: true
-    })
-);
+// app.use(
+//     cors({
+//         origin: function (origin, callback) {
+//             if (!origin || AppEnv.appWhiteList.split(';').includes(origin)) {
+//                 callback(null, true);
+//             } else {
+//                 callback(new Error('Not allowed by CORS'));
+//             }
+//         },
+//         credentials: true
+//     })
+// );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
