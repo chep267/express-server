@@ -1,25 +1,24 @@
 {
     "compilerOptions": {
-        "target": "ESNext", // Chọn phiên bản JS hiện đại với các tính năng mới.
-        "module": "ESNext", // Node.js hỗ trợ ESM module (mới từ TypeScript 5.x).
-        "moduleResolution": "node", // Cách Node.js xử lý module ESM.
-        "strict": true, // Bật kiểm tra chặt chẽ (strict mode).
-        "esModuleInterop": true, // Hỗ trợ import các CommonJS module như `import express from 'express'`.
-        "forceConsistentCasingInFileNames": true, // Đảm bảo consistency giữa file và casing.
-        "skipLibCheck": true, // Bỏ qua kiểm tra các file declaration (.d.ts).
-        "resolveJsonModule": true, // Cho phép import file JSON.
-        "rootDir": "src", // Nơi chứa source code TypeScript.
-        "outDir": "./dist", // Nơi xuất JavaScript sau khi build.
-        "typeRoots": ["./node_modules/@types"], // Tự động tìm và sử dụng types trong thư mục này.
-        "types": ["node"], // Bao gồm type Node.js.
-        "lib": ["ES2022", "DOM"], // Bao gồm các API JS hiện đại và DOM nếu cần.
-        "allowSyntheticDefaultImports": true, // Cho phép import default mà không cần `default`.
-        "noImplicitAny": false, // (Tùy chọn) Bật/tắt lỗi cho các giá trị không khai báo kiểu `any`.
-        "incremental": true, // Tăng tốc độ build lại bằng cách lưu trạng thái build.
-        "declaration": true,
-        "emitDeclarationOnly": true,
-        "allowImportingTsExtensions": true,
-
+        "target": "ES2022",                          // Mục tiêu JavaScript phiên bản ES2022
+        "module": "ESNext",                          // Sử dụng ESModules để tương thích hiện đại
+        "moduleResolution": "node",                  // Module resolution theo Node.js
+        "outDir": "./dist",                          // Thư mục chứa file build
+        "rootDir": "./src",                          // Thư mục gốc của mã nguồn
+        "strict": true,                              // Bật chế độ nghiêm ngặt của TypeScript
+        "esModuleInterop": true,                     // Hỗ trợ import/export với CommonJS modules
+        "skipLibCheck": true,                        // Bỏ qua kiểm tra kiểu cho file .d.ts
+        "allowJs": false,                            // Không cho phép file .js trong dự án
+        "resolveJsonModule": true,                   // Cho phép import file JSON
+        "forceConsistentCasingInFileNames": true,    // Bảo đảm phân biệt chữ hoa/chữ thường
+        "allowSyntheticDefaultImports": true,        // Cho phép import default từ modules không hỗ trợ ES6
+        "strictNullChecks": true,                    // Yêu cầu kiểm tra null và undefined
+        "noImplicitAny": true,                       // Không cho phép sử dụng kiểu "any" ngầm định
+        "noUnusedLocals": true,                      // Cảnh báo nếu có biến không sử dụng
+        "noUnusedParameters": true,                  // Cảnh báo nếu có tham số không sử dụng
+        "noFallthroughCasesInSwitch": true,          // Phát hiện lỗi khi case switch không có break
+        "noEmit": true,                              // Không xuất file JavaScript
+        "allowImportingTsExtensions": true,          // Cho phép import với đuôi .mts
 
         "baseUrl": ".", // Cấu hình cơ sở cho các alias.
         "paths": {
@@ -33,7 +32,11 @@
             "@util/*": ["src/utils/*"]
         }
     },
-    "files": ["src/type.d.ts"], // Các file dùng để defined global type cho dự án
-    "include": ["src/**/*"], // Đường dẫn include cho các file cần build
-    "exclude": ["node_modules", "dist"] // Bỏ qua thư mục không cần thiết.
+    "include": [
+        "src/**/*.ts"                                // Bao gồm tất cả file .ts trong thư mục src
+    ],
+    "exclude": [
+        "node_modules",                              // Loại trừ node_modules
+        "dist"                                       // Loại trừ thư mục build
+    ]
 }
