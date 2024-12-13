@@ -11,7 +11,6 @@ import fs from 'fs';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
-import dotenv from 'dotenv';
 
 /** constant */
 import { AppEnv } from '@constant/AppEnv';
@@ -26,8 +25,6 @@ import { testRouter } from '@route/test.route';
 
 /** utils */
 import { connected } from '@util/log';
-
-dotenv.config(); // Đọc các biến môi trường từ file .env
 
 const app = express();
 app.use(
