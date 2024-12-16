@@ -1,15 +1,18 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "main.ts",
-            "use": "@vercel/node"
+    "functions": {
+        "/": {
+            "memory": 3009,
+            "maxDuration": 30
         }
-    ],
+    },
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "main.ts"
+            "dest": "dist/index.js"
         }
-    ]
+    ],
+    "installCommand": "node -v && 1",
+    "devCommand": "node -v && 2",
+    "buildCommand": "node -v && 3"
 }

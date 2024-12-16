@@ -2,5 +2,5 @@
     "watch": ["src", ".env"],
     "ext": ".ts,.js",
     "ignore": [],
-    "exec": "tsx -r dotenv/config ./main.ts"
+    "exec": "tsx -r dotenv/config ./src/index.ts"
 }
