@@ -18,9 +18,9 @@
 //        "noEmit": true,                              // Không xuất file JavaScript
 //        "allowImportingTsExtensions": true,          // Cho phép import với đuôi .mts
 
-        "outDir": "./output",                          // Thư mục chứa file build
-        "rootDir": "./src",                          // Thư mục gốc của mã nguồn
-        "baseUrl": "./", // Cấu hình cơ sở cho các alias.
+        "outDir": "dist",                          // Thư mục chứa file build
+        "rootDir": "src",                          // Thư mục gốc của mã nguồn
+        "baseUrl": ".", // Cấu hình cơ sở cho các alias.
         "paths": {
             "@src/*": ["src/*"],
             "@config/*": ["src/configs/*"],

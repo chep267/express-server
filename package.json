@@ -5,9 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "npx nodemon",
-        "build": "rimraf ./output && tsc && tsc-alias && node build.js && cp -r src/public output/",
-        "start": "node output/app.js",
-        "serve": "node output/app.js",
+        "build": "rimraf ./dist && tsc && tsc-alias && node build.js && cp -r src/public dist/",
+        "start": "node dist/app.js",
+        "serve": "node dist/app.js",
         "lint": "eslint . --fix",
         "format": "prettier --write ."
     },
