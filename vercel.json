@@ -3,7 +3,7 @@
     "version": 2,
     "functions": {
         "src/index.ts": {
-            "runtime": "vercel-deno"
+            "runtime": "vercel-node@latest"
         }
     },
     "rewrites": [
