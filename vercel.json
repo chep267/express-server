@@ -3,19 +3,12 @@
     "version": 2,
     "builds": [
         {
-            "src": "./src/index.ts",
+            "src": "package.json",
             "use": "@vercel/node"
         }
     ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "./dist/index.js"
-        }
-    ],
-    "outputDirectory": "./dist",
-    "installCommand": "npm install",
-    "buildCommand": "npm run build",
-    "devCommand": "npm run serve",
-    "framework": null
+    "scripts": {
+        "build": "npm run build",
+        "start": "npm run serve"
+    }
 }
