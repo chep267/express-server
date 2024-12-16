@@ -4,12 +4,12 @@
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "dist/index.js"
+            "destination": "./dist/index.js"
         }
     ],
-    "outputDirectory": "dist",
+    "outputDirectory": "./dist",
     "installCommand": "npm install",
     "buildCommand": "npm run build",
-    "devCommand": "npm run serve",
+    "devCommand": "npm run start",
     "framework": null
 }
