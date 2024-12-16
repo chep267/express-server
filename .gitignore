@@ -29,3 +29,4 @@ package-lock.json
 tsconfig.tsbuildinfo
 pnpm-lock.yaml
 stats.html
+.vercel

@@ -8,10 +8,10 @@
 import mongoose from 'mongoose';
 
 /** constant */
-import { AppEnv } from '../constants/AppEnv';
+import { AppEnv } from '@constant/AppEnv';
 
 /** utils */
-import { connected, disconnected, error, termination } from '../utils/log';
+import { connected, disconnected, error, termination } from '@util/log';
 
 export const dbConfig = {
     name: AppEnv.dbName,

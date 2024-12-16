@@ -8,10 +8,10 @@
 import { Router } from 'express';
 
 /** controllers */
-import { apiAuth } from '../controllers/auth.controller';
+import { apiAuth } from '@controller/auth.controller';
 
 /** constants */
-import { AuthApiPath } from '../constants/AuthApiPath';
+import { AuthApiPath } from '@constant/AuthApiPath';
 
 export const authRouter = Router();
 

@@ -15,18 +15,18 @@ import cors from 'cors';
 import logger from 'morgan';
 
 /** constant */
-import { AppEnv } from './constants/AppEnv';
+import { AppEnv } from '@constant/AppEnv';
 
 /** configs */
-import { mongoose as chepDB, dbConfig } from './configs/database';
+import { mongoose as chepDB, dbConfig } from '@config/database';
 
 /** routes */
-import { baseRouter } from './routes/base.route';
-import { authRouter } from './routes/auth.route';
-import { testRouter } from './routes/test.route';
+import { baseRouter } from '@route/base.route';
+import { authRouter } from '@route/auth.route';
+import { testRouter } from '@route/test.route';
 
 /** utils */
-import { connected } from './utils/log';
+import { connected } from '@util/log';
 
 // Tạo __dirname
 const filename = fileURLToPath(import.meta.url);

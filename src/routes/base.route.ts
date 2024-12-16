@@ -8,7 +8,7 @@
 import { Router } from 'express';
 
 /** constant */
-import { AppEnv } from '../constants/AppEnv';
+import { AppEnv } from '@constant/AppEnv';
 
 export const baseRouter = Router();
 

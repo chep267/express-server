@@ -16,20 +16,20 @@
         "noUnusedParameters": true,                  // Cảnh báo nếu có tham số không sử dụng
         "noFallthroughCasesInSwitch": true,          // Phát hiện lỗi khi case switch không có break
 
-        "outDir": "dist",                          // Thư mục chứa file build
-        "rootDir": "src",                          // Thư mục gốc của mã nguồn
+        "outDir": "./dist",                          // Thư mục chứa file build
+        "rootDir": ".",                          // Thư mục gốc của mã nguồn
         "baseUrl": ".", // Cấu hình cơ sở cho các alias.
-//        "paths": {
-//            "@src/*": ["src/*"],
-//            "@config/*": ["src/configs/*"],
-//            "../constants/*": ["src/constants/*"],
-//            "../controllers/*": ["src/controllers/*"],
-//            "../models/*": ["src/models/*"],
-//            "@route/*": ["src/routes/*"],
-//            "@service/*": ["src/services/*"],
-//            "../utils/*": ["src/utils/*"]
-//        }
+        "paths": {
+            "@src/*": ["./src/*"],
+            "@config/*": ["./src/configs/*"],
+            "@constant/*": ["./src/constants/*"],
+            "@controller/*": ["./src/controllers/*"],
+            "@model/*": ["./src/models/*"],
+            "@route/*": ["./src/routes/*"],
+            "@service/*": ["./src/services/*"],
+            "@util/*": ["./src/utils/*"]
+        }
     },
-    "include": ["src"],
+    "include": ["./src"],
     "exclude": ["node_modules"]
 }

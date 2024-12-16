@@ -5,14 +5,14 @@
  */
 
 /** models */
-import { UserModel } from '../models/user.model';
+import { UserModel } from '@model/user.model';
 
 /** constants */
-import { AppKey } from '../constants/AppKey';
-import { AppEnv } from '../constants/AppEnv';
+import { AppKey } from '@constant/AppKey';
+import { AppEnv } from '@constant/AppEnv';
 
 /** utils */
-import { genToken, renewToken, validatePassword, validateToken } from '../utils/auth';
+import { genToken, renewToken, validatePassword, validateToken } from '@util/auth';
 
 /** types */
 import type { NextFunction, Request, Response } from 'express';
