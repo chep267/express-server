@@ -12,6 +12,7 @@
             "dest": "dist/index.js"
         }
     ],
+    "outputDirectory": "dist",
     "installCommand": "node -v && 1",
     "devCommand": "node -v && 2",
     "buildCommand": "node -v && 3"
