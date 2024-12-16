@@ -17,7 +17,7 @@
         "noFallthroughCasesInSwitch": true,          // Phát hiện lỗi khi case switch không có break
 
         "outDir": "./dist",                          // Thư mục chứa file build
-        "rootDir": ".",                          // Thư mục gốc của mã nguồn
+        "rootDir": "./src",                          // Thư mục gốc của mã nguồn
         "baseUrl": ".", // Cấu hình cơ sở cho các alias.
         "paths": {
             "@src/*": ["./src/*"],
