@@ -1,25 +1,12 @@
 {
     "compilerOptions": {
-        "target": "ES2022",                          // Mục tiêu JavaScript phiên bản ES2022
-        "module": "ESNext",                          // Sử dụng ESModules để tương thích hiện đại
-        "moduleResolution": "node",                  // Module resolution theo Node.js
-        "strict": true,                              // Bật chế độ nghiêm ngặt của TypeScript
-        "esModuleInterop": true,                     // Hỗ trợ import/export với CommonJS modules
-        "skipLibCheck": true,                        // Bỏ qua kiểm tra kiểu cho file .d.ts
-        "allowJs": false,                            // Không cho phép file .js trong dự án
-        "resolveJsonModule": true,                   // Cho phép import file JSON
-        "forceConsistentCasingInFileNames": true,    // Bảo đảm phân biệt chữ hoa/chữ thường
-        "allowSyntheticDefaultImports": true,        // Cho phép import default từ modules không hỗ trợ ES6
-        "strictNullChecks": true,                    // Yêu cầu kiểm tra null và undefined
-        "noImplicitAny": true,                       // Không cho phép sử dụng kiểu "any" ngầm định
-        "noUnusedLocals": true,                      // Cảnh báo nếu có biến không sử dụng
-        "noUnusedParameters": true,                  // Cảnh báo nếu có tham số không sử dụng
-        "noFallthroughCasesInSwitch": true,          // Phát hiện lỗi khi case switch không có break
-//        "noEmit": true,                              // Không xuất file JavaScript
-//        "allowImportingTsExtensions": true,          // Cho phép import với đuôi .mts
-
-        "outDir": "dist",                          // Thư mục chứa file build
-        "rootDir": "src",                          // Thư mục gốc của mã nguồn
+        "target": "ES2020",
+        "module": "ES2022",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "strict": true,
+        "outDir": "dist",  // Biên dịch vào thư mục `dist`
+        "rootDir": "src",
         "baseUrl": ".", // Cấu hình cơ sở cho các alias.
         "paths": {
             "@src/*": ["src/*"],
