@@ -6,10 +6,12 @@
 
 /** libs */
 import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'url';
 import https from 'https';
 import fs from 'fs';
 import cookieParser from 'cookie-parser';
-// import cors from 'cors';
+import cors from 'cors';
 import logger from 'morgan';
 
 /** constant */
@@ -26,20 +28,27 @@ import { testRouter } from '@route/test.route';
 /** utils */
 import { connected } from '@util/log';
 
-const app = express();
-// app.use(
-//     cors({
-//         origin: function (origin, callback) {
-//             if (!origin || AppEnv.appWhiteList.split(';').includes(origin)) {
-//                 callback(null, true);
-//             } else {
-//                 callback(new Error('Not allowed by CORS'));
-//             }
-//         },
-//         credentials: true
-//     })
-// );
+// Tạo __dirname
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
+const app = express();
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin || AppEnv.appWhiteList.split(';').includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true
+    })
+);
+
+app.get('/favicon.ico', (_req, res) => {
+    res.sendFile(path.join(dirname, 'public', 'favicon.svg'));
+});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
