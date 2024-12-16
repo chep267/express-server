@@ -7,8 +7,15 @@
             "use": "@vercel/node"
         }
     ],
-    "scripts": {
-        "build": "npm run build",
-        "start": "npm run serve"
-    }
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "dist/index.js"
+        }
+    ],
+    "outputDirectory": "dist",
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "devCommand": "npm run serve",
+    "framework": null
 }
