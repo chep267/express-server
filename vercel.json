@@ -1,6 +1,12 @@
 {
     "name": "chep-server-express",
     "version": 2,
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "dist/configs/database.js"
+        }
+    ],
     "outputDirectory": "./dist",
     "devCommand": "npm run start",
     "installCommand": "npm install",
