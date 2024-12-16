@@ -17,6 +17,5 @@
     "installCommand": "npm install",
     "buildCommand": "rimraf ./dist && tsc",
     "devCommand": "nodemon --watch src --exec ts-node src/index.ts",
-    "framework": null,
-    "trailingSlash": false
+    "framework": null
 }
