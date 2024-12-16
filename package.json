@@ -7,8 +7,8 @@
         "lint": "eslint . --fix",
         "format": "prettier --write .",
         "start": "node dist/index.js",
-        "build": "rimraf ./dist && tsc && tsc-alias && node build.js",
-        "dev": "nodemon --watch src --exec ts-node src/index.ts"
+        "dev": "npx nodemon",
+        "build": "rimraf ./dist && tsc && tsc-alias && node build.js && cp -r src/public dist/"
     },
     "author": "dongntd",
     "license": "ISC",
