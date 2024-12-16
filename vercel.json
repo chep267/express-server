@@ -15,7 +15,7 @@
     ],
     "outputDirectory": "dist",
     "installCommand": "npm install",
-    "buildCommand": "rimraf ./dist && tsc",
-    "devCommand": "nodemon --watch src --exec ts-node src/index.ts",
+    "buildCommand": "npm run build",
+    "devCommand": "npm run dev",
     "framework": null
 }
