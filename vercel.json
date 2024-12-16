@@ -1,10 +1,10 @@
 {
     "name": "chep-server-express",
     "version": 2,
-    "routes": [
+    "builds": [
         {
-            "src": "/(.*)",
-            "dest": "dist/configs/database.js"
+            "src": "src/index.ts",
+            "use": "@vercel/node"
         }
     ],
     "outputDirectory": "./dist",
