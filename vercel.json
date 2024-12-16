@@ -1,15 +1,5 @@
 {
     "name": "chep-server-express",
     "version": 2,
-    "builds": [
-        {
-            "src": "src/index.ts",
-            "use": "@vercel/node"
-        }
-    ],
-    "outputDirectory": "./dist",
-    "devCommand": "node dist/index.js",
-    "installCommand": "npm install",
-    "buildCommand": "rimraf ./dist && tsc && tsc-alias && node build.js && cp -r src/public dist/",
-    "framework": null
+    "rewrites": [{ "source": "/(.*)", "destination": "/dist" }]
 }
