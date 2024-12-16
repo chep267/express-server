@@ -16,6 +16,6 @@
     "outputDirectory": "./dist",
     "installCommand": "npm install",
     "buildCommand": "npm run build",
-    "devCommand": "npm run start",
+    "devCommand": "npm run serve",
     "framework": null
 }

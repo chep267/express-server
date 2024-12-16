@@ -6,9 +6,9 @@
     "scripts": {
         "lint": "eslint . --fix",
         "format": "prettier --write .",
-        "start": "node dist/index.js",
         "dev": "npx nodemon",
-        "build": "rimraf ./dist && tsc && tsc-alias && node build.js && cp -r src/public dist/"
+        "build": "rimraf ./dist && tsc && tsc-alias && node build.js && cp -r src/public dist/",
+        "serve": "node dist/index.js"
     },
     "author": "dongntd",
     "license": "ISC",
