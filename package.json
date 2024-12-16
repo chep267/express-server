@@ -7,7 +7,6 @@
     "scripts": {
         "dev": "npx nodemon",
         "build": "rimraf ./dist && tsc && tsc-alias && node build.js",
-        "es-build": "rimraf ./dist && node build.js",
         "start": "node dist/app.js",
         "serve": "node dist/app.js",
         "lint": "eslint . --fix",
