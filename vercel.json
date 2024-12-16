@@ -1,5 +1,0 @@
-{
-    "name": "chep-server-express",
-    "version": 2,
-    "rewrites": [{ "source": "/(.*)", "destination": "/dist" }]
-}
