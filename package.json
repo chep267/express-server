@@ -7,7 +7,7 @@
         "lint": "eslint . --fix",
         "format": "prettier --write .",
         "start": "node dist/index.js",
-        "build": "rimraf ./dist && tsc ",
+        "build": "rimraf ./dist && tsc",
         "dev": "nodemon --watch src --exec ts-node src/index.ts"
     },
     "author": "dongntd",

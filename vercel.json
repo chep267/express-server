@@ -1,0 +1,22 @@
+{
+    "name": "chep-server-express",
+    "version": 2,
+    "builds": [
+        {
+            "src": "src/index.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "src/index.ts"
+        }
+    ],
+    "outputDirectory": "dist",
+    "installCommand": "npm install",
+    "buildCommand": "rimraf ./dist && tsc",
+    "devCommand": "nodemon --watch src --exec ts-node src/index.ts",
+    "framework": "expressjs",
+    "trailingSlash": false
+}
