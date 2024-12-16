@@ -4,7 +4,6 @@
     "description": "",
     "type": "module",
     "scripts": {
-        "serve": "node dist/app.js",
         "lint": "eslint . --fix",
         "format": "prettier --write .",
         "start": "node dist/index.js",
