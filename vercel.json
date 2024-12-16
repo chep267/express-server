@@ -2,8 +2,8 @@
     "name": "chep-server-express",
     "version": 2,
     "outputDirectory": "./dist",
-    "installCommand": "npm install",
-    "buildCommand": "npm run build && npm run start",
     "devCommand": "npm run start",
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
     "framework": null
 }
