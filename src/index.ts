@@ -1,21 +1,75 @@
+/**
+ *
+ * @author dongntd267@gmail.com on 26/07/2023.
+ *
+ */
+
+/** libs */
 import express from 'express';
+import path from 'node:path';
+import { fileURLToPath } from 'url';
+import https from 'https';
+import fs from 'fs';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import logger from 'morgan';
+
+/** constant */
+import { AppEnv } from '@constant/AppEnv';
+
+/** configs */
+import { mongoose as chepDB, dbConfig } from '@config/database';
+
+/** routes */
+import { baseRouter } from '@route/base.route';
+import { authRouter } from '@route/auth.route';
+import { testRouter } from '@route/test.route';
+
+/** utils */
+import { connected } from '@util/log';
+
+// Tạo __dirname
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin || AppEnv.appWhiteList.split(';').includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+        credentials: true
+    })
+);
 
-// Middleware
+app.get('/favicon.ico', (_req, res) => {
+    res.sendFile(path.join(dirname, 'public', 'favicon.svg'));
+});
 app.use(express.json());
-
-// Routes
-app.get('/', (_req, res) => {
-    res.json({ message: 'Hello from Express with TypeScript and ES Modules!' });
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(logger('dev'));
+app.use(baseRouter);
+app.use(authRouter);
+app.use(testRouter);
+app.use((_req, res) => {
+    res.status(404).json('This api not found!');
 });
 
-app.get('/dong', (_req, res) => {
-    res.json({ message: 'Hello dong!' });
-});
+https
+    .createServer(
+        {
+            key: fs.readFileSync('./src/utils/server.key'),
+            cert: fs.readFileSync('./src/utils/server.cert')
+        },
+        app as never
+    )
+    .listen(AppEnv.appPort, () => {
+        console.log(connected(`chep-server https start in port: ${AppEnv.appPort}`));
+    });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();
