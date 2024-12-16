@@ -17,6 +17,6 @@
     "installCommand": "npm install",
     "buildCommand": "rimraf ./dist && tsc",
     "devCommand": "nodemon --watch src --exec ts-node src/index.ts",
-    "framework": "expressjs",
+    "framework": null,
     "trailingSlash": false
 }
