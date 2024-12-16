@@ -1,18 +1,9 @@
 {
     "name": "chep-server-express",
     "version": 2,
-    "builds": [
-        { "src": "./src/index.ts", "use": "@vercel/node" }
-    ],
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "./dist/index.js"
-        }
-    ],
     "outputDirectory": "./dist",
     "installCommand": "npm install",
-    "buildCommand": "npm run build",
+    "buildCommand": "npm run build && npm run start",
     "devCommand": "npm run start",
     "framework": null
 }
