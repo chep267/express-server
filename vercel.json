@@ -1,13 +1,7 @@
 {
     "name": "chep-server-express",
     "version": 2,
-    "builds": [
-        {
-            "src": "package.json",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
+    "rewrites": [
         {
             "src": "/(.*)",
             "dest": "dist/index.js"
