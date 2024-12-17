@@ -1,7 +1,7 @@
 {
     "version": 2,
     "builds": [{
-        "src": "server/index.js",
+        "src": "server",
         "use": "@vercel/node"
     }],
     "routes": [
