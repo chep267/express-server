@@ -7,8 +7,8 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import https from 'https';
-import fs from 'fs';
+// import https from 'https';
+// import fs from 'fs';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
@@ -51,12 +51,18 @@ app.use(testRouter);
 app.use((_req, res) => {
     res.status(404).json('This api not found!');
 });
-https
-    .createServer({
-    key: fs.readFileSync(path.join(dirname, 'public', 'server.key')),
-    cert: fs.readFileSync(path.join(dirname, 'public', 'server.cert')) //('./public/server.cert')
-}, app)
-    .listen(AppEnv.appPort, () => {
+// https
+//     .createServer(
+//         {
+//             key: fs.readFileSync(path.join(dirname, 'public', 'server.key')),
+//             cert: fs.readFileSync(path.join(dirname, 'public', 'server.cert'))
+//         },
+//         app as never
+//     )
+//     .listen(AppEnv.appPort, () => {
+//         console.log(connected(`chep-server https start in: https://localhost:${AppEnv.appPort}`));
+//     });
+app.listen(AppEnv.appPort, () => {
     console.log(connected(`chep-server https start in: https://localhost:${AppEnv.appPort}`));
 });
 chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();
