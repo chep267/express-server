@@ -64,8 +64,8 @@ app.use((_req, res) => {
 https
     .createServer(
         {
-            key: fs.readFileSync('./src/utils/server.key'),
-            cert: fs.readFileSync('./src/utils/server.cert')
+            key: fs.readFileSync(path.join(dirname, 'public', 'server.key')),
+            cert: fs.readFileSync(path.join(dirname, 'public', 'server.cert'))
         },
         app as never
     )
