@@ -6,8 +6,8 @@
 
 /** libs */
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+// import path from 'path';
+// import { fileURLToPath } from 'url';
 // import https from 'https';
 // import fs from 'fs';
 import cookieParser from 'cookie-parser';
@@ -29,8 +29,8 @@ import { testRouter } from '@route/test.route';
 import { connected } from '@util/log';
 
 // Tạo __dirname
-const filename = fileURLToPath(import.meta.url);
-const dirname = path.dirname(filename);
+// const filename = fileURLToPath(import.meta.url);
+// const dirname = path.dirname(filename);
 
 const app = express();
 app.use(
@@ -47,8 +47,8 @@ app.use(
 );
 
 app.get('/favicon.ico', (_req, res) => {
-    res.sendFile(path.join(dirname, 'public', 'favicon.svg'));
-    // res.status(204);
+    // res.sendFile(path.join(dirname, 'public', 'favicon.svg'));
+    res.status(204);
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
