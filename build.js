@@ -17,4 +17,4 @@ const addJsExtension = (dir) => {
     });
 };
 
-addJsExtension('./dist'); // Xử lý thư mục dist
+addJsExtension('./server'); // Xử lý thư mục dist

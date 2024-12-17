@@ -16,7 +16,7 @@
         "noUnusedParameters": true,                  // Cảnh báo nếu có tham số không sử dụng
         "noFallthroughCasesInSwitch": true,          // Phát hiện lỗi khi case switch không có break
 
-        "outDir": "./dist",                          // Thư mục chứa file build
+        "outDir": "./server",                          // Thư mục chứa file build
         "rootDir": "./src",                          // Thư mục gốc của mã nguồn
         "baseUrl": ".", // Cấu hình cơ sở cho các alias.
         "paths": {
