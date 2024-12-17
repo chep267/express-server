@@ -12,7 +12,7 @@
     ],
     "outputDirectory": "dist",
     "installCommand": "npm install",
-    "buildCommand": "rimraf ./dist && tsc",
+    "buildCommand": "rimraf ./dist",
     "devCommand": "node server/index.js"
 }
 
