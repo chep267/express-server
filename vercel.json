@@ -1,9 +1,11 @@
 {
     "version": 2,
-    "builds": [{
-        "src": "server/index.js",
-        "use": "@vercel/node"
-    }],
+    "builds": [
+        {
+            "src": "server/index.js",
+            "use": "@vercel/node"
+        }
+    ],
     "routes": [
         {
             "src": "/(.*)",
@@ -15,4 +17,3 @@
     "buildCommand": "rimraf ./dist",
     "devCommand": "node server/index.js"
 }
-
