@@ -77,5 +77,3 @@ app.listen(3000, () => {
     console.log(connected(`chep-server https start in: http://localhost:3000`));
 });
 chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();
-
-export default app;
