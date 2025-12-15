@@ -10,8 +10,8 @@
         "start": "vercel dev",
         "build:ts": "rimraf dist app && tsc -b && tsc-alias",
         "build:esbuild": "esbuild dist/index.js --bundle --minify --platform=node --format=esm --external:node:* --outfile=app/index.js",
-        "build:copy": "copyfiles public/**/* dist app",
-        "build": "npm run build:ts && npm run build:esbuild && npm run build:copy"
+        "build:copy": "copyfiles public/**/* dist && copyfiles cert/**/* dist",
+        "build": "npm run build:ts && npm run build:copy"
     },
     "author": "dongntd",
     "license": "ISC",

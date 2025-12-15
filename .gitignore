@@ -32,6 +32,5 @@ stats.html
 .vercel
 
 .env
-*.env
-/cert/*
-cert
+.env.*
+cert/**

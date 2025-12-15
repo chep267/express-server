@@ -3,14 +3,14 @@
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "builds": [
         {
-            "src": "src/vercel.ts",
+            "src": "dist/vercel.js",
             "use": "@vercel/node"
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/(.*)",
-            "dest": "dist/vercel.js"
+            "source": "/(.*)",
+            "destination": "/dist/vercel.js"
         }
     ]
 }
