@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import path from 'node:path';
+import fs from 'node:fs';
 
 const addJsExtension = (dir) => {
     // Đọc tất cả các file và thư mục trong thư mục 'dir'

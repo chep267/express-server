@@ -30,3 +30,8 @@ tsconfig.tsbuildinfo
 pnpm-lock.yaml
 stats.html
 .vercel
+
+.env
+*.env
+/cert/*
+cert

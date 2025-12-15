@@ -9,8 +9,8 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 /** constants */
-import { AppKey } from '@constant/AppKey';
-import { AppEnv } from '@constant/AppEnv';
+import { AppKey } from '@constants/AppKey.js';
+import { AppEnv } from '@constants/AppEnv.js';
 
 export const genToken = (uid: string, type: typeof AppKey.accessToken | typeof AppKey.refreshToken) => {
     const iat = Date.now();

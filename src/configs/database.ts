@@ -8,10 +8,10 @@
 import mongoose from 'mongoose';
 
 /** constant */
-import { AppEnv } from '@constant/AppEnv';
+import { AppEnv } from '@constants/AppEnv.js';
 
 /** utils */
-import { connected, disconnected, error, termination } from '@util/log';
+import { connected, disconnected, error, termination } from '@utils/log.js';
 
 export const dbConfig = {
     name: AppEnv.dbName,
@@ -24,7 +24,7 @@ mongoose.connection.on('connected', function () {
     console.log(connected('Mongoose default connection is open to', dbConfig.uri));
 });
 mongoose.connection.on('error', function (err) {
-    console.log(error('Mongoose default connection has occured ' + err + ' error'));
+    console.log(error('Mongoose default connection has occurred ' + err + ' error'));
 });
 mongoose.connection.on('disconnected', function () {
     console.log(disconnected('Mongoose default connection is disconnected'));

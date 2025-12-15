@@ -1,35 +1,54 @@
 {
     "compilerOptions": {
-        "target": "ES2022", // Mục tiêu JavaScript phiên bản ES2022
-        "module": "ESNext", // Sử dụng ESModules để tương thích hiện đại
-        "moduleResolution": "node", // Module resolution theo Node.js
-        "strict": true, // Bật chế độ nghiêm ngặt của TypeScript
-        "esModuleInterop": true, // Hỗ trợ import/export với CommonJS modules
-        "skipLibCheck": true, // Bỏ qua kiểm tra kiểu cho file .d.ts
+        /* Môi trường và Target */
+        "target": "ES2024", // Đảm bảo hỗ trợ các tính năng JS mới nhất
+        "module": "NodeNext", // Sử dụng cơ chế phân giải module Node.js hiện đại (giúp TS hiểu rõ ESM/CJS)
+        "moduleResolution": "NodeNext", // Sử dụng cơ chế phân giải module Node.js hiện đại
+
+        /* Output */
+        "outDir": "./dist", // Thư mục chứa file JS đã biên dịch (Output)
+        "rootDir": "./src", // Thư mục chứa source code TS (Input)
+        "sourceMap": false, // Tạo Source Map để dễ dàng debug
+        "esModuleInterop": true, // Cho phép cú pháp import/require hỗn hợp (quan trọng cho các thư viện CJS)
+
+        /* Strictness */
+        "strict": true, // Bật tất cả các tùy chọn kiểm tra kiểu nghiêm ngặt (nên dùng)
+        "skipLibCheck": true, // Bỏ qua việc kiểm tra kiểu cho các file định nghĩa thư viện
+
+        /* Module và Alias (tùy chọn) */
+        "baseUrl": ".",
+        "paths": {
+            "@src/*": ["./src/*"],
+            "@configs/*": ["./src/configs/*"],
+            "@constants/*": ["./src/constants/*"],
+            "@controllers/*": ["./src/controllers/*"],
+            "@models/*": ["./src/models/*"],
+            "@routes/*": ["./src/routes/*"],
+            "@services/*": ["./src/services/*"],
+            "@utils/*": ["./src/utils/*"]
+        },
+
+        /* Định nghĩa kiểu (Type Declaration) */
+        "resolveJsonModule": true, // Cho phép import file .json
+        "forceConsistentCasingInFileNames": true, // Đảm bảo tên file phải nhất quán về mặt chữ hoa/thường
+
+        /* Tiện ích */
+        "experimentalDecorators": true, // Bật hỗ trợ decorators (nếu bạn dùng thư viện như TypeORM)
+        "emitDecoratorMetadata": true, // Bật hỗ trợ metadata cho decorators (nếu bạn dùng thư viện như TypeORM)
+        "removeComments": true, // xóa comment
         "allowJs": false, // Không cho phép file .js trong dự án
-        "resolveJsonModule": true, // Cho phép import file JSON
-        "forceConsistentCasingInFileNames": true, // Bảo đảm phân biệt chữ hoa/chữ thường
         "allowSyntheticDefaultImports": true, // Cho phép import default từ modules không hỗ trợ ES6
         "strictNullChecks": true, // Yêu cầu kiểm tra null và undefined
         "noImplicitAny": true, // Không cho phép sử dụng kiểu "any" ngầm định
         "noUnusedLocals": true, // Cảnh báo nếu có biến không sử dụng
         "noUnusedParameters": true, // Cảnh báo nếu có tham số không sử dụng
-        "noFallthroughCasesInSwitch": true, // Phát hiện lỗi khi case switch không có break
-
-        "outDir": "./dist", // Thư mục chứa file build
-        "rootDir": "./src", // Thư mục gốc của mã nguồn
-        "baseUrl": ".", // Cấu hình cơ sở cho các alias.
-        "paths": {
-            "@src/*": ["./src/*"],
-            "@config/*": ["./src/configs/*"],
-            "@constant/*": ["./src/constants/*"],
-            "@controller/*": ["./src/controllers/*"],
-            "@model/*": ["./src/models/*"],
-            "@route/*": ["./src/routes/*"],
-            "@service/*": ["./src/services/*"],
-            "@util/*": ["./src/utils/*"]
-        }
+        "noFallthroughCasesInSwitch": true // Phát hiện lỗi khi case switch không có break
     },
-    "include": ["./src"],
-    "exclude": ["node_modules"]
+    "include": [
+        "src/**/*.ts" // Bao gồm tất cả các file .ts trong thư mục src
+    ],
+    "exclude": [
+        "node_modules", // Loại trừ thư mục node_modules
+        "dist" // Loại trừ thư mục output
+    ]
 }

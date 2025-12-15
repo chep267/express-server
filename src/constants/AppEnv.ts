@@ -7,7 +7,7 @@
 /** libs */
 import dotenv from 'dotenv';
 
-dotenv.config(); // Đọc các biến môi trường từ file .env
+dotenv.config();
 
 export const AppEnv = {
     appAccessTokenExpiredTime: Number(process.env.CHEP_SERVER_ACCESS_TOKEN_EXPIRED_TIME),

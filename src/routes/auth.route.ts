@@ -6,27 +6,20 @@
 
 /** libs */
 import { Router } from 'express';
+import multer from 'multer';
 
 /** controllers */
-import { apiAuth } from '@controller/auth.controller';
+import { apiAuth } from '@controllers/auth.controller.js';
 
 /** constants */
-import { AuthApiPath } from '@constant/AuthApiPath';
+import { AuthApiPath } from '@constants/AuthApiPath.js';
+
+const upload = multer();
 
 export const authRouter = Router();
 
-authRouter.post(AuthApiPath.signin, (req, res, next) => {
-    apiAuth.signin(req, res, next).then();
-});
-authRouter.post(AuthApiPath.signout, (req, res) => {
-    apiAuth.signout(req, res).then();
-});
-authRouter.post(AuthApiPath.restart, (req, res, next) => {
-    apiAuth.restart(req, res, next).then();
-});
-authRouter.post(AuthApiPath.register, (req, res, next) => {
-    apiAuth.register(req, res, next).then();
-});
-authRouter.post(AuthApiPath.recover, (req, res, next) => {
-    apiAuth.recover(req, res, next).then();
-});
+authRouter.post(AuthApiPath.signin, upload.none(), apiAuth.signin);
+authRouter.post(AuthApiPath.signout, upload.none(), apiAuth.signout);
+authRouter.post(AuthApiPath.restart, upload.none(), apiAuth.restart);
+authRouter.post(AuthApiPath.register, upload.none(), apiAuth.register);
+authRouter.post(AuthApiPath.recover, upload.none(), apiAuth.recover);
