@@ -1,16 +1,13 @@
 {
     "version": 2,
     "$schema": "https://openapi.vercel.sh/vercel.json",
-    "builds": [
-        {
-            "src": "dist/vercel.js",
-            "use": "@vercel/node"
-        }
-    ],
+
+    "installCommand": "pnpm install",
+    "buildCommand": "pnpm build",
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "/dist/vercel.js"
+            "destination": "dist/vercel.js"
         }
     ]
 }

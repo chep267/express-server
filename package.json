@@ -8,7 +8,7 @@
         "format": "prettier --write .",
         "dev": "npx nodemon",
         "start": "vercel dev",
-        "build:ts": "rimraf dist app && tsc -b && tsc-alias",
+        "build:ts": "rimraf dist && tsc -b && tsc-alias",
         "build:esbuild": "esbuild dist/index.js --bundle --minify --platform=node --format=esm --external:node:* --outfile=app/index.js",
         "build:copy": "copyfiles public/**/* dist && copyfiles cert/**/* dist",
         "build": "npm run build:ts && npm run build:copy"
@@ -62,10 +62,5 @@
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.49.0"
-    },
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "esbuild"
-        ]
     }
 }
