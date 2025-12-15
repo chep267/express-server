@@ -55,7 +55,7 @@ https
         app
     )
     .listen(AppEnv.appPort, () => {
-        console.log(connected(`chep-server https start in: https://localhost:${AppEnv.appPort}`));
+        console.log(connected(`chep-server https start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));
     });
 
 chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();

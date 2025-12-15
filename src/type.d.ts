@@ -10,6 +10,7 @@ interface ImportMetaEnv {
     readonly CHEP_SERVER_REFRESH_TOKEN_EXPIRED_TIME: string;
     readonly CHEP_SERVER_JWT_SECRET_KEY: string;
     readonly CHEP_SERVER_PORT: string;
+    readonly CHEP_SERVER_HOST: string;
     readonly CHEP_SERVER_WHITE_LIST: string;
 
     readonly CHEP_SERVER_DB_NAME: string;
