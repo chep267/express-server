@@ -58,6 +58,6 @@ https
         console.log(connected(`chep-server https start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));
     });
 
-chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();
+chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: true }).then();
 
 export default app;

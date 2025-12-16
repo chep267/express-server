@@ -42,6 +42,6 @@ app.use(cookieParser());
 app.use(logger('dev'));
 app.use(rootRouter);
 
-chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: false }).then();
+chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: true }).then();
 
 export default app;
