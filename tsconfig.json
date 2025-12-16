@@ -1,21 +1,22 @@
 {
+    "extends": "@tsconfig/node24/tsconfig.json",
     "compilerOptions": {
         /* Môi trường và Target */
-        "target": "ES2024", // Đảm bảo hỗ trợ các tính năng JS mới nhất
-        "module": "NodeNext", // Sử dụng cơ chế phân giải module Node.js hiện đại (giúp TS hiểu rõ ESM/CJS)
-        "moduleResolution": "NodeNext", // Sử dụng cơ chế phân giải module Node.js hiện đại
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
 
         /* Output */
-        "outDir": "./dist", // Thư mục chứa file JS đã biên dịch (Output)
-        "rootDir": "./src", // Thư mục chứa source code TS (Input)
-        "sourceMap": false, // Tạo Source Map để dễ dàng debug
-        "esModuleInterop": true, // Cho phép cú pháp import/require hỗn hợp (quan trọng cho các thư viện CJS)
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "sourceMap": false,
+        "esModuleInterop": true,
 
         /* Strictness */
-        "strict": true, // Bật tất cả các tùy chọn kiểm tra kiểu nghiêm ngặt (nên dùng)
-        "skipLibCheck": true, // Bỏ qua việc kiểm tra kiểu cho các file định nghĩa thư viện
+        "strict": true,
+        "skipLibCheck": true,
 
-        /* Module và Alias (tùy chọn) */
+        /* Module & Alias */
         "baseUrl": ".",
         "paths": {
             "@src/*": ["./src/*"],
@@ -28,27 +29,22 @@
             "@utils/*": ["./src/utils/*"]
         },
 
-        /* Định nghĩa kiểu (Type Declaration) */
-        "resolveJsonModule": true, // Cho phép import file .json
-        "forceConsistentCasingInFileNames": true, // Đảm bảo tên file phải nhất quán về mặt chữ hoa/thường
+        /* Type Declaration */
+        "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
 
         /* Tiện ích */
-        "experimentalDecorators": true, // Bật hỗ trợ decorators (nếu bạn dùng thư viện như TypeORM)
-        "emitDecoratorMetadata": true, // Bật hỗ trợ metadata cho decorators (nếu bạn dùng thư viện như TypeORM)
-        "removeComments": true, // xóa comment
-        "allowJs": false, // Không cho phép file .js trong dự án
-        "allowSyntheticDefaultImports": true, // Cho phép import default từ modules không hỗ trợ ES6
-        "strictNullChecks": true, // Yêu cầu kiểm tra null và undefined
-        "noImplicitAny": true, // Không cho phép sử dụng kiểu "any" ngầm định
-        "noUnusedLocals": true, // Cảnh báo nếu có biến không sử dụng
-        "noUnusedParameters": true, // Cảnh báo nếu có tham số không sử dụng
-        "noFallthroughCasesInSwitch": true // Phát hiện lỗi khi case switch không có break
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "removeComments": true,
+        "allowJs": false,
+        "allowSyntheticDefaultImports": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true
     },
-    "include": [
-        "src/**/*.ts" // Bao gồm tất cả các file .ts trong thư mục src
-    ],
-    "exclude": [
-        "node_modules", // Loại trừ thư mục node_modules
-        "dist" // Loại trừ thư mục output
-    ]
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
 }

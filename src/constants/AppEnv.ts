@@ -15,7 +15,7 @@ export const AppEnv = {
     appRefreshTokenExpiredTime: Number(process.env.CHEP_SERVER_REFRESH_TOKEN_EXPIRED_TIME),
     appJwtSecretKey: `${process.env.CHEP_SERVER_JWT_SECRET_KEY}`,
     appPort: Number(process.env.CHEP_SERVER_PORT),
-    appHost: Number(process.env.CHEP_SERVER_HOST),
+    appHost: process.env.CHEP_SERVER_HOST,
     appWhiteList: `${process.env.CHEP_SERVER_WHITE_LIST}`,
 
     dbName: `${process.env.CHEP_SERVER_DB_NAME}`,

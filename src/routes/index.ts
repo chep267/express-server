@@ -9,8 +9,8 @@ import { Router } from 'express';
 import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 
 /** routes */
-import { authRouter } from '@routes/auth.route.js';
-import { testRouter } from '@routes/test.route.js';
+import { authRouter } from '@routes/auth.route';
+import { testRouter } from '@routes/test.route';
 
 export const rootRouter = Router();
 

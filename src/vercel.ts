@@ -5,20 +5,20 @@
  */
 
 /** libs */
-import path from 'node:path';
+import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import logger from 'morgan';
 
 /** constant */
-import { AppEnv } from '@constants/AppEnv.js';
+import { AppEnv } from '@constants/AppEnv';
 
 /** configs */
-import { mongoose as chepDB, dbConfig } from '@configs/database.js';
+import { mongoose as chepDB, dbConfig } from '@configs/database';
 
 /** routes */
-import { rootRouter } from '@routes/index.js';
+import { rootRouter } from '@src/routes';
 
 const dirname = path.resolve();
 const app = express();

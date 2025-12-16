@@ -9,10 +9,10 @@ import { Router } from 'express';
 import multer from 'multer';
 
 /** controllers */
-import { apiAuth } from '@controllers/auth.controller.js';
+import { apiAuth } from '@controllers/auth.controller';
 
 /** constants */
-import { AuthApiPath } from '@constants/AuthApiPath.js';
+import { AuthApiPath } from '@constants/AuthApiPath';
 
 const upload = multer();
 

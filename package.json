@@ -9,9 +9,7 @@
         "dev": "npx nodemon",
         "start": "vercel dev",
         "build:ts": "rimraf dist && tsc -b && tsc-alias",
-        "build:esbuild": "esbuild dist/index.js --bundle --minify --platform=node --format=esm --external:node:* --outfile=app/index.js",
-        "build:copy": "copyfiles public/**/* dist && copyfiles cert/**/* dist",
-        "build": "npm run build:ts && npm run build:copy"
+        "build": "npm run build:ts && node ./scripts/build.js"
     },
     "author": "dongntd",
     "license": "ISC",
@@ -33,7 +31,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.2",
-        "@types/bcryptjs": "^3.0.0",
+        "@tsconfig/node24": "^24.0.3",
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",

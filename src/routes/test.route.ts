@@ -8,8 +8,8 @@
 import { Router } from 'express';
 
 /** controllers */
-import { apiTest } from '@controllers/test.controller.js';
-import { apiAuth } from '@controllers/auth.controller.js';
+import { apiTest } from '@controllers/test.controller';
+import { apiAuth } from '@controllers/auth.controller';
 
 export const testRouter = Router();
 
