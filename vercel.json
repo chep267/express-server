@@ -7,10 +7,5 @@
             "source": "/(.*)",
             "destination": "dist/app.cjs"
         }
-    ],
-    "functions": {
-        "dist/**/*": {
-            "maxDuration": 60
-        }
-    }
+    ]
 }

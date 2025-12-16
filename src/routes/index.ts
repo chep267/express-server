@@ -11,6 +11,9 @@ import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 /** constants */
 import { AuthApiPath } from '@constants/AuthApiPath';
 
+/** utils */
+import { genResponse } from '@utils/genResponse';
+
 /** routes */
 import { authRouter } from '@routes/auth.route';
 import { testRouter } from '@routes/test.route';
@@ -18,7 +21,7 @@ import { testRouter } from '@routes/test.route';
 export const rootRouter = Router();
 
 /** home */
-rootRouter.get('/', (_req, res) => res.status(StatusCodes.OK).json(ReasonPhrases.OK));
+rootRouter.get('/', (_req, res) => res.status(StatusCodes.OK).json(genResponse()));
 
 /** favicon */
 rootRouter.get('/favicon.ico', (_req, res) => res.status(StatusCodes.NO_CONTENT).end());
@@ -30,4 +33,4 @@ rootRouter.use(AuthApiPath.root, authRouter);
 rootRouter.use('/test', testRouter);
 
 /** not found */
-rootRouter.use((_req, res) => res.status(StatusCodes.NOT_FOUND).json(ReasonPhrases.NOT_FOUND));
+rootRouter.use((_req, res) => res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: ReasonPhrases.NOT_FOUND })));

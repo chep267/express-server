@@ -6,6 +6,7 @@
 
 /** models */
 import { UserModel } from '@models/user.model';
+import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 
 /** constants */
 import { AppKey } from '@constants/AppKey';
@@ -13,6 +14,7 @@ import { AppEnv } from '@constants/AppEnv';
 
 /** utils */
 import { genToken, renewToken, validatePassword, validateToken } from '@utils/auth';
+import { genResponse } from '@utils/genResponse';
 
 /** types */
 import type { NextFunction, Request, Response } from 'express';
@@ -50,7 +52,8 @@ const verify = (req: Request, res: Response, next: NextFunction) => {
     const uid = req.cookies[AppKey.uid];
     /** verify fail */
     if (!validateToken(uid, accessToken)) {
-        res.status(403).json({ message: "You don't have permission!" });
+        res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: ReasonPhrases.UNAUTHORIZED }));
+        return clearToken(res);
     } else {
         /** verify success */
         next();
@@ -64,13 +67,13 @@ const signin = async (
 ) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).json({ message: 'Missing email or password!' });
+        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email or password!' }));
     }
     try {
         const user = await UserModel.getUser({ email });
         /** signin fail */
         if (!user || !validatePassword(password, user.password)) {
-            return res.status(401).json({ message: 'Email and password are incorrect!' });
+            return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'Invalid email or password!' }));
         }
         /** signin success */
         const {
@@ -83,9 +86,14 @@ const signin = async (
         const refreshToken = genToken(userData.uid, AppKey.refreshToken);
         await UserModel.updateUser({ uid: userData.uid, data: { refreshToken } });
         setToken(res, { uid: userData.uid, accessToken, refreshToken });
-        return res
-            .status(200)
-            .json({ message: 'ok', data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } });
+        return res.status(StatusCodes.OK).json(
+            genResponse({
+                data: {
+                    user: userData,
+                    token: { exp: AppEnv.appAccessTokenRefreshTime }
+                }
+            })
+        );
     } catch (error) {
         next(error);
     }
@@ -100,7 +108,7 @@ const signout = async (req: Request, res: Response) => {
     } finally {
         clearToken(res);
     }
-    return res.status(200).json({ message: 'ok', status: 200 });
+    return res.status(StatusCodes.OK).json(genResponse());
 };
 
 const refresh = async (req: Request, res: Response, next: NextFunction) => {
@@ -111,7 +119,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
         /** refresh fail */
         if (cookieRefreshToken !== oldRefreshToken) {
             clearToken(res);
-            return res.status(401).json({ message: 'This session has expired!' });
+            return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
         }
         /** refresh success */
         const accessToken = genToken(uid, AppKey.accessToken);
@@ -125,7 +133,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
         setToken(res, { uid, accessToken, refreshToken });
         return res
             .status(200)
-            .json({ message: 'ok', data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } });
+            .json(genResponse({ data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } }));
     } catch (error) {
         next(error);
     }
@@ -137,7 +145,7 @@ const restart = async (req: Request, res: Response, next: NextFunction) => {
     /** restart fail */
     if (!validateToken(uid, refreshToken)) {
         clearToken(res);
-        return res.status(401).json({ message: 'This session has expired!' });
+        return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
     }
     /** restart success */
     return refresh(req, res, next);
@@ -150,17 +158,17 @@ const register = async (
 ) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).json({ message: 'Missing email or password!' });
+        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email or password!' }));
     }
     try {
         const user = await UserModel.getUser({ email });
         /** register fail */
         if (user) {
-            return res.status(409).json({ message: 'Account already exists!' });
+            return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account already exists!' }));
         }
         /** register success */
         await UserModel.setUser({ email, password });
-        return res.status(200).json({ message: 'ok' });
+        return res.status(StatusCodes.OK).json(genResponse());
     } catch (error) {
         next(error);
     }
@@ -169,16 +177,16 @@ const register = async (
 const recover = async (req: Omit<Request, 'body'> & { body: { email: string } }, res: Response, next: NextFunction) => {
     const { email } = req.body;
     if (!email) {
-        return res.status(400).json({ message: 'Missing email or password!' });
+        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email or password!' }));
     }
     try {
         const user = await UserModel.getUser({ email });
         /** recover fail */
         if (!user) {
-            return res.status(409).json({ message: "Account doesn't exists!" });
+            return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account does not exist!' }));
         }
         /** recover success */
-        return res.status(200).json({ message: 'ok' });
+        return res.status(StatusCodes.OK).json(genResponse());
     } catch (error) {
         next(error);
     }

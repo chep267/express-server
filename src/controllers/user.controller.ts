@@ -3,10 +3,18 @@
  * @author dongntd267@gmail.com on 26/07/2023.
  *
  */
-import type { NextFunction, Request, Response } from 'express';
+
+/** libs */
+import { StatusCodes } from 'http-status-codes';
 
 /** models */
 import { UserModel } from '@models/user.model';
+
+/** utils */
+import { genResponse } from '@utils/genResponse';
+
+/** types */
+import type { NextFunction, Request, Response } from 'express';
 
 const create = async (
     req: Omit<Request, 'body'> & { body: { email: string; password: string } },
@@ -16,17 +24,16 @@ const create = async (
     const { email, password } = req.body;
     try {
         const userFind = await UserModel.findOne({ email }).exec();
-        // Fail
+        /** Fail */
         if (userFind) {
-            res.status(405).json({ message: 'Account already exists!' });
-            return;
+            return res.status(StatusCodes.CONFLICT).json({ message: 'Account already exists!' });
         }
-        // Success
+        /** Success */
         const user = {
             email,
             password
         };
-        res.status(200).json({ message: 'ok', data: { user } });
+        res.status(StatusCodes.OK).json(genResponse({ data: { user } }));
     } catch (error) {
         next(error);
     }

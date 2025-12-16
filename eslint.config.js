@@ -11,7 +11,7 @@ import tsEslint from 'typescript-eslint';
 import pluginPrettier from 'eslint-plugin-prettier';
 
 export default tsEslint.config({
-    ignores: ['app/**/*', 'dist/**/*', 'node_modules/**/*', 'public/**/*'],
+    ignores: ['dist/**/*', 'node_modules/**/*', 'public/**/*', '.vercel/**/*'],
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx,vue}'],
     extends: [eslint.configs.recommended, ...tsEslint.configs.recommended],
     plugins: {

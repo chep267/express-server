@@ -4,14 +4,18 @@
  *
  */
 
+/** libs */
+import { StatusCodes } from 'http-status-codes';
+
+/** types */
 import type { Request, Response } from 'express';
 
 const feed = (_req: Request, res: Response) => {
-    res.status(200).json({ message: 'feed', status: 200 });
+    res.status(StatusCodes.OK).json({ message: 'feed', status: 200 });
 };
 
 const messenger = (_req: Request, res: Response) => {
-    res.status(200).json({ message: 'messenger', status: 200 });
+    res.status(StatusCodes.OK).json({ message: 'messenger', status: 200 });
 };
 
 export const apiTest = {
