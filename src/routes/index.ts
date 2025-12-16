@@ -24,7 +24,7 @@ export const rootRouter = Router();
 rootRouter.get('/', (_req, res) => res.status(StatusCodes.OK).json(genResponse()));
 
 /** favicon */
-rootRouter.get('/favicon.ico', (_req, res) => res.status(StatusCodes.NO_CONTENT).end());
+rootRouter.get('/favicon.*', (_req, res) => res.status(StatusCodes.NO_CONTENT).end());
 
 /** auth */
 rootRouter.use(AuthApiPath.root, authRouter);
