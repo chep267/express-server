@@ -14,5 +14,5 @@ import { apiAuth } from '@controllers/auth.controller';
 export const testRouter = Router();
 
 testRouter.use(apiAuth.verify);
-testRouter.post('/app/feed', apiTest.feed);
-testRouter.post('/app/messenger', apiTest.messenger);
+testRouter.get('/app/feed', apiTest.feed);
+testRouter.get('/app/messenger', apiTest.messenger);

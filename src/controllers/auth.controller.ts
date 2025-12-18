@@ -4,9 +4,11 @@
  *
  */
 
+/** libs */
+import { StatusCodes, ReasonPhrases } from 'http-status-codes';
+
 /** models */
 import { UserModel } from '@models/user.model';
-import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 
 /** constants */
 import { AppKey } from '@constants/AppKey';
@@ -132,7 +134,7 @@ const refresh = async (req: Request, res: Response, next: NextFunction) => {
         } = await UserModel.updateUser({ uid, data: { refreshToken } });
         setToken(res, { uid, accessToken, refreshToken });
         return res
-            .status(200)
+            .status(StatusCodes.OK)
             .json(genResponse({ data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } }));
     } catch (error) {
         next(error);
