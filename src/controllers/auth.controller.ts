@@ -29,23 +29,24 @@ const clearToken = (res: Response) => {
 
 const setToken = (res: Response, data: { uid: string; accessToken: string; refreshToken: string }) => {
     const { uid, accessToken, refreshToken } = data;
-    res.cookie(AppKey.uid, uid, {
-        maxAge: AppEnv.appAccessTokenExpiredTime,
+    const cookieOptions = {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict'
+        sameSite: 'none' as const,
+        path: '/'
+    };
+
+    res.cookie(AppKey.uid, uid, {
+        ...cookieOptions,
+        maxAge: AppEnv.appAccessTokenExpiredTime
     });
     res.cookie(AppKey.accessToken, accessToken, {
-        maxAge: AppEnv.appAccessTokenExpiredTime,
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict'
+        ...cookieOptions,
+        maxAge: AppEnv.appAccessTokenExpiredTime
     });
     res.cookie(AppKey.refreshToken, refreshToken, {
-        maxAge: AppEnv.appRefreshTokenExpiredTime,
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict'
+        ...cookieOptions,
+        maxAge: AppEnv.appRefreshTokenExpiredTime
     });
 };
 
