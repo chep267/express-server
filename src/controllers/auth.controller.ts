@@ -5,62 +5,67 @@
  */
 
 /** libs */
-import { StatusCodes, ReasonPhrases } from 'http-status-codes';
-
-/** models */
-import { UserModel } from '@models/user.model';
+import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 /** constants */
 import { AppKey } from '@constants/AppKey';
 import { AppEnv } from '@constants/AppEnv';
+import { AppRegex } from '@constants/AppRegex';
 
 /** utils */
-import { genToken, renewToken, validatePassword, validateToken } from '@utils/auth';
+import { genToken, genUid, getUidFromToken, validatePassword, validateToken } from '@utils/auth';
 import { genResponse } from '@utils/genResponse';
+import { sendRecoverEmail } from '@utils/mail';
+
+/** models */
+import { UserModel } from '@models/user.model';
+import { AuthModel } from '@models/auth.model';
 
 /** types */
 import type { NextFunction, Request, Response } from 'express';
 
 const clearToken = (res: Response) => {
-    res.clearCookie(AppKey.accessToken);
-    res.clearCookie(AppKey.refreshToken);
-    res.clearCookie(AppKey.uid);
+    res.clearCookie(AppKey.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
+    });
 };
 
-const setToken = (res: Response, data: { uid: string; accessToken: string; refreshToken: string }) => {
-    const { uid, accessToken, refreshToken } = data;
+const setToken = (res: Response, data: { refreshToken: string }) => {
+    const { refreshToken } = data;
     const cookieOptions = {
         httpOnly: true,
         secure: true,
-        sameSite: 'none' as const,
-        path: '/'
+        sameSite: 'none' as const
     };
-
-    res.cookie(AppKey.uid, uid, {
-        ...cookieOptions,
-        maxAge: AppEnv.appAccessTokenExpiredTime
-    });
-    res.cookie(AppKey.accessToken, accessToken, {
-        ...cookieOptions,
-        maxAge: AppEnv.appAccessTokenExpiredTime
-    });
     res.cookie(AppKey.refreshToken, refreshToken, {
         ...cookieOptions,
         maxAge: AppEnv.appRefreshTokenExpiredTime
     });
 };
 
-const verify = (req: Request, res: Response, next: NextFunction) => {
-    const accessToken = req.cookies[AppKey.accessToken];
-    const uid = req.cookies[AppKey.uid];
-    /** verify fail */
-    if (!validateToken(uid, accessToken)) {
-        res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: ReasonPhrases.UNAUTHORIZED }));
-        return clearToken(res);
-    } else {
-        /** verify success */
-        next();
+const getAccessToken = (req: Request) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        /** no access token */
+        return undefined;
     }
+
+    return authHeader?.split(' ')[1];
+};
+
+const verify = (req: Request, res: Response, next: NextFunction) => {
+    const accessToken = getAccessToken(req);
+
+    if (!accessToken || !validateToken(accessToken)) {
+        /** verify fail */
+        return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: ReasonPhrases.UNAUTHORIZED }));
+    }
+
+    /** verify success */
+    next();
 };
 
 const signin = async (
@@ -69,31 +74,37 @@ const signin = async (
     next: NextFunction
 ) => {
     const { email, password } = req.body;
+
     if (!email || !password) {
+        /** info fail */
         return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email or password!' }));
     }
+
     try {
         const user = await UserModel.getUser({ email });
-        /** signin fail */
-        if (!user || !validatePassword(password, user.password)) {
-            return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'Invalid email or password!' }));
+
+        if (!user) {
+            /** wrong email */
+            return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
         }
+
+        const auth = await AuthModel.getAuth({ uid: user.uid });
+        if (!auth || !validatePassword(password, auth.password)) {
+            /** wrong password */
+            return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
+        }
+
+        const accessToken = genToken(user.uid, AppKey.accessToken);
+        const refreshToken = genToken(user.uid, AppKey.refreshToken);
+        await AuthModel.updateAuth({ uid: user.uid, data: { refreshToken } });
+        setToken(res, { refreshToken });
+
         /** signin success */
-        const {
-            _id, // eslint-disable-line @typescript-eslint/no-unused-vars
-            password: hash, // eslint-disable-line @typescript-eslint/no-unused-vars
-            refreshToken: rf, // eslint-disable-line @typescript-eslint/no-unused-vars
-            ...userData
-        } = user;
-        const accessToken = genToken(userData.uid, AppKey.accessToken);
-        const refreshToken = genToken(userData.uid, AppKey.refreshToken);
-        await UserModel.updateUser({ uid: userData.uid, data: { refreshToken } });
-        setToken(res, { uid: userData.uid, accessToken, refreshToken });
         return res.status(StatusCodes.OK).json(
             genResponse({
                 data: {
-                    user: userData,
-                    token: { exp: AppEnv.appAccessTokenRefreshTime }
+                    user,
+                    token: { exp: AppEnv.appAccessTokenRefreshTime, value: accessToken }
                 }
             })
         );
@@ -103,9 +114,13 @@ const signin = async (
 };
 
 const signout = async (req: Request, res: Response) => {
-    const uid = req.cookies[AppKey.uid];
+    const accessToken = getAccessToken(req);
+    const uid = getUidFromToken(accessToken);
+
     try {
-        await UserModel.updateUser({ uid, data: { refreshToken: '' } });
+        if (uid) {
+            await AuthModel.updateAuth({ uid, data: { refreshToken: '' } });
+        }
     } catch {
         // do logging
     } finally {
@@ -114,44 +129,40 @@ const signout = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).json(genResponse());
 };
 
-const refresh = async (req: Request, res: Response, next: NextFunction) => {
-    const cookieRefreshToken = req.cookies[AppKey.refreshToken];
-    const uid = req.cookies[AppKey.uid];
+const restart = async (req: Request, res: Response, next: NextFunction) => {
+    const accessToken = getAccessToken(req);
+    const refreshTokenCookie = req.cookies[AppKey.refreshToken];
+    const uid = getUidFromToken(accessToken || refreshTokenCookie);
+
+    if (!uid) {
+        /** wrong accessToken */
+        return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'Invalid session!' }));
+    }
+
+    const refreshToken = await AuthModel.getRefreshToken({ uid });
+    if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
+        /** wrong refreshToken */
+        return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
+    }
+
     try {
-        const oldRefreshToken = await UserModel.getRefreshToken({ uid });
-        /** refresh fail */
-        if (cookieRefreshToken !== oldRefreshToken) {
-            clearToken(res);
-            return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
-        }
-        /** refresh success */
         const accessToken = genToken(uid, AppKey.accessToken);
-        const refreshToken = renewToken(uid, AppKey.refreshToken, cookieRefreshToken);
-        const {
-            _id, // eslint-disable-line
-            password, // eslint-disable-line
-            refreshToken: rf, // eslint-disable-line
-            ...userData
-        } = await UserModel.updateUser({ uid, data: { refreshToken } });
-        setToken(res, { uid, accessToken, refreshToken });
-        return res
-            .status(StatusCodes.OK)
-            .json(genResponse({ data: { user: userData, token: { exp: AppEnv.appAccessTokenRefreshTime } } }));
+        const newRefreshToken = genToken(uid, AppKey.refreshToken);
+        const [user] = await Promise.all([
+            UserModel.getUser({ uid }),
+            AuthModel.updateAuth({ uid, data: { refreshToken: newRefreshToken } })
+        ]);
+        setToken(res, { refreshToken: newRefreshToken });
+
+        /** restart success */
+        return res.status(StatusCodes.OK).json(
+            genResponse({
+                data: { user: user, token: { exp: AppEnv.appAccessTokenRefreshTime, value: accessToken } }
+            })
+        );
     } catch (error) {
         next(error);
     }
-};
-
-const restart = async (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies[AppKey.refreshToken];
-    const uid = req.cookies[AppKey.uid];
-    /** restart fail */
-    if (!validateToken(uid, refreshToken)) {
-        clearToken(res);
-        return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
-    }
-    /** restart success */
-    return refresh(req, res, next);
 };
 
 const register = async (
@@ -160,18 +171,35 @@ const register = async (
     next: NextFunction
 ) => {
     const { email, password } = req.body;
+
     if (!email || !password) {
+        /** wrong info */
         return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email or password!' }));
     }
+
+    if (!AppRegex.email.test(email)) {
+        /** wrong email */
+        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email format!' }));
+    }
+
+    if (!AppRegex.password.test(password)) {
+        /** wrong password */
+        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid password format!' }));
+    }
+
     try {
         const user = await UserModel.getUser({ email });
-        /** register fail */
+
         if (user) {
+            /** register fail */
             return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account already exists!' }));
         }
+
+        const uid = genUid();
+        await Promise.all([UserModel.setUser({ uid, email }), AuthModel.setAuth({ uid, password })]);
+
         /** register success */
-        await UserModel.setUser({ email, password });
-        return res.status(StatusCodes.OK).json(genResponse());
+        return res.status(StatusCodes.OK).json(genResponse({ message: 'User registered successfully!' }));
     } catch (error) {
         next(error);
     }
@@ -179,17 +207,24 @@ const register = async (
 
 const recover = async (req: Omit<Request, 'body'> & { body: { email: string } }, res: Response, next: NextFunction) => {
     const { email } = req.body;
+
     if (!email) {
-        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email or password!' }));
+        /** wrong info */
+        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Missing email!' }));
     }
+
     try {
-        const user = await UserModel.getUser({ email });
-        /** recover fail */
-        if (!user) {
-            return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account does not exist!' }));
+        const isUserExisted = await UserModel.hasUser({ email });
+
+        if (!isUserExisted) {
+            /** recover fail */
+            return res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: 'Account does not exist!' }));
         }
+
+        await sendRecoverEmail(email);
+
         /** recover success */
-        return res.status(StatusCodes.OK).json(genResponse());
+        return res.status(StatusCodes.OK).json(genResponse({ message: 'Recovery email sent successfully!' }));
     } catch (error) {
         next(error);
     }
@@ -199,7 +234,6 @@ export const apiAuth = {
     verify,
     signin,
     signout,
-    refresh,
     restart,
     register,
     recover

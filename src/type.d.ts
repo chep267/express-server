@@ -17,6 +17,9 @@ interface ImportMetaEnv {
     readonly CHEP_SERVER_DB_HOST: string;
     readonly CHEP_SERVER_DB_PORT: string;
     readonly CHEP_SERVER_DB_URI: string;
+
+    readonly CHEP_SERVER_SERVICE_MAIL: string;
+    readonly CHEP_SERVER_SERVICE_SMTP: string;
 }
 
 declare global {

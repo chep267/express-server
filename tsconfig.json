@@ -17,7 +17,6 @@
         "skipLibCheck": true,
 
         /* Module & Alias */
-        "baseUrl": ".",
         "paths": {
             "@src/*": ["./src/*"],
             "@configs/*": ["./src/configs/*"],

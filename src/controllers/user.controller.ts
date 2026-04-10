@@ -24,16 +24,19 @@ const create = async (
     const { email, password } = req.body;
     try {
         const userFind = await UserModel.findOne({ email }).exec();
-        /** Fail */
+
         if (userFind) {
+            /** Fail */
             return res.status(StatusCodes.CONFLICT).json({ message: 'Account already exists!' });
         }
-        /** Success */
+
         const user = {
             email,
             password
         };
-        res.status(StatusCodes.OK).json(genResponse({ data: { user } }));
+
+        /** Success */
+        return res.status(StatusCodes.OK).json(genResponse({ data: { user } }));
     } catch (error) {
         next(error);
     }

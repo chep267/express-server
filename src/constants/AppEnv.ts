@@ -21,5 +21,10 @@ export const AppEnv = {
     dbName: `${process.env.CHEP_SERVER_DB_NAME}`,
     dbHost: `${process.env.CHEP_SERVER_DB_HOST}`,
     dbPort: Number(process.env.CHEP_SERVER_DB_PORT),
-    dbUri: `${process.env.CHEP_SERVER_DB_URI}`
+    dbUri: `${process.env.CHEP_SERVER_DB_URI}`,
+
+    service: {
+        mail: process.env.CHEP_SERVER_SERVICE_MAIL,
+        smtp: process.env.CHEP_SERVER_SERVICE_SMTP
+    }
 } as const;

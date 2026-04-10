@@ -5,6 +5,7 @@
  */
 
 /** libs */
+import { v7 as uuidV7 } from 'uuid';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
@@ -24,28 +25,13 @@ export const genToken = (uid: string, type: typeof AppKey.accessToken | typeof A
     return jwt.sign(data, AppEnv.appJwtSecretKey);
 };
 
-export const renewToken = (uid: string, type: typeof AppKey.accessToken | typeof AppKey.refreshToken, token: string) => {
-    try {
-        const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
-        return jwt.sign(
-            {
-                ...verified,
-                iat: Date.now()
-            },
-            AppEnv.appJwtSecretKey
-        );
-    } catch {
-        return genToken(uid, type);
-    }
-};
-
-export const validateToken = (uid?: string, token?: string) => {
-    if (!uid || !token) return false;
+export const validateToken = (token?: string) => {
+    if (!token) return false;
     try {
         const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
         const now = Date.now();
-        const exp = verified.exp || 0;
-        return verified.uid === uid && now < exp;
+        const exp = verified.exp ?? 0;
+        return now < exp;
     } catch {
         return false;
     }
@@ -54,4 +40,16 @@ export const validateToken = (uid?: string, token?: string) => {
 export const validatePassword = (password?: string, hash?: string) => {
     if (!password || !hash) return false;
     return bcrypt.compareSync(password, hash);
+};
+
+export const genUid = () => `uid.${uuidV7()}`;
+
+export const getUidFromToken = (token?: string) => {
+    if (!token) return undefined;
+    try {
+        const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
+        return verified.uid as string;
+    } catch {
+        return undefined;
+    }
 };
