@@ -142,6 +142,7 @@ const restart = async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = await AuthModel.getRefreshToken({ uid });
     if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
         /** wrong refreshToken */
+        clearToken(res);
         return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
     }
 
