@@ -15,11 +15,12 @@ import { apiAuth } from '@controllers/auth.controller';
 import { AuthApiPath } from '@constants/AuthApiPath';
 
 const upload = multer();
-
-export const authRouter = Router();
+const authRouter = Router();
 
 authRouter.post(AuthApiPath.signin, upload.none(), apiAuth.signin);
 authRouter.post(AuthApiPath.signout, upload.none(), apiAuth.signout);
 authRouter.post(AuthApiPath.restart, upload.none(), apiAuth.restart);
 authRouter.post(AuthApiPath.register, upload.none(), apiAuth.register);
 authRouter.post(AuthApiPath.recover, upload.none(), apiAuth.recover);
+
+export { authRouter };

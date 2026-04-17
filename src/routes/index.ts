@@ -10,15 +10,16 @@ import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 
 /** constants */
 import { AuthApiPath } from '@constants/AuthApiPath';
+import { MainApiPath } from '@constants/MainApiPath';
 
 /** utils */
 import { genResponse } from '@utils/genResponse';
 
 /** routes */
 import { authRouter } from '@routes/auth.route';
-import { testRouter } from '@routes/test.route';
+import { mainRouter } from '@routes/main.route';
 
-export const rootRouter = Router();
+const rootRouter = Router();
 
 /** home */
 rootRouter.get('/', (_req, res) => res.status(StatusCodes.OK).json(genResponse()));
@@ -29,8 +30,10 @@ rootRouter.get(/\/favicon\..*$/, (_req, res) => res.status(StatusCodes.NO_CONTEN
 /** auth */
 rootRouter.use(AuthApiPath.root, authRouter);
 
-/** test */
-rootRouter.use('/test', testRouter);
+/** main */
+rootRouter.use(MainApiPath.root, mainRouter);
 
 /** not found */
 rootRouter.use((_req, res) => res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: ReasonPhrases.NOT_FOUND })));
+
+export { rootRouter };
