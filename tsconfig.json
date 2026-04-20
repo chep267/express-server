@@ -1,6 +1,7 @@
 {
     "extends": "@tsconfig/node24/tsconfig.json",
     "compilerOptions": {
+        "types": ["node"],
         /* Môi trường và Target */
         "target": "ESNext",
         "module": "ESNext",
@@ -18,14 +19,17 @@
 
         /* Module & Alias */
         "paths": {
+            "@/*": ["./src/*"],
+            "@test/*": ["./test/*"],
             "@src/*": ["./src/*"],
-            "@configs/*": ["./src/configs/*"],
-            "@constants/*": ["./src/constants/*"],
-            "@controllers/*": ["./src/controllers/*"],
-            "@models/*": ["./src/models/*"],
-            "@routes/*": ["./src/routes/*"],
-            "@services/*": ["./src/services/*"],
-            "@utils/*": ["./src/utils/*"]
+            "@langs/*": ["./src/langs/*"],
+            "@modules/*": ["./src/modules/*"],
+            "@module-base/*": ["./src/modules/module-base/*"],
+            "@module-user/*": ["./src/modules/module-user/*"],
+            "@module-auth/*": ["./src/modules/module-auth/*"],
+            "@module-global/*": ["./src/modules/module-global/*"],
+            "@module-dashboard/*": ["./src/modules/module-dashboard/*"],
+            "@module-calendar/*": ["./src/modules/module-calendar/*"]
         },
 
         /* Type Declaration */

@@ -12,13 +12,13 @@ import cors from 'cors';
 import logger from 'morgan';
 
 /** constant */
-import { AppEnv } from '@constants/AppEnv';
+import { AppEnv } from '@module-base/constants/AppEnv';
 
 /** configs */
-import { mongoose as chepDB, dbConfig } from '@configs/database';
+import { mongoose as chepDB, dbConfig } from '@module-base/configs/database';
 
 /** routes */
-import { rootRouter } from '@src/routes';
+import { rootRouter } from '@module-global/routers';
 
 const dirname = path.resolve();
 const app = express();

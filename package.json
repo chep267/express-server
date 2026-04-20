@@ -7,10 +7,11 @@
         "lint": "eslint . --fix",
         "format": "prettier --write .",
         "dev": "npx nodemon src/index.ts",
-        "dev:local": "npx nodemon src/local.ts",
+        "dev:local": "npx nodemon src/index.dev.ts",
         "start": "vercel dev",
         "build:ts": "rimraf dist && tsc -b && tsc-alias",
-        "build": "npm run build:ts && node ./scripts/build.js"
+        "build": "npm run build:ts && node script/build.js",
+        "generate-module": "node script/generate-module.ts"
     },
     "author": "dongntd",
     "license": "ISC",
@@ -30,7 +31,7 @@
         "mongoose": "^9.4.1",
         "morgan": "^1.10.1",
         "nodemailer": "^8.0.5",
-        "uuid": "^13.0.0"
+        "uuid": "^14.0.0"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
@@ -45,10 +46,10 @@
         "@types/node": "^25.6.0",
         "@types/nodemailer": "^8.0.0",
         "@typescript-eslint/parser": "^8.58.2",
-        "@vercel/node": "^5.7.10",
+        "@vercel/node": "^5.7.12",
         "copyfiles": "^2.4.1",
         "esbuild": "^0.28.0",
-        "eslint": "^10.2.0",
+        "eslint": "^10.2.1",
         "eslint-plugin-prettier": "^5.5.5",
         "eslint-plugin-react": "^7.37.5",
         "globals": "^17.5.0",
