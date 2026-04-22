@@ -10,5 +10,6 @@ export const AppApiPath = {
     messenger: '/messenger',
     ticket: '/ticket/:id',
     tickets: '/tickets',
-    ticketStatus: '/ticket-status'
+    ticketStatus: '/ticket-status',
+    poems: '/poems'
 } as const;

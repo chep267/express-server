@@ -19,7 +19,7 @@ import type { Request, Response } from 'express';
 
 type TypeTicketData = App.ModuleGlobal.Data.TypeTicketData;
 
-let tickets = generateTicket(99);
+let tickets = generateTicket(9999);
 
 const getAll = (_req: Request, res: Response) => {
     const itemIds = tickets.map((item) => item.id);

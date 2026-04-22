@@ -36,4 +36,7 @@ appRouter.delete(AppApiPath.ticket, upload.none(), appController.ticket.delete);
 /** ticket status */
 appRouter.get(AppApiPath.ticketStatus, appController.ticket.getStatus);
 
+/** poem */
+appRouter.get(AppApiPath.poems, appController.poem.getAll);
+
 export { appRouter };

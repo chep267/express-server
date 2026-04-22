@@ -62,7 +62,7 @@ UserSchema.statics = {
         }).exec();
         return user ? user.toObject({ versionKey: false }) : null;
     },
-    setUser: async function (payload: { uid: TypeUser['uid']; email: TypeUser['email'] }): Promise<TypeUser> {
+    setUser: async function (payload: { uid: TypeUser['uid']; email: NonNullable<TypeUser['email']> }): Promise<TypeUser> {
         const { uid, email } = payload;
         const user = await this.create({
             uid,

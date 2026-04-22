@@ -12,6 +12,7 @@ import { genResponse } from '@module-base/utils/api';
 
 /** controllers */
 import { ticketController } from '@module-global/controllers/ticket.controller';
+import { poemController } from '@module-global/controllers/poem.controller';
 
 /** types */
 import type { Request, Response } from 'express';
@@ -27,5 +28,6 @@ const messenger = (_req: Request, res: Response) => {
 export const appController = {
     feed,
     messenger,
-    ticket: ticketController
+    ticket: ticketController,
+    poem: poemController
 };

@@ -5,7 +5,7 @@
  */
 
 /** types */
-import type { TypeUser } from '@module-user/types/data';
+import type { TypeUser } from '@module-user/types/data.d';
 
 export interface TypeAuth {
     uid: TypeUser['uid'];
