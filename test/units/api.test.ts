@@ -7,7 +7,7 @@
 /** libs */
 import request from 'supertest';
 import { describe, it, beforeAll, expect } from 'vitest';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 /** constants */
 import { AuthApiPath } from '@module-auth/constants/path';
@@ -16,15 +16,7 @@ import { AppApiPath } from '@module-global/constants/path';
 /** app */
 import app from '@src/index';
 
-describe('Test api feed --- not authorization', () => {
-    it('GET /feed - should return status 401', async () => {
-        const res = await request(app).get(`${AppApiPath.root}${AppApiPath.feed}`);
-        expect(res.status).toBe(401);
-        expect(res.body).toHaveProperty('message', ReasonPhrases.UNAUTHORIZED);
-    });
-});
-
-describe('Test api feed --- has authorization', () => {
+describe('Test api', () => {
     let token: string;
 
     beforeAll(async () => {
@@ -36,9 +28,17 @@ describe('Test api feed --- has authorization', () => {
         token = res.body.data.token.value;
     });
 
-    it('GET /feed - should return status 200 when authenticated', async () => {
+    it('GET /feed', async () => {
         const res = await request(app).get(`${AppApiPath.root}${AppApiPath.feed}`).set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(StatusCodes.OK);
         expect(res.body).toHaveProperty('message', 'feed');
+    });
+
+    it('GET /poems', async () => {
+        const res = await request(app).get(`${AppApiPath.root}${AppApiPath.poems}`).set('Authorization', `Bearer ${token}`);
+        expect(res.status).toBe(StatusCodes.OK);
+        expect(res.body).toHaveProperty('data');
+        expect(res.body.data).toHaveProperty('items');
+        expect(Array.isArray(res.body.data.items)).toBe(true);
     });
 });
