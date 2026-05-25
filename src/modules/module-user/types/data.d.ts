@@ -4,31 +4,23 @@
  *
  */
 
+export type UserStatus = 'online' | 'offline' | 'away' | 'busy';
+
+export type UserRole = 'admin' | 'moderator' | 'user';
+
 export interface TypeUser {
     _id: string;
-
-    /**
-     * The display name of the user.
-     */
-    name: string | null;
-    /**
-     * The email of the user.
-     */
-    email: string | null;
-    /**
-     * The phone number normalized based on the E.164 standard (e.g. +16505550101) for the
-     * user.
-     *
-     * @remarks
-     * This is null if the user has no phone credential linked to the account.
-     */
-    phone: string | null;
-    /**
-     * The profile photo URL of the user.
-     */
-    photo: string | null;
     uid: string;
-    role: string;
+    email?: string;
+    name?: string;
+    phone?: string;
+    photo?: string;
+    role: UserRole;
+    status: UserStatus;
+    statusMessage?: string;
+    blockedUsers?: string[];
+    fcmTokens?: string[];
+    lastActiveAt?: string;
     createdAt?: string;
     updatedAt?: string;
 }

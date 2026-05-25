@@ -5,13 +5,10 @@
  */
 
 /** types */
-import type { Request } from 'express';
+import * as TypeApi from '@module-base/types/api.d';
 
 declare global {
     namespace App.ModuleBase {
-        namespace Api {
-            export type CustomRequestParam<Param extends Record<string, string>> = Request<Param>;
-            export type CustomRequestBody<Body extends Record<string, unknown>> = Omit<Request, 'body'> & { body: Body };
-        }
+        export import Api = TypeApi;
     }
 }

@@ -6,10 +6,8 @@
 
 export const AppApiPath = {
     root: '/app',
-    feed: '/feed',
-    messenger: '/messenger',
-    ticket: '/ticket/:id',
     tickets: '/tickets',
+    ticket: '/ticket/:id',
     ticketStatus: '/ticket-status',
     poems: '/poems'
 } as const;

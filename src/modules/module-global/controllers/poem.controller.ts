@@ -27,6 +27,7 @@ const items = poems.map((poem, index) => {
             email: faker.internet.email(),
             phone: faker.phone.number(),
             role: faker.helpers.arrayElement(['admin', 'user']),
+            status: faker.helpers.arrayElement(['online', 'offline', 'busy']),
             name: 'Chép nèe',
             photo: faker.image.avatar()
         },

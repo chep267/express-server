@@ -17,18 +17,17 @@ import { genToken } from '@module-auth/utils/token';
 /** types */
 import type { Model } from 'mongoose';
 
-type TypeUser = App.ModuleUser.Data.TypeUser;
-type TypeAuth = App.ModuleAuth.Data.TypeAuth;
-
-interface TypeAuthModel extends Model<TypeAuth> {
-    getAuth(payload: { uid: TypeUser['uid'] }): Promise<TypeAuth | null>;
-    setAuth(payload: { uid: TypeUser['uid']; password: string }): Promise<TypeAuth>;
-    updateAuth(payload: { uid: TypeUser['uid']; data: Partial<Omit<TypeAuth, 'uid'>> }): Promise<TypeAuth>;
-    deleteAuth(payload: { uid: TypeUser['uid'] }): Promise<boolean>;
-    getRefreshToken(payload: { uid: TypeUser['uid'] }): Promise<TypeAuth['refreshToken'] | undefined>;
+interface TypeAuthModel extends Model<App.ModuleAuth.Data.TypeAuth> {
+    getAuth(payload: App.ModuleAuth.Model.GetAuth['Payload']): App.ModuleAuth.Model.GetAuth['Response'];
+    setAuth(payload: App.ModuleAuth.Model.SetAuth['Payload']): App.ModuleAuth.Model.SetAuth['Response'];
+    updateAuth(payload: App.ModuleAuth.Model.UpdateAuth['Payload']): App.ModuleAuth.Model.UpdateAuth['Response'];
+    deleteAuth(payload: App.ModuleAuth.Model.DeleteAuth['Payload']): App.ModuleAuth.Model.DeleteAuth['Response'];
+    getRefreshToken(
+        payload: App.ModuleAuth.Model.GetRefreshToken['Payload']
+    ): App.ModuleAuth.Model.GetRefreshToken['Response'];
 }
 
-export const AuthSchema = new Schema<TypeAuth, TypeAuthModel>(
+export const AuthSchema = new Schema<App.ModuleAuth.Data.TypeAuth, TypeAuthModel>(
     {
         uid: {
             type: String,
@@ -50,12 +49,12 @@ export const AuthSchema = new Schema<TypeAuth, TypeAuthModel>(
 );
 
 AuthSchema.statics = {
-    getAuth: async function (payload: { uid: TypeUser['uid'] }): Promise<TypeAuth | null> {
+    getAuth: async function (payload: App.ModuleAuth.Model.GetAuth['Payload']): App.ModuleAuth.Model.GetAuth['Response'] {
         const { uid } = payload;
         const Auth = await this.findOne({ $or: [{ uid }] }).exec();
         return Auth ? Auth.toObject({ versionKey: false }) : Auth;
     },
-    setAuth: async function (payload: { uid: TypeUser['uid']; password: string }): Promise<TypeAuth> {
+    setAuth: async function (payload: App.ModuleAuth.Model.SetAuth['Payload']): App.ModuleAuth.Model.SetAuth['Response'] {
         const { uid, password } = payload;
         const hash = bcrypt.hashSync(password, 10);
         const Auth = await this.create({
@@ -65,21 +64,27 @@ AuthSchema.statics = {
         });
         return Auth.toObject({ versionKey: false });
     },
-    updateAuth: async function (payload: { uid: TypeUser['uid']; data: Omit<TypeAuth, 'uid'> }): Promise<TypeAuth | null> {
+    updateAuth: async function (
+        payload: App.ModuleAuth.Model.UpdateAuth['Payload']
+    ): App.ModuleAuth.Model.UpdateAuth['Response'] {
         const { uid, data } = payload;
         const Auth = await this.findOneAndUpdate({ uid }, data, { returnDocument: 'after' }).exec();
         return Auth ? Auth.toObject({ versionKey: false }) : Auth;
     },
-    deleteAuth: async function (payload: { uid: TypeUser['uid'] }): Promise<boolean> {
+    deleteAuth: async function (
+        payload: App.ModuleAuth.Model.DeleteAuth['Payload']
+    ): App.ModuleAuth.Model.DeleteAuth['Response'] {
         const { uid } = payload;
         await this.deleteOne({ uid }).exec();
         return true;
     },
-    getRefreshToken: async function (payload: { uid: TypeUser['uid'] }): Promise<TypeAuth['refreshToken'] | undefined> {
+    getRefreshToken: async function (
+        payload: App.ModuleAuth.Model.GetRefreshToken['Payload']
+    ): App.ModuleAuth.Model.GetRefreshToken['Response'] {
         const { uid } = payload;
         const Auth = await this.findOne({ uid }).exec();
-        return Auth ? Auth.toObject({ versionKey: false }).refreshToken : undefined;
+        return Auth ? Auth.toObject({ versionKey: false }).refreshToken : null;
     }
 };
 
-export const AuthModel = model<TypeAuth, TypeAuthModel>('Auths', AuthSchema);
+export const AuthModel = model<App.ModuleAuth.Data.TypeAuth, TypeAuthModel>('Auths', AuthSchema);

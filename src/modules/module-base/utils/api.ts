@@ -7,7 +7,9 @@
 /** libs */
 import { ReasonPhrases } from 'http-status-codes';
 
-export const genResponse = (payload?: { message?: string; data?: unknown; metadata?: Record<string, unknown> }) => {
+export const genResponse = <Data = unknown>(
+    payload?: App.ModuleBase.Api.ApiResponse<Data>
+): App.ModuleBase.Api.ApiResponse<Data> => {
     return {
         message: payload?.message || ReasonPhrases.OK,
         data: payload?.data,

@@ -14,15 +14,9 @@ import { UserModel } from '@module-user/models';
 import { genResponse } from '@module-base/utils/api';
 
 /** types */
-import type { NextFunction, Response } from 'express';
+import type { NextFunction } from 'express';
 
-type TypeUser = App.ModuleUser.Data.TypeUser;
-
-const get = async (
-    req: App.ModuleBase.Api.CustomRequestBody<{ email: TypeUser['email']; uid: TypeUser['uid'] }>,
-    res: Response,
-    next: NextFunction
-) => {
+const get = async (req: App.ModuleUser.Api.Get['Request'], res: App.ModuleUser.Api.Get['Response'], next: NextFunction) => {
     const { email, uid } = req.body;
     try {
         const user = await UserModel.getUser({ email, uid });
@@ -39,4 +33,33 @@ const get = async (
     }
 };
 
-export const userController = { get };
+const getUsers = async (
+    req: App.ModuleUser.Api.GetList['Request'],
+    res: App.ModuleUser.Api.GetList['Response'],
+    next: NextFunction
+) => {
+    const { searchKey, page = '1', limit = '20' } = req.query;
+    const limitNumber = parseInt(limit, 10) || 10;
+
+    try {
+        const users = await UserModel.getUsers({ searchKey, page, limit });
+        const totalItems = users.length;
+        const totalPages = Math.ceil(totalItems / limitNumber);
+
+        /** success */
+        return res.status(StatusCodes.OK).json(
+            genResponse({
+                data: users,
+                metadata: {
+                    totalItems,
+                    totalPages,
+                    currentPage: Number(page)
+                }
+            })
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const userController = { get, getUsers };

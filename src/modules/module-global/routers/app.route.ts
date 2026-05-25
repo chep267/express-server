@@ -15,15 +15,21 @@ import { AppApiPath } from '@module-global/constants/path';
 import { authController } from '@module-auth/controllers';
 import { appController } from '@module-global/controllers';
 
+/** routers */
+import { userRouter } from '@module-user/routers';
+import { messengerRouter } from '@module-messenger/routers';
+
 const upload = multer();
 const appRouter = Router();
 
 /** auth */
 appRouter.use(authController.verify);
 
-/** another */
-appRouter.get(AppApiPath.feed, appController.feed);
-appRouter.get(AppApiPath.messenger, appController.messenger);
+/** user */
+appRouter.use(userRouter);
+
+/** messenger */
+appRouter.use(messengerRouter);
 
 /** ticket */
 appRouter.get(AppApiPath.ticket, appController.ticket.get);

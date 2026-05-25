@@ -9,7 +9,6 @@
 
         /* Output */
         "outDir": "./dist",
-        "rootDir": "./src",
         "sourceMap": false,
         "esModuleInterop": true,
 
@@ -28,8 +27,7 @@
             "@module-user/*": ["./src/modules/module-user/*"],
             "@module-auth/*": ["./src/modules/module-auth/*"],
             "@module-global/*": ["./src/modules/module-global/*"],
-            "@module-dashboard/*": ["./src/modules/module-dashboard/*"],
-            "@module-calendar/*": ["./src/modules/module-calendar/*"]
+            "@module-messenger/*": ["./src/modules/module-messenger/*"]
         },
 
         /* Type Declaration */

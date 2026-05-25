@@ -5,13 +5,15 @@
  */
 
 /** libs */
-import { v7 as uuidV7 } from 'uuid';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 /** constants */
 import { AppKey } from '@module-base/constants/AppKey';
 import { AppEnv } from '@module-base/constants/AppEnv';
+
+/** utils */
+import { genId } from '@module-base/utils/gen';
 
 type TypeUser = App.ModuleUser.Data.TypeUser;
 
@@ -27,7 +29,7 @@ export const genToken = (uid: TypeUser['uid'], type: typeof AppKey.accessToken |
     return jwt.sign(data, AppEnv.appJwtSecretKey);
 };
 
-export const validateToken = (token?: string) => {
+export const validateToken = (token?: string | null) => {
     if (!token) return false;
     try {
         const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
@@ -44,7 +46,7 @@ export const validatePassword = (password?: string, hash?: string) => {
     return bcrypt.compareSync(password, hash);
 };
 
-export const genUid = () => `uid.${uuidV7()}`;
+export const genUid = () => genId('uid');
 
 export const getUidFromToken = (token?: string) => {
     if (!token) return undefined;

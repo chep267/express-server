@@ -69,8 +69,8 @@ const verify = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const signin = async (
-    req: App.ModuleBase.Api.CustomRequestBody<{ email: string; password: string }>,
-    res: Response,
+    req: App.ModuleAuth.Api.Signin['Request'],
+    res: App.ModuleAuth.Api.Signin['Response'],
     next: NextFunction
 ) => {
     const { email, password } = req.body;
@@ -102,8 +102,8 @@ const signin = async (
         /** signin success */
         return res.status(StatusCodes.OK).json(
             genResponse({
-                data: {
-                    user,
+                data: user,
+                metadata: {
                     token: { exp: AppEnv.appAccessTokenRefreshTime, value: accessToken }
                 }
             })
@@ -113,7 +113,7 @@ const signin = async (
     }
 };
 
-const signout = async (req: Request, res: Response) => {
+const signout = async (req: App.ModuleAuth.Api.Signout['Request'], res: App.ModuleAuth.Api.Signout['Response']) => {
     const accessToken = getAccessToken(req);
     const uid = getUidFromToken(accessToken);
 
@@ -129,7 +129,11 @@ const signout = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).json(genResponse());
 };
 
-const restart = async (req: Request, res: Response, next: NextFunction) => {
+const restart = async (
+    req: App.ModuleAuth.Api.Restart['Request'],
+    res: App.ModuleAuth.Api.Restart['Response'],
+    next: NextFunction
+) => {
     const accessToken = getAccessToken(req);
     const refreshTokenCookie = req.cookies[AppKey.refreshToken];
     const uid = getUidFromToken(accessToken || refreshTokenCookie);
@@ -139,14 +143,14 @@ const restart = async (req: Request, res: Response, next: NextFunction) => {
         return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'Invalid session!' }));
     }
 
-    const refreshToken = await AuthModel.getRefreshToken({ uid });
-    if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
-        /** wrong refreshToken */
-        clearToken(res);
-        return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
-    }
-
     try {
+        const refreshToken = await AuthModel.getRefreshToken({ uid });
+        if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
+            /** wrong refreshToken */
+            clearToken(res);
+            return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
+        }
+
         const accessToken = genToken(uid, AppKey.accessToken);
         const newRefreshToken = genToken(uid, AppKey.refreshToken);
         const [user] = await Promise.all([
@@ -155,10 +159,18 @@ const restart = async (req: Request, res: Response, next: NextFunction) => {
         ]);
         setToken(res, { refreshToken: newRefreshToken });
 
+        if (!user) {
+            /** wrong email */
+            return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
+        }
+
         /** restart success */
         return res.status(StatusCodes.OK).json(
             genResponse({
-                data: { user: user, token: { exp: AppEnv.appAccessTokenRefreshTime, value: accessToken } }
+                data: user,
+                metadata: {
+                    token: { exp: AppEnv.appAccessTokenRefreshTime, value: accessToken }
+                }
             })
         );
     } catch (error) {
@@ -167,8 +179,8 @@ const restart = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const register = async (
-    req: App.ModuleBase.Api.CustomRequestBody<{ email: string; password: string }>,
-    res: Response,
+    req: App.ModuleAuth.Api.Register['Request'],
+    res: App.ModuleAuth.Api.Register['Response'],
     next: NextFunction
 ) => {
     const { email, password } = req.body;
@@ -206,7 +218,11 @@ const register = async (
     }
 };
 
-const recover = async (req: App.ModuleBase.Api.CustomRequestBody<{ email: string }>, res: Response, next: NextFunction) => {
+const recover = async (
+    req: App.ModuleAuth.Api.Recover['Request'],
+    res: App.ModuleAuth.Api.Recover['Response'],
+    next: NextFunction
+) => {
     const { email } = req.body;
 
     if (!email) {
@@ -215,7 +231,7 @@ const recover = async (req: App.ModuleBase.Api.CustomRequestBody<{ email: string
     }
 
     try {
-        const isUserExisted = await UserModel.hasUser({ email });
+        const isUserExisted = Boolean(await UserModel.getUser({ email }));
 
         if (!isUserExisted) {
             /** recover fail */

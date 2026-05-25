@@ -28,12 +28,6 @@ describe('Test api', () => {
         token = res.body.data.token.value;
     });
 
-    it('GET /feed', async () => {
-        const res = await request(app).get(`${AppApiPath.root}${AppApiPath.feed}`).set('Authorization', `Bearer ${token}`);
-        expect(res.status).toBe(StatusCodes.OK);
-        expect(res.body).toHaveProperty('message', 'feed');
-    });
-
     it('GET /poems', async () => {
         const res = await request(app).get(`${AppApiPath.root}${AppApiPath.poems}`).set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(StatusCodes.OK);
