@@ -42,7 +42,7 @@ describe('Test Auth: signout', () => {
     beforeAll(async () => {
         const res = await request(app).post(`${AuthApiPath.root}${AuthApiPath.signin}`).send(REAL_ACCOUNT);
         expect(res.status).toBe(StatusCodes.OK);
-        token = res.body.data.token.value;
+        token = res.body.metadata.token.value;
     });
     it('signout success', async () => {
         const res = await request(app)
@@ -66,7 +66,7 @@ describe('Test Auth: restart', () => {
     it('restart success', async () => {
         const res = await request(app).post(`${AuthApiPath.root}${AuthApiPath.signin}`).send(REAL_ACCOUNT);
         expect(res.status).toBe(StatusCodes.OK);
-        const token = res.body.data.token.value;
+        const token = res.body.metadata.token.value;
         expect(token);
     });
 });

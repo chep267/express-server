@@ -25,7 +25,7 @@ describe('Test api', () => {
             password: 'Midom@2024'
         });
         expect(res.status).toBe(StatusCodes.OK);
-        token = res.body.data.token.value;
+        token = res.body.metadata.token.value;
     });
 
     it('GET /poems', async () => {
