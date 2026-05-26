@@ -9,6 +9,7 @@ import { StatusCodes } from 'http-status-codes';
 
 /** utils */
 import { genResponse } from '@module-base/utils/api';
+import { getAccessToken, getUidFromToken } from '@module-auth/utils/token';
 import { MessageModel, ThreadModel } from '@module-messenger/models';
 
 /** types */
@@ -20,8 +21,10 @@ const getThreads = async (
     next: NextFunction
 ) => {
     try {
-        const { items, ...metadata } = await ThreadModel.getThreads(req.query);
-        res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
+        const accessToken = getAccessToken(req);
+        const uid = getUidFromToken(accessToken);
+        const { items, ...metadata } = await ThreadModel.getThreads({ ...req.query, uid });
+        return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
     } catch (error) {
         next(error);
     }
@@ -32,15 +35,10 @@ const getMessages = async (
     res: App.ModuleMessenger.Api.GetMessages['Response'],
     next: NextFunction
 ) => {
-    const { tid } = req.params;
-
-    if (!tid) {
-        return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Thread id is required!' }));
-    }
-
     try {
-        const { items, ...metadata } = await MessageModel.getMessages({ tid, ...req.query });
-        res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
+        const { tid } = req.params;
+        const { items, ...metadata } = await MessageModel.getMessages({ ...req.query, tid });
+        return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
     } catch (error) {
         next(error);
     }

@@ -12,9 +12,12 @@ import type { Model } from 'mongoose';
 
 interface TypeThreadModel extends Model<App.ModuleMessenger.Data.TypeThread> {
     getThreads(payload: App.ModuleMessenger.Model.GetThreads['Payload']): App.ModuleMessenger.Model.GetThreads['Response'];
+    getRecentSearch(
+        payload: App.ModuleMessenger.Model.GetThreads['Payload']
+    ): App.ModuleMessenger.Model.GetThreads['Response'];
 }
 
-const UnreadCountSchema = new Schema(
+const UnreadCountsSchema = new Schema(
     {
         uid: { type: String, required: true },
         count: { type: Number, required: true, default: 0 }
@@ -61,8 +64,8 @@ const ThreadSchema = new Schema<App.ModuleMessenger.Data.TypeThread, TypeThreadM
             type: LastMessageSchema,
             default: null
         },
-        unreadCount: {
-            type: [UnreadCountSchema],
+        unreadCounts: {
+            type: [UnreadCountsSchema],
             default: []
         },
         isGroup: {
@@ -83,18 +86,25 @@ ThreadSchema.statics = {
     getThreads: async function (
         payload: App.ModuleMessenger.Model.GetThreads['Payload']
     ): App.ModuleMessenger.Model.GetThreads['Response'] {
-        const { searchKey, page = '1', limit = '20' } = payload;
+        const { uid, searchKey = '', page = '1', limit = '20' } = payload;
         const pageNumber = Math.max(1, Number(page));
         const limitNumber = Math.max(1, Number(limit));
         const skip = (pageNumber - 1) * limitNumber;
 
-        const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeMessage> = {};
-        if (searchKey) {
-            queryCondition.$or = [{ content: { $regex: searchKey, $options: 'i' } }];
+        if (!uid) {
+            /** no data */
+            return { items: [], currentPage: 1, currentItems: 0, totalPages: 1, totalItems: 0 };
+        }
+
+        const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeThread> = {
+            uids: uid
+        };
+        if (searchKey.trim()) {
+            queryCondition.name = { $regex: searchKey, $options: 'i' };
         }
 
         const [items, totalItems] = await Promise.all([
-            this.find(queryCondition).skip(skip).limit(limitNumber).sort({ createdAt: -1 }).exec(),
+            this.find(queryCondition).skip(skip).limit(limitNumber).sort({ updatedAt: -1 }).exec(),
             this.countDocuments(queryCondition).exec()
         ]);
         const totalPages = Math.ceil(totalItems / limitNumber);

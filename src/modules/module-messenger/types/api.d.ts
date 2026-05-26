@@ -10,7 +10,7 @@ import type { TypeThread, TypeMessage } from '@module-messenger/types/data.d';
 
 /** api thread */
 export interface GetThreads {
-    Request: CustomRequestParam<{ uid?: string; searchKey?: string; page?: string; skip?: string; limit?: string }>;
+    Request: CustomRequestParam<{ searchKey?: string; page?: string; skip?: string; limit?: string }>;
     Response: CustomResponse<TypeThread[], { total?: number; count?: number }>;
 }
 

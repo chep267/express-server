@@ -94,12 +94,12 @@ export type TypeThread = {
         mid: string; // ID tin nhắn
         uid: string; // ID người gửi
         content: string; // Nội dung text hoặc mô tả (ví dụ: "Đã gửi một ảnh")
-        createdAt: string; // Thời gian gửi (timestamp)
+        createdAt: string; // Thời gian gửi
         status: 'sending' | 'sent' | 'received' | 'seen';
     };
 
     /** Số tin nhắn chưa đọc của user hiện tại trong thread này */
-    unreadCount: {
+    unreadCounts: {
         uid: string;
         count: number;
     }[];

@@ -14,7 +14,13 @@ export interface GetUser {
 
 export interface GetUsers {
     Payload: { searchKey?: string; page?: string; limit?: string };
-    Response: Promise<TypeUser[]>;
+    Response: Promise<{
+        items: TypeUser[];
+        currentItems: number;
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+    }>;
 }
 
 export interface SetUser {

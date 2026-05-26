@@ -98,6 +98,11 @@ MessageSchema.statics = {
         const limitNumber = Math.max(1, Number(limit));
         const skip = (pageNumber - 1) * limitNumber;
 
+        if (!tid) {
+            /** no data */
+            return { items: [], currentPage: 1, currentItems: 0, totalPages: 1, totalItems: 0 };
+        }
+
         const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeMessage> = {
             tid
         };

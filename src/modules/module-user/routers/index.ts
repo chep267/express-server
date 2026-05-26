@@ -17,7 +17,8 @@ import { userController } from '@module-user/controllers';
 // const upload = multer();
 const userRouter = Router();
 
-/** thread */
+/** user */
+userRouter.get(UserApiPath.user, userController.getUser);
 userRouter.get(UserApiPath.users, userController.getUsers);
 
 export { userRouter };

@@ -16,10 +16,14 @@ import { genResponse } from '@module-base/utils/api';
 /** types */
 import type { NextFunction } from 'express';
 
-const get = async (req: App.ModuleUser.Api.Get['Request'], res: App.ModuleUser.Api.Get['Response'], next: NextFunction) => {
-    const { email, uid } = req.body;
+const getUser = async (
+    req: App.ModuleUser.Api.Get['Request'],
+    res: App.ModuleUser.Api.Get['Response'],
+    next: NextFunction
+) => {
+    const { uid } = req.params;
     try {
-        const user = await UserModel.getUser({ email, uid });
+        const user = await UserModel.getUser({ uid });
 
         if (!user) {
             /** fail */
@@ -38,28 +42,12 @@ const getUsers = async (
     res: App.ModuleUser.Api.GetList['Response'],
     next: NextFunction
 ) => {
-    const { searchKey, page = '1', limit = '20' } = req.query;
-    const limitNumber = parseInt(limit, 10) || 10;
-
     try {
-        const users = await UserModel.getUsers({ searchKey, page, limit });
-        const totalItems = users.length;
-        const totalPages = Math.ceil(totalItems / limitNumber);
-
-        /** success */
-        return res.status(StatusCodes.OK).json(
-            genResponse({
-                data: users,
-                metadata: {
-                    totalItems,
-                    totalPages,
-                    currentPage: Number(page)
-                }
-            })
-        );
+        const { items, ...metadata } = await UserModel.getUsers(req.query);
+        return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
     } catch (error) {
         next(error);
     }
 };
 
-export const userController = { get, getUsers };
+export const userController = { getUser, getUsers };

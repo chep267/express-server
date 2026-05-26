@@ -5,7 +5,7 @@
  */
 
 /** types */
-import type { Model } from 'mongoose';
+import { Model, QueryFilter } from 'mongoose';
 /** libs */
 import { model, Schema } from 'mongoose';
 
@@ -84,23 +84,29 @@ UserSchema.statics = {
         return user?.toObject({ versionKey: false }) ?? null;
     },
     getUsers: async function (payload: App.ModuleUser.Model.GetUsers['Payload']): App.ModuleUser.Model.GetUsers['Response'] {
-        const { searchKey, page = '1', limit = '20' } = payload;
+        const { searchKey = '', page = '1', limit = '20' } = payload;
         const pageNumber = Math.max(1, Number(page));
         const limitNumber = Math.max(1, Number(limit));
         const skip = (pageNumber - 1) * limitNumber;
 
-        const items = await this.find(
-            searchKey
-                ? {
-                      $or: [{ name: { $regex: searchKey, $options: 'i' } }, { email: { $regex: searchKey, $options: 'i' } }]
-                  }
-                : undefined
-        )
-            .skip(skip)
-            .limit(limitNumber)
-            .sort({ createdAt: -1 })
-            .exec();
-        return items.map((item) => item.toObject({ versionKey: false }));
+        const queryCondition: QueryFilter<App.ModuleUser.Data.TypeUser> = {};
+        if (searchKey.trim()) {
+            queryCondition.name = { $regex: searchKey, $options: 'i' };
+        }
+
+        const [items, totalItems] = await Promise.all([
+            this.find(queryCondition).skip(skip).limit(limitNumber).sort({ name: -1 }).exec(),
+            this.countDocuments(queryCondition).exec()
+        ]);
+        const totalPages = Math.ceil(totalItems / limitNumber);
+
+        return {
+            items: items.map((item) => item.toObject({ versionKey: false })),
+            currentPage: pageNumber,
+            currentItems: items.length,
+            totalPages,
+            totalItems
+        };
     },
     setUser: async function (payload: App.ModuleUser.Model.SetUser['Payload']): App.ModuleUser.Model.SetUser['Response'] {
         const { uid, email } = payload;

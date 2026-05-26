@@ -13,9 +13,18 @@ import { AppEnv } from '@module-base/constants/AppEnv';
 import { AppRegex } from '@module-base/constants/AppRegex';
 
 /** utils */
+import { genId } from '@module-base/utils/gen';
 import { genResponse } from '@module-base/utils/api';
 import { sendRecoverEmail } from '@module-auth/utils/mail';
-import { genToken, genUid, getUidFromToken, validatePassword, validateToken } from '@module-auth/utils/token';
+import {
+    getAccessToken,
+    getUidFromToken,
+    genToken,
+    setToken,
+    clearToken,
+    validatePassword,
+    validateToken
+} from '@module-auth/utils/token';
 
 /** models */
 import { UserModel } from '@module-user/models';
@@ -23,38 +32,6 @@ import { AuthModel } from '@module-auth/models';
 
 /** types */
 import type { NextFunction, Request, Response } from 'express';
-
-const clearToken = (res: Response) => {
-    res.clearCookie(AppKey.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none'
-    });
-};
-
-const setToken = (res: Response, data: { refreshToken: string }) => {
-    const { refreshToken } = data;
-    const cookieOptions = {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none' as const
-    };
-    res.cookie(AppKey.refreshToken, refreshToken, {
-        ...cookieOptions,
-        maxAge: AppEnv.appRefreshTokenExpiredTime
-    });
-};
-
-const getAccessToken = (req: Request) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        /** no access token */
-        return undefined;
-    }
-
-    return authHeader?.split(' ')[1];
-};
 
 const verify = (req: Request, res: Response, next: NextFunction) => {
     const accessToken = getAccessToken(req);
@@ -135,8 +112,7 @@ const restart = async (
     next: NextFunction
 ) => {
     const accessToken = getAccessToken(req);
-    const refreshTokenCookie = req.cookies[AppKey.refreshToken];
-    const uid = getUidFromToken(accessToken || refreshTokenCookie);
+    const uid = getUidFromToken(accessToken);
 
     if (!uid) {
         /** wrong accessToken */
@@ -144,6 +120,7 @@ const restart = async (
     }
 
     try {
+        const refreshTokenCookie: string = req.cookies[AppKey.refreshToken];
         const refreshToken = await AuthModel.getRefreshToken({ uid });
         if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
             /** wrong refreshToken */
@@ -208,7 +185,7 @@ const register = async (
             return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account already exists!' }));
         }
 
-        const uid = genUid();
+        const uid = genId('uid');
         await Promise.all([UserModel.setUser({ uid, email }), AuthModel.setAuth({ uid, password })]);
 
         /** register success */
