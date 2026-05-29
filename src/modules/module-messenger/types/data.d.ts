@@ -106,5 +106,6 @@ export type TypeThread = {
 
     /** Metadata bổ sung (ví dụ: thread có bị mute không, có phải là group không) */
     isGroup: boolean;
+    createdAt: string;
     updatedAt: string;
 };

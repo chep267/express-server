@@ -18,7 +18,7 @@ export interface Get {
 
 /** api get list */
 export type TypeGetListQuery = {
-    searchKey?: string;
+    q?: string;
     page?: string;
     limit?: string;
 };

@@ -93,7 +93,8 @@ MessageSchema.statics = {
     getMessages: async function (
         payload: App.ModuleMessenger.Model.GetMessages['Payload']
     ): App.ModuleMessenger.Model.GetMessages['Response'] {
-        const { tid, searchKey, page = '1', limit = '20' } = payload;
+        const { tid, q = '', page = '1', limit = '20' } = payload;
+        const searchKey = q.trim();
         const pageNumber = Math.max(1, Number(page));
         const limitNumber = Math.max(1, Number(limit));
         const skip = (pageNumber - 1) * limitNumber;

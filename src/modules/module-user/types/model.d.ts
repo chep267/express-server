@@ -13,7 +13,7 @@ export interface GetUser {
 }
 
 export interface GetUsers {
-    Payload: { searchKey?: string; page?: string; limit?: string };
+    Payload: { q?: string; page?: string; limit?: string };
     Response: Promise<{
         items: TypeUser[];
         currentItems: number;

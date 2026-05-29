@@ -84,13 +84,14 @@ UserSchema.statics = {
         return user?.toObject({ versionKey: false }) ?? null;
     },
     getUsers: async function (payload: App.ModuleUser.Model.GetUsers['Payload']): App.ModuleUser.Model.GetUsers['Response'] {
-        const { searchKey = '', page = '1', limit = '20' } = payload;
+        const { q = '', page = '1', limit = '20' } = payload;
+        const searchKey = q.trim();
         const pageNumber = Math.max(1, Number(page));
         const limitNumber = Math.max(1, Number(limit));
         const skip = (pageNumber - 1) * limitNumber;
 
         const queryCondition: QueryFilter<App.ModuleUser.Data.TypeUser> = {};
-        if (searchKey.trim()) {
+        if (searchKey) {
             queryCondition.name = { $regex: searchKey, $options: 'i' };
         }
 
