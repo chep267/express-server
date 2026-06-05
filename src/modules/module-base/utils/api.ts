@@ -7,15 +7,17 @@
 /** libs */
 import { ReasonPhrases } from 'http-status-codes';
 
-export const genResponse = <Data = unknown>(
-    payload?: App.ModuleBase.Api.ApiResponse<Data>
-): App.ModuleBase.Api.ApiResponse<Data> => {
+export const genResponse = <Data = unknown, Metadata = Record<string, unknown>>(
+    payload: Partial<App.ModuleBase.Api.ApiResponse<Data, Metadata>> = {}
+): App.ModuleBase.Api.ApiResponse<Data, Metadata> => {
+    const { message = ReasonPhrases.OK, data = null, metadata = {} as Metadata } = payload;
+
     return {
-        message: payload?.message || ReasonPhrases.OK,
-        data: payload?.data,
+        message,
+        data,
         metadata: {
-            timestamp: Date.now(),
-            ...payload?.metadata
+            ...metadata,
+            timestamp: new Date().toISOString()
         }
     };
 };

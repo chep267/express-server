@@ -119,11 +119,13 @@ UserSchema.statics = {
         const totalPages = Math.ceil(totalItems / limitNumber);
 
         return {
-            items: items.map((item) => item.toObject({ versionKey: false })),
-            currentPage: pageNumber,
-            currentItems: items.length,
-            totalPages,
-            totalItems
+            data: items.map((item) => item.toObject({ versionKey: false })),
+            metadata: {
+                currentPage: pageNumber,
+                currentItems: items.length,
+                totalPages,
+                totalItems
+            }
         };
     },
     create: async function (

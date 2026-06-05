@@ -16,9 +16,9 @@ import { genResponse } from '@module-base/utils/api';
 /** types */
 import type { NextFunction } from 'express';
 
-const getUser = async (
-    req: App.ModuleUser.Api.Get['Request'],
-    res: App.ModuleUser.Api.Get['Response'],
+const get = async (
+    req: App.ModuleUser.Api.Users['Get']['Request'],
+    res: App.ModuleUser.Api.Users['Get']['Response'],
     next: NextFunction
 ) => {
     const { uid } = req.params;
@@ -37,17 +37,17 @@ const getUser = async (
     }
 };
 
-const getUsers = async (
-    req: App.ModuleUser.Api.GetList['Request'],
-    res: App.ModuleUser.Api.GetList['Response'],
+const gets = async (
+    req: App.ModuleUser.Api.Users['Gets']['Request'],
+    res: App.ModuleUser.Api.Users['Gets']['Response'],
     next: NextFunction
 ) => {
     try {
-        const { items, ...metadata } = await UserModel.gets(req.query);
-        return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
+        const { data, metadata } = await UserModel.gets(req.query);
+        return res.status(StatusCodes.OK).json(genResponse({ data, metadata }));
     } catch (error) {
         next(error);
     }
 };
 
-export const userController = { getUser, getUsers };
+export const userController = { get, gets };

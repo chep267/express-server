@@ -18,7 +18,7 @@ import { userController } from '@module-user/controllers';
 const userRouter = Router();
 
 /** user */
-userRouter.get(UserApiPath.user, userController.getUser);
-userRouter.get(UserApiPath.users, userController.getUsers);
+userRouter.get(UserApiPath.user, userController.get);
+userRouter.get(UserApiPath.users, userController.gets);
 
 export { userRouter };

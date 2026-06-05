@@ -24,8 +24,8 @@ const gets = async (
 ) => {
     try {
         const { tid } = req.params;
-        const { items, ...metadata } = await MessageModel.gets({ ...req.query, tid });
-        return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
+        const { data, metadata } = await MessageModel.gets({ ...req.query, tid });
+        return res.status(StatusCodes.OK).json(genResponse({ data, metadata }));
     } catch (error) {
         next(error);
     }
@@ -37,10 +37,9 @@ const create = async (
     next: NextFunction
 ) => {
     try {
-        const { tid } = req.params;
         const { data } = req.body;
         const mid = genId('mid');
-        const message = await MessageModel.create({ data: { ...data, tid, mid } });
+        const message = await MessageModel.create({ data: { ...data, mid } });
         await ThreadModel.update({ data: message });
         return res.status(StatusCodes.CREATED).json(genResponse({ data: message }));
     } catch (error) {

@@ -17,7 +17,7 @@ export interface Users {
     };
     Gets: {
         Payload: SearchParam;
-        Return: Promise<SearchResponse<TypeUser>>;
+        Return: Promise<SearchResponse<TypeUser[]>>;
     };
     Check: {
         Payload: { uid?: string; email?: string };

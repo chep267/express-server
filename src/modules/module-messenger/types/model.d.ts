@@ -13,7 +13,7 @@ import type { TypeThread, TypeMessage, TypeAttachment } from '@module-messenger/
 export interface Messages {
     Gets: {
         Payload: SearchParam<{ tid: string }>;
-        Return: Promise<SearchResponse<TypeMessage>>;
+        Return: Promise<SearchResponse<TypeMessage[]>>;
     };
     Create: {
         Payload: { data: Partial<TypeMessage> };
@@ -39,7 +39,7 @@ interface MessageModel extends Model<TypeMessage> {
 export interface Threads {
     Gets: {
         Payload: SearchParam<{ uid: string }>;
-        Return: Promise<SearchResponse<TypeThread>>;
+        Return: Promise<SearchResponse<TypeThread[]>>;
     };
     Create: {
         Payload: { data: Partial<TypeThread> };
@@ -65,7 +65,7 @@ interface ThreadModel extends Model<TypeThread> {
 export interface Attachments {
     Gets: {
         Payload: SearchParam<{ uid: string }>;
-        Return: Promise<SearchResponse<TypeAttachment>>;
+        Return: Promise<SearchResponse<TypeAttachment[]>>;
     };
     Create: {
         Payload: { data: Partial<TypeAttachment> };

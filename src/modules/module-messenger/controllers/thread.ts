@@ -26,8 +26,8 @@ const gets = async (
     try {
         const accessToken = getAccessToken(req);
         const uid = getUidFromToken(accessToken) ?? '';
-        const { items, ...metadata } = await ThreadModel.gets({ ...req.query, uid });
-        return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
+        const { data, metadata } = await ThreadModel.gets({ ...req.query, uid });
+        return res.status(StatusCodes.OK).json(genResponse({ data, metadata }));
     } catch (error) {
         next(error);
     }

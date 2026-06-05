@@ -6,14 +6,14 @@
 
 /** types */
 import type { Request, Response } from 'express';
-import type { ApiResponse } from '@module-base/types/api.d';
+import type { ApiResponse, ApiSearchResponse, SearchParam } from '@module-base/types/api.d';
 import type { TypeThread, TypeMessage, TypeAttachment } from '@module-messenger/types/data.d';
 
 /** threads */
 export interface Threads {
     Gets: {
-        Request: Omit<Request, 'query'> & { query: { q?: string; page?: string; skip?: string; limit?: string } };
-        Response: Response<ApiResponse<TypeThread[], { total?: number; count?: number }>>;
+        Request: Omit<Request, 'query'> & { query: SearchParam };
+        Response: Response<ApiSearchResponse<TypeThread[]>>;
     };
     Create: {
         Request: Omit<Request, 'body'> & { body: { data: TypeThread } };
@@ -34,9 +34,9 @@ export interface Messages {
     Gets: {
         Request: Omit<Request, 'params' | 'query'> & {
             params: { tid: string };
-            query: { q?: string; page?: string; skip?: string; limit?: string };
+            query: SearchParam;
         };
-        Response: Response<ApiResponse<TypeMessage[], { total?: number; count?: number }>>;
+        Response: Response<ApiSearchResponse<TypeMessage[]>>;
     };
     Create: {
         Request: Omit<Request, 'params' | 'body'> & { params: { tid: string }; body: { data: TypeMessage } };

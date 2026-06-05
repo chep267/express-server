@@ -95,7 +95,7 @@ MessageSchema.statics = {
 
         if (!tid) {
             /** no data */
-            return { items: [], currentPage: 1, currentItems: 0, totalPages: 1, totalItems: 0 };
+            return { data: [], metadata: { currentPage: 1, currentItems: 0, totalPages: 1, totalItems: 0 } };
         }
 
         const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeMessage> = {
@@ -112,11 +112,13 @@ MessageSchema.statics = {
         const totalPages = Math.ceil(totalItems / limitNumber);
 
         return {
-            items: items.map((item) => item.toObject({ versionKey: false })),
-            currentPage: pageNumber,
-            currentItems: items.length,
-            totalPages,
-            totalItems
+            data: items.map((item) => item.toObject({ versionKey: false })),
+            metadata: {
+                currentPage: pageNumber,
+                currentItems: items.length,
+                totalPages,
+                totalItems
+            }
         };
     },
     create: async function (

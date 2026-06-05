@@ -13,7 +13,7 @@ import type { Request, Response } from 'express';
 export interface Auths {
     Signin: {
         Request: Omit<Request, 'body'> & { body: { email: string; password: string } };
-        Response: Response<ApiResponse<TypeUser, { token?: { exp: string; value: string } }>>;
+        Response: Response<ApiResponse<TypeUser, { token: { exp: number; value: string } }>>;
     };
     Signout: {
         Request: Request;
@@ -21,7 +21,7 @@ export interface Auths {
     };
     Restart: {
         Request: Request;
-        Response: Response<ApiResponse<TypeUser, { token?: { exp: string; value: string } }>>;
+        Response: Response<ApiResponse<TypeUser, { token: { exp: number; value: string } }>>;
     };
     Register: {
         Request: Omit<Request, 'body'> & { body: { email: string; password: string } };

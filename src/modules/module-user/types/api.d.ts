@@ -5,24 +5,31 @@
  */
 
 /** types */
+import type { Request, Response } from 'express';
+import type { ApiResponse, ApiSearchResponse, SearchParam } from '@module-base/types/api.d';
 import type { TypeUser } from '@module-user/types/data.d';
-import type { CustomRequestParam, CustomRequestQuery, CustomResponse } from '@module-base/types/api.d';
 
-/** api get */
-export interface Get {
-    Request: CustomRequestParam<{
-        uid: string;
-    }>;
-    Response: CustomResponse<TypeUser>;
-}
-
-/** api get list */
-export type TypeGetListQuery = {
-    q?: string;
-    page?: string;
-    limit?: string;
-};
-export interface GetList {
-    Request: CustomRequestQuery<TypeGetListQuery>;
-    Response: CustomResponse<TypeUser[]>;
+/** users */
+export interface Users {
+    Get: {
+        Request: Omit<Request, 'params'> & {
+            params: { uid: string };
+        };
+        Response: Response<ApiResponse<TypeUser>>;
+    };
+    Gets: {
+        Request: Omit<Request, 'params' | 'query'> & {
+            params: { tid: string };
+            query: SearchParam;
+        };
+        Response: Response<ApiSearchResponse<TypeUser[]>>;
+    };
+    Create: {
+        Request: Omit<Request, 'body'> & { body: { data: TypeUser } };
+        Response: Response<ApiResponse<TypeUser>>;
+    };
+    Update: {
+        Request: Omit<Request, 'body'> & { body: { data: TypeUser } };
+        Response: Response<ApiResponse<TypeUser | null>>;
+    };
 }
