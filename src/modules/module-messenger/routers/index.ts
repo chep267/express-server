@@ -12,17 +12,19 @@ import multer from 'multer';
 import { MessengerApiPath } from '@module-messenger/constants/path';
 
 /** controllers */
-import { messengerController } from '@module-messenger/controllers';
+import { threadController } from '@module-messenger/controllers/thread';
+import { messageController } from '@module-messenger/controllers/message';
 
 const upload = multer();
 const messengerRouter = Router();
 
 /** threads */
-messengerRouter.get(MessengerApiPath.threads, messengerController.getThreads);
-messengerRouter.post(MessengerApiPath.threads, upload.none(), messengerController.createThread);
-messengerRouter.patch(MessengerApiPath.threads, upload.none(), messengerController.createThread);
+messengerRouter.get(MessengerApiPath.threads, threadController.gets);
+messengerRouter.post(MessengerApiPath.threads, upload.none(), threadController.create);
+messengerRouter.patch(MessengerApiPath.threads, upload.none(), threadController.update);
 
 /** messages */
-messengerRouter.get(MessengerApiPath.messages, messengerController.getMessages);
+messengerRouter.get(MessengerApiPath.messages, messageController.gets);
+messengerRouter.post(MessengerApiPath.messages, upload.none(), messageController.create);
 
 export { messengerRouter };

@@ -5,22 +5,21 @@
  */
 
 /** types */
+
 export type MessageType = 'text' | 'image' | 'video' | 'file' | 'audio' | 'sticker' | 'system';
 
-export type MessageStatus = 'sending' | 'sent' | 'received' | 'seen';
+export type MessageStatus = 'sending' | 'sent' | 'received' | 'seen' | 'failed';
 
-export type TypeMessageAttachment = {
-    /** URL của file/ảnh/video trên storage (S3, Cloudinary, etc.) */
+export type TypeAttachment = {
+    fid: string;
+    uid: string;
+    tid: string;
     url: string;
-
-    /** Tên file gốc (ví dụ: "tai_lieu_hop.pdf") */
-    name: string;
-
-    /** Kích thước file tính bằng byte */
-    size: number;
-
-    /** Định dạng file (ví dụ: "image/png", "application/pdf") */
-    mimeType: string;
+    fileType: 'image' | 'video' | 'file';
+    fileName: string;
+    fileSize: number;
+    createdAt?: string;
+    updatedAt?: string;
 };
 
 export type TypeMessage = {
@@ -40,7 +39,7 @@ export type TypeMessage = {
     type: MessageType;
 
     /** Danh sách file/ảnh đính kèm (Mảng rỗng nếu type là 'text') */
-    attachments: TypeMessageAttachment[];
+    attachments: TypeAttachment[];
 
     /** Trạng thái của tin nhắn (Đồng bộ với status trong lastMessage của Thread) */
     status: MessageStatus;
@@ -60,7 +59,7 @@ export type TypeMessage = {
         uid: string;
         content: string;
         type: MessageType;
-    };
+    } | null;
 
     /** Trạng thái tin nhắn này đã bị thu hồi (delete for everyone) chưa */
     isRevoke: boolean;
@@ -95,7 +94,7 @@ export type TypeThread = {
         uid: string; // ID người gửi
         content: string; // Nội dung text hoặc mô tả (ví dụ: "Đã gửi một ảnh")
         createdAt: string; // Thời gian gửi
-        status: 'sending' | 'sent' | 'received' | 'seen';
+        status: MessageStatus;
     };
 
     /** Số tin nhắn chưa đọc của user hiện tại trong thread này */

@@ -5,29 +5,36 @@
  */
 
 /** types */
-import type { TypeUser } from '@module-user/types/data.d';
+import type { Model } from 'mongoose';
 
-export interface GetAuth {
-    Payload: { uid: TypeUser['uid'] };
-    Response: Promise<TypeAuth | null>;
+/** auths */
+export interface Auths {
+    Get: {
+        Payload: { uid: string };
+        Return: Promise<TypeAuth | null>;
+    };
+    GetToken: {
+        Payload: { uid: string };
+        Return: Promise<string | null>;
+    };
+    Create: {
+        Payload: { uid: string; password: string };
+        Return: Promise<TypeAuth>;
+    };
+    Update: {
+        Payload: { data: TypeAuth };
+        Return: Promise<TypeMessage | null>;
+    };
+    Delete: {
+        Payload: { uid: string };
+        Return: Promise<boolean>;
+    };
 }
 
-export interface SetAuth {
-    Payload: { uid: TypeUser['uid']; password: string };
-    Response: Promise<TypeAuth>;
-}
-
-export interface UpdateAuth {
-    Payload: { uid: TypeUser['uid']; data: Partial<Omit<TypeAuth, 'uid'>> };
-    Response: Promise<TypeAuth>;
-}
-
-export interface DeleteAuth {
-    Payload: { uid: TypeUser['uid'] };
-    Response: Promise<boolean>;
-}
-
-export interface GetRefreshToken {
-    Payload: { uid: TypeUser['uid'] };
-    Response: Promise<TypeAuth['refreshToken'] | null>;
+interface AuthModel extends Model<TypeMessage> {
+    get(payload: Auths['Get']['Payload']): Auths['Get']['Return'];
+    getToken(payload: Auths['GetToken']['Payload']): Auths['GetToken']['Return'];
+    create(payload: Auths['Create']['Payload']): Auths['Create']['Return'];
+    update(payload: Auths['Update']['Payload']): Auths['Update']['Return'];
+    delete(payload: Auths['Delete']['Payload']): Auths['Delete']['Return'];
 }

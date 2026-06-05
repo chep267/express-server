@@ -23,7 +23,7 @@ const getUser = async (
 ) => {
     const { uid } = req.params;
     try {
-        const user = await UserModel.getUser({ uid });
+        const user = await UserModel.get({ uid });
 
         if (!user) {
             /** fail */
@@ -43,7 +43,7 @@ const getUsers = async (
     next: NextFunction
 ) => {
     try {
-        const { items, ...metadata } = await UserModel.getUsers(req.query);
+        const { items, ...metadata } = await UserModel.gets(req.query);
         return res.status(StatusCodes.OK).json(genResponse({ data: items, metadata }));
     } catch (error) {
         next(error);

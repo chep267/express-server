@@ -5,25 +5,57 @@
  */
 
 /** types */
-import { CustomRequestAll, CustomRequestBody, CustomRequestParam, CustomResponse } from '@module-base/types/api.d';
-import type { TypeThread, TypeMessage } from '@module-messenger/types/data.d';
+import type { Request, Response } from 'express';
+import type { ApiResponse } from '@module-base/types/api.d';
+import type { TypeThread, TypeMessage, TypeAttachment } from '@module-messenger/types/data.d';
 
-/** api thread */
-export interface GetThreads {
-    Request: CustomRequestParam<{ q?: string; page?: string; skip?: string; limit?: string }>;
-    Response: CustomResponse<TypeThread[], { total?: number; count?: number }>;
-}
-export interface CreateThread {
-    Request: CustomRequestBody<{ data: TypeThread }>;
-    Response: CustomResponse<TypeThread>;
-}
-export interface UpdateThread {
-    Request: CustomRequestBody<{ data: TypeMessage }>;
-    Response: CustomResponse<TypeThread>;
+/** threads */
+export interface Threads {
+    Gets: {
+        Request: Omit<Request, 'query'> & { query: { q?: string; page?: string; skip?: string; limit?: string } };
+        Response: Response<ApiResponse<TypeThread[], { total?: number; count?: number }>>;
+    };
+    Create: {
+        Request: Omit<Request, 'body'> & { body: { data: TypeThread } };
+        Response: Response<ApiResponse<TypeThread>>;
+    };
+    Update: {
+        Request: Omit<Request, 'body'> & { body: { data: TypeMessage } };
+        Response: Response<ApiResponse<TypeThread | null>>;
+    };
 }
 
-/** api message */
-export interface GetMessages {
-    Request: CustomRequestAll<{ tid?: string }, { q?: string; page?: string; skip?: string; limit?: string }>;
-    Response: CustomResponse<TypeMessage[], { total?: number; count?: number }>;
+/**
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ */
+
+/** messages */
+export interface Messages {
+    Gets: {
+        Request: Omit<Request, 'params' | 'query'> & {
+            params: { tid: string };
+            query: { q?: string; page?: string; skip?: string; limit?: string };
+        };
+        Response: Response<ApiResponse<TypeMessage[], { total?: number; count?: number }>>;
+    };
+    Create: {
+        Request: Omit<Request, 'params' | 'body'> & { params: { tid: string }; body: { data: TypeMessage } };
+        Response: Response<ApiResponse<TypeMessage>>;
+    };
+    Update: {
+        Request: Omit<Request, 'body'> & { body: { data: TypeMessage } };
+        Response: Response<ApiResponse<TypeMessage>>;
+    };
+}
+
+/**
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ */
+
+/**pi attachments */
+export interface Attachment {
+    Create: {
+        Request: Omit<Request, 'body'> & { body: { data: TypeAttachment } };
+        Response: Response<ApiResponse<TypeAttachment>>;
+    };
 }

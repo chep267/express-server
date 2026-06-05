@@ -10,24 +10,12 @@ import bcrypt from 'bcryptjs';
 
 /** constants */
 import { AppKey } from '@module-base/constants/AppKey';
+import { AuthDatabaseKey } from '@module-auth/constants/key';
 
 /** utils */
 import { genToken } from '@module-auth/utils/token';
 
-/** types */
-import type { Model } from 'mongoose';
-
-interface TypeAuthModel extends Model<App.ModuleAuth.Data.TypeAuth> {
-    getAuth(payload: App.ModuleAuth.Model.GetAuth['Payload']): App.ModuleAuth.Model.GetAuth['Response'];
-    setAuth(payload: App.ModuleAuth.Model.SetAuth['Payload']): App.ModuleAuth.Model.SetAuth['Response'];
-    updateAuth(payload: App.ModuleAuth.Model.UpdateAuth['Payload']): App.ModuleAuth.Model.UpdateAuth['Response'];
-    deleteAuth(payload: App.ModuleAuth.Model.DeleteAuth['Payload']): App.ModuleAuth.Model.DeleteAuth['Response'];
-    getRefreshToken(
-        payload: App.ModuleAuth.Model.GetRefreshToken['Payload']
-    ): App.ModuleAuth.Model.GetRefreshToken['Response'];
-}
-
-export const AuthSchema = new Schema<App.ModuleAuth.Data.TypeAuth, TypeAuthModel>(
+export const AuthSchema = new Schema<App.ModuleAuth.Data.TypeAuth, App.ModuleAuth.Model.AuthModel>(
     {
         uid: {
             type: String,
@@ -49,42 +37,47 @@ export const AuthSchema = new Schema<App.ModuleAuth.Data.TypeAuth, TypeAuthModel
 );
 
 AuthSchema.statics = {
-    getAuth: async function (payload: App.ModuleAuth.Model.GetAuth['Payload']): App.ModuleAuth.Model.GetAuth['Response'] {
+    get: async function (payload: App.ModuleAuth.Model.Auths['Get']['Payload']): App.ModuleAuth.Model.Auths['Get']['Return'] {
         const { uid } = payload;
         const Auth = await this.findOne({ $or: [{ uid }] }).exec();
         return Auth ? Auth.toObject({ versionKey: false }) : Auth;
     },
-    setAuth: async function (payload: App.ModuleAuth.Model.SetAuth['Payload']): App.ModuleAuth.Model.SetAuth['Response'] {
+    getToken: async function (
+        payload: App.ModuleAuth.Model.Auths['GetToken']['Payload']
+    ): App.ModuleAuth.Model.Auths['GetToken']['Return'] {
+        const { uid } = payload;
+        const Auth = await this.findOne({ uid }).exec();
+        return Auth ? Auth.toObject({ versionKey: false }).refreshToken : null;
+    },
+    create: async function (
+        payload: App.ModuleAuth.Model.Auths['Create']['Payload']
+    ): App.ModuleAuth.Model.Auths['Create']['Return'] {
         const { uid, password } = payload;
         const hash = bcrypt.hashSync(password, 10);
-        const Auth = await this.create({
+        const Auth = new this({
             uid,
             password: hash,
             refreshToken: genToken(uid, AppKey.refreshToken)
         });
         return Auth.toObject({ versionKey: false });
     },
-    updateAuth: async function (
-        payload: App.ModuleAuth.Model.UpdateAuth['Payload']
-    ): App.ModuleAuth.Model.UpdateAuth['Response'] {
-        const { uid, data } = payload;
-        const Auth = await this.findOneAndUpdate({ uid }, data, { returnDocument: 'after' }).exec();
+    update: async function (
+        payload: App.ModuleAuth.Model.Auths['Update']['Payload']
+    ): App.ModuleAuth.Model.Auths['Update']['Return'] {
+        const { data } = payload;
+        const Auth = await this.findOneAndUpdate({ uid: data.uid }, data, { returnDocument: 'after' }).exec();
         return Auth ? Auth.toObject({ versionKey: false }) : Auth;
     },
-    deleteAuth: async function (
-        payload: App.ModuleAuth.Model.DeleteAuth['Payload']
-    ): App.ModuleAuth.Model.DeleteAuth['Response'] {
+    delete: async function (
+        payload: App.ModuleAuth.Model.Auths['Delete']['Payload']
+    ): App.ModuleAuth.Model.Auths['Delete']['Return'] {
         const { uid } = payload;
         await this.deleteOne({ uid }).exec();
         return true;
-    },
-    getRefreshToken: async function (
-        payload: App.ModuleAuth.Model.GetRefreshToken['Payload']
-    ): App.ModuleAuth.Model.GetRefreshToken['Response'] {
-        const { uid } = payload;
-        const Auth = await this.findOne({ uid }).exec();
-        return Auth ? Auth.toObject({ versionKey: false }).refreshToken : null;
     }
 };
 
-export const AuthModel = model<App.ModuleAuth.Data.TypeAuth, TypeAuthModel>('Auths', AuthSchema);
+export const AuthModel = model<App.ModuleAuth.Data.TypeAuth, App.ModuleAuth.Model.AuthModel>(
+    AuthDatabaseKey.auths,
+    AuthSchema
+);

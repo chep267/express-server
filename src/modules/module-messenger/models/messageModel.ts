@@ -5,41 +5,31 @@
  */
 
 /** libs */
-import { model, QueryFilter, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
+
+/** models */
+import { AttachmentSchema } from '@module-messenger/models/attachmentModel';
+
+/** constants */
+import { MessengerDatabaseKey } from '@module-messenger/constants/key';
 
 /** types */
-import type { Model } from 'mongoose';
+import type { QueryFilter } from 'mongoose';
 
-interface TypeMessageModel extends Model<App.ModuleMessenger.Data.TypeMessage> {
-    getMessages(payload: App.ModuleMessenger.Model.GetMessages['Payload']): App.ModuleMessenger.Model.GetMessages['Response'];
-}
-
-const MessageAttachmentSchema = new Schema(
-    {
-        url: { type: String, required: true },
-        type: { type: String, required: true },
-        name: { type: String, default: '' },
-        size: { type: Number, default: 0 }
-    },
-    { _id: false }
-);
-
-const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, TypeMessageModel>(
+const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, App.ModuleMessenger.Model.MessageModel>(
     {
         mid: {
             type: String,
             required: true,
-            unique: true // Mỗi tin nhắn có một ID duy nhất toàn hệ thống
+            unique: true
         },
         tid: {
             type: String,
-            required: true,
-            index: true // Tạo index thông thường để khi vào phòng chat, tìm kiếm tin nhắn theo cuộc hội thoại cực nhanh
+            required: true
         },
         uid: {
             type: String,
-            required: true,
-            index: true // Tạo index để dễ dàng tra cứu lịch sử chat của một user cụ thể
+            required: true
         },
         content: {
             type: String,
@@ -47,11 +37,11 @@ const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, TypeMessa
         },
         type: {
             type: String,
-            enum: ['text', 'image', 'video', 'file', 'system'],
+            enum: ['text', 'image', 'video', 'file', 'audio', 'sticker', 'system'],
             default: 'text'
         },
         attachments: {
-            type: [MessageAttachmentSchema],
+            type: [AttachmentSchema],
             default: []
         },
         status: {
@@ -60,12 +50,16 @@ const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, TypeMessa
             default: 'sent'
         },
         replyTo: {
-            type: {
-                mid: { type: String, required: true },
-                uid: { type: String, required: true },
-                content: { type: String, default: '' },
-                type: { type: String, required: true }
-            }
+            type: new Schema(
+                {
+                    mid: { type: String, required: true },
+                    uid: { type: String, required: true },
+                    content: { type: String, default: '' },
+                    type: { type: String }
+                },
+                { _id: false }
+            ),
+            default: null
         },
         isRevoke: {
             type: Boolean,
@@ -90,9 +84,9 @@ const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, TypeMessa
 );
 
 MessageSchema.statics = {
-    getMessages: async function (
-        payload: App.ModuleMessenger.Model.GetMessages['Payload']
-    ): App.ModuleMessenger.Model.GetMessages['Response'] {
+    gets: async function (
+        payload: App.ModuleMessenger.Model.Messages['Gets']['Payload']
+    ): App.ModuleMessenger.Model.Messages['Gets']['Return'] {
         const { tid, q = '', page = '1', limit = '20' } = payload;
         const searchKey = q.trim();
         const pageNumber = Math.max(1, Number(page));
@@ -124,7 +118,32 @@ MessageSchema.statics = {
             totalPages,
             totalItems
         };
+    },
+    create: async function (
+        payload: App.ModuleMessenger.Model.Messages['Create']['Payload']
+    ): App.ModuleMessenger.Model.Messages['Create']['Return'] {
+        const { data } = payload;
+        const newMessageDoc = new this({
+            tid: data.tid,
+            uid: data.uid,
+            mid: data.mid,
+            content: data.content ?? '',
+            type: data.type ?? 'text',
+            attachments: data.attachments ?? [],
+            replyTo: data.replyTo,
+            isRevoke: data.isRevoke ?? false,
+            isDeleted: data.isDeleted ?? false,
+            isPinned: data.isPinned ?? false,
+            metadata: data.metadata ?? {}
+        });
+
+        // Lưu vào Database
+        const savedMessage = await newMessageDoc.save();
+        return savedMessage.toObject({ versionKey: false });
     }
 };
 
-export const MessageModel = model<App.ModuleMessenger.Data.TypeMessage, TypeMessageModel>('Messages', MessageSchema);
+export const MessageModel = model<App.ModuleMessenger.Data.TypeMessage, App.ModuleMessenger.Model.MessageModel>(
+    MessengerDatabaseKey.messages,
+    MessageSchema
+);

@@ -46,8 +46,8 @@ const verify = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const signin = async (
-    req: App.ModuleAuth.Api.Signin['Request'],
-    res: App.ModuleAuth.Api.Signin['Response'],
+    req: App.ModuleAuth.Api.Auths['Signin']['Request'],
+    res: App.ModuleAuth.Api.Auths['Signin']['Response'],
     next: NextFunction
 ) => {
     const { email, password } = req.body;
@@ -58,14 +58,14 @@ const signin = async (
     }
 
     try {
-        const user = await UserModel.getUser({ email });
+        const user = await UserModel.get({ email });
 
         if (!user) {
             /** wrong email */
             return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
         }
 
-        const auth = await AuthModel.getAuth({ uid: user.uid });
+        const auth = await AuthModel.get({ uid: user.uid });
         if (!auth || !validatePassword(password, auth.password)) {
             /** wrong password */
             return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
@@ -73,7 +73,7 @@ const signin = async (
 
         const accessToken = genToken(user.uid, AppKey.accessToken);
         const refreshToken = genToken(user.uid, AppKey.refreshToken);
-        await AuthModel.updateAuth({ uid: user.uid, data: { refreshToken } });
+        await AuthModel.update({ data: { uid: user.uid, refreshToken } });
         setToken(res, { refreshToken });
 
         /** signin success */
@@ -90,13 +90,16 @@ const signin = async (
     }
 };
 
-const signout = async (req: App.ModuleAuth.Api.Signout['Request'], res: App.ModuleAuth.Api.Signout['Response']) => {
+const signout = async (
+    req: App.ModuleAuth.Api.Auths['Signout']['Request'],
+    res: App.ModuleAuth.Api.Auths['Signout']['Response']
+) => {
     const accessToken = getAccessToken(req);
     const uid = getUidFromToken(accessToken);
 
     try {
         if (uid) {
-            await AuthModel.updateAuth({ uid, data: { refreshToken: '' } });
+            await AuthModel.update({ data: { uid, refreshToken: '' } });
         }
     } catch {
         // do logging
@@ -107,8 +110,8 @@ const signout = async (req: App.ModuleAuth.Api.Signout['Request'], res: App.Modu
 };
 
 const restart = async (
-    req: App.ModuleAuth.Api.Restart['Request'],
-    res: App.ModuleAuth.Api.Restart['Response'],
+    req: App.ModuleAuth.Api.Auths['Restart']['Request'],
+    res: App.ModuleAuth.Api.Auths['Restart']['Response'],
     next: NextFunction
 ) => {
     const accessToken = getAccessToken(req);
@@ -121,7 +124,7 @@ const restart = async (
 
     try {
         const refreshTokenCookie: string = req.cookies[AppKey.refreshToken];
-        const refreshToken = await AuthModel.getRefreshToken({ uid });
+        const refreshToken = await AuthModel.getToken({ uid });
         if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
             /** wrong refreshToken */
             clearToken(res);
@@ -131,8 +134,8 @@ const restart = async (
         const accessToken = genToken(uid, AppKey.accessToken);
         const newRefreshToken = genToken(uid, AppKey.refreshToken);
         const [user] = await Promise.all([
-            UserModel.getUser({ uid }),
-            AuthModel.updateAuth({ uid, data: { refreshToken: newRefreshToken } })
+            UserModel.get({ uid }),
+            AuthModel.update({ data: { uid, refreshToken: newRefreshToken } })
         ]);
         setToken(res, { refreshToken: newRefreshToken });
 
@@ -156,8 +159,8 @@ const restart = async (
 };
 
 const register = async (
-    req: App.ModuleAuth.Api.Register['Request'],
-    res: App.ModuleAuth.Api.Register['Response'],
+    req: App.ModuleAuth.Api.Auths['Register']['Request'],
+    res: App.ModuleAuth.Api.Auths['Register']['Response'],
     next: NextFunction
 ) => {
     const { email, password } = req.body;
@@ -178,15 +181,15 @@ const register = async (
     }
 
     try {
-        const user = await UserModel.getUser({ email });
+        const isExisted = await UserModel.check({ email });
 
-        if (user) {
+        if (isExisted) {
             /** register fail */
             return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account already exists!' }));
         }
 
         const uid = genId('uid');
-        await Promise.all([UserModel.setUser({ uid, email }), AuthModel.setAuth({ uid, password })]);
+        await Promise.all([UserModel.create({ uid, email }), AuthModel.create({ uid, password })]);
 
         /** register success */
         return res.status(StatusCodes.OK).json(genResponse({ message: 'User registered successfully!' }));
@@ -196,8 +199,8 @@ const register = async (
 };
 
 const recover = async (
-    req: App.ModuleAuth.Api.Recover['Request'],
-    res: App.ModuleAuth.Api.Recover['Response'],
+    req: App.ModuleAuth.Api.Auths['Recover']['Request'],
+    res: App.ModuleAuth.Api.Auths['Recover']['Response'],
     next: NextFunction
 ) => {
     const { email } = req.body;
@@ -208,9 +211,9 @@ const recover = async (
     }
 
     try {
-        const isUserExisted = Boolean(await UserModel.getUser({ email }));
+        const isExisted = await UserModel.check({ email });
 
-        if (!isUserExisted) {
+        if (!isExisted) {
             /** recover fail */
             return res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: 'Account does not exist!' }));
         }

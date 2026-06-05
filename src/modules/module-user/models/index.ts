@@ -4,20 +4,16 @@
  *
  */
 
-/** types */
-import { Model, QueryFilter } from 'mongoose';
 /** libs */
 import { model, Schema } from 'mongoose';
 
-interface TypeUserModel extends Model<App.ModuleUser.Data.TypeUser> {
-    getUser(payload: App.ModuleUser.Model.GetUser['Payload']): App.ModuleUser.Model.GetUser['Response'];
-    getUsers(payload: App.ModuleUser.Model.GetUsers['Payload']): App.ModuleUser.Model.GetUsers['Response'];
-    setUser(payload: App.ModuleUser.Model.SetUser['Payload']): App.ModuleUser.Model.SetUser['Response'];
-    updateUser(payload: App.ModuleUser.Model.UpdateUser['Payload']): App.ModuleUser.Model.UpdateUser['Response'];
-    deleteUser(payload: App.ModuleUser.Model.DeleteUser['Payload']): App.ModuleUser.Model.DeleteUser['Response'];
-}
+/** constants */
+import { UserDatabaseKey } from '@module-user/constants/key';
 
-export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, TypeUserModel>(
+/** types */
+import type { QueryFilter } from 'mongoose';
+
+export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, App.ModuleUser.Model.UserModel>(
     {
         uid: {
             type: String,
@@ -76,14 +72,35 @@ export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, TypeUserModel
 );
 
 UserSchema.statics = {
-    getUser: async function (payload: App.ModuleUser.Model.GetUser['Payload']): App.ModuleUser.Model.GetUser['Response'] {
+    check: async function (
+        payload: App.ModuleUser.Model.Users['Check']['Payload']
+    ): App.ModuleUser.Model.Users['Check']['Return'] {
         const { uid, email } = payload;
-        const user = await this.findOne({
-            $or: [...(email ? [{ email }] : []), ...(uid ? [{ uid }] : [])]
-        }).exec();
+        const conditions: Array<Partial<App.ModuleUser.Data.TypeUser>> = [];
+
+        if (uid) conditions.push({ uid });
+        if (email) conditions.push({ email });
+
+        if (conditions.length === 0) return false;
+
+        const result = await this.exists({ $or: conditions }).exec();
+        return !!result;
+    },
+    get: async function (payload: App.ModuleUser.Model.Users['Get']['Payload']): App.ModuleUser.Model.Users['Get']['Return'] {
+        const { uid, email } = payload;
+        const conditions: Array<Partial<App.ModuleUser.Data.TypeUser>> = [];
+
+        if (uid) conditions.push({ uid });
+        if (email) conditions.push({ email });
+
+        if (conditions.length === 0) return null;
+
+        const user = await this.findOne({ $or: conditions }).exec();
         return user?.toObject({ versionKey: false }) ?? null;
     },
-    getUsers: async function (payload: App.ModuleUser.Model.GetUsers['Payload']): App.ModuleUser.Model.GetUsers['Response'] {
+    gets: async function (
+        payload: App.ModuleUser.Model.Users['Gets']['Payload']
+    ): App.ModuleUser.Model.Users['Gets']['Return'] {
         const { q = '', page = '1', limit = '20' } = payload;
         const searchKey = q.trim();
         const pageNumber = Math.max(1, Number(page));
@@ -109,29 +126,34 @@ UserSchema.statics = {
             totalItems
         };
     },
-    setUser: async function (payload: App.ModuleUser.Model.SetUser['Payload']): App.ModuleUser.Model.SetUser['Response'] {
+    create: async function (
+        payload: App.ModuleUser.Model.Users['Create']['Payload']
+    ): App.ModuleUser.Model.Users['Create']['Return'] {
         const { uid, email } = payload;
-        const user = await this.create({
+        const user = new this({
             uid,
             email,
             name: email?.split('@')[0].split('.')[0]
         });
         return user.toObject({ versionKey: false });
     },
-    updateUser: async function (
-        payload: App.ModuleUser.Model.UpdateUser['Payload']
-    ): App.ModuleUser.Model.UpdateUser['Response'] {
-        const { uid, data } = payload;
-        const user = await this.findOneAndUpdate({ uid }, data, { returnDocument: 'after' }).exec();
+    update: async function (
+        payload: App.ModuleUser.Model.Users['Update']['Payload']
+    ): App.ModuleUser.Model.Users['Update']['Return'] {
+        const { data } = payload;
+        const user = await this.findOneAndUpdate({ uid: data.uid }, data, { returnDocument: 'after' }).exec();
         return user?.toObject({ versionKey: false }) ?? null;
     },
-    deleteUser: async function (
-        payload: App.ModuleUser.Model.DeleteUser['Payload']
-    ): App.ModuleUser.Model.DeleteUser['Response'] {
+    delete: async function (
+        payload: App.ModuleUser.Model.Users['Delete']['Payload']
+    ): App.ModuleUser.Model.Users['Delete']['Return'] {
         const { uid } = payload;
         await this.deleteOne({ uid }).exec();
         return true;
     }
 };
 
-export const UserModel = model<App.ModuleUser.Data.TypeUser, TypeUserModel>('Users', UserSchema);
+export const UserModel = model<App.ModuleUser.Data.TypeUser, App.ModuleUser.Model.UserModel>(
+    UserDatabaseKey.users,
+    UserSchema
+);

@@ -8,5 +8,5 @@ export const MessengerApiPath = {
     threads: '/threads',
     thread: '/threads/:tid',
     messages: '/threads/:tid/messages',
-    message: 'messages/:mid'
+    message: '/messages/:mid'
 } as const;

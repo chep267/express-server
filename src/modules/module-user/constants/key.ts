@@ -4,7 +4,6 @@
  *
  */
 
-export const UserApiPath = {
-    users: '/users',
-    user: '/user/:uid'
+export const UserDatabaseKey = {
+    users: 'users'
 } as const;
