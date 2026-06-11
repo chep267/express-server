@@ -43,8 +43,8 @@ AuthSchema.statics = {
     get: async function (
         payload: App.ModuleAuth.Model.AuthModelAction['Get']['Payload']
     ): App.ModuleAuth.Model.AuthModelAction['Get']['Return'] {
-        const { id } = payload;
-        return await this.findOne({ $or: [{ id }] })
+        const { uid } = payload;
+        return await this.findOne({ $or: [{ id: uid }] })
             .select('-_id -__v')
             .lean()
             .exec();
@@ -52,19 +52,19 @@ AuthSchema.statics = {
     getToken: async function (
         payload: App.ModuleAuth.Model.AuthModelAction['GetToken']['Payload']
     ): App.ModuleAuth.Model.AuthModelAction['GetToken']['Return'] {
-        const { id } = payload;
-        const auth = await this.findOne({ id }).select('-_id -__v').lean().exec();
+        const { uid } = payload;
+        const auth = await this.findOne({ id: uid }).select('-_id -__v').lean().exec();
         return auth?.refreshToken ?? null;
     },
     create: async function (
         payload: App.ModuleAuth.Model.AuthModelAction['Create']['Payload']
     ): App.ModuleAuth.Model.AuthModelAction['Create']['Return'] {
-        const { id, password } = payload;
+        const { uid, password } = payload;
         const hash = bcrypt.hashSync(password, 10);
         const auth = await new this({
-            id,
+            id: uid,
             password: hash,
-            refreshToken: genToken(id, AppKey.refreshToken)
+            refreshToken: genToken(uid, AppKey.refreshToken)
         }).save();
 
         return auth.toObject();
@@ -72,8 +72,8 @@ AuthSchema.statics = {
     update: async function (
         payload: App.ModuleAuth.Model.AuthModelAction['Update']['Payload']
     ): App.ModuleAuth.Model.AuthModelAction['Update']['Return'] {
-        const { id, data } = payload;
-        const auth = await this.findOneAndUpdate({ id }, data, {
+        const { uid, data } = payload;
+        const auth = await this.findOneAndUpdate({ id: uid }, data, {
             returnDocument: 'after',
             lean: true,
             projection: { _id: 0, __v: 0 }
@@ -83,8 +83,8 @@ AuthSchema.statics = {
     delete: async function (
         payload: App.ModuleAuth.Model.AuthModelAction['Delete']['Payload']
     ): App.ModuleAuth.Model.AuthModelAction['Delete']['Return'] {
-        const { id } = payload;
-        await this.deleteOne({ id }).exec();
+        const { uid } = payload;
+        await this.deleteOne({ id: uid }).exec();
         return true;
     }
 };

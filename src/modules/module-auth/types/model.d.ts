@@ -11,23 +11,23 @@ import type { TypeAuth } from '@module-auth/types/data.d';
 /** auths */
 export interface AuthModelAction {
     Get: {
-        Payload: { id: TypeAuth['id'] };
+        Payload: { uid: TypeAuth['id'] };
         Return: Promise<TypeAuth | null>;
     };
     GetToken: {
-        Payload: { id: TypeAuth['id'] };
+        Payload: { uid: TypeAuth['id'] };
         Return: Promise<TypeAuth['refreshToken'] | null>;
     };
     Create: {
-        Payload: { id: TypeAuth['id']; password: TypeAuth['password'] };
+        Payload: { uid: TypeAuth['id']; password: TypeAuth['password'] };
         Return: Promise<TypeAuth>;
     };
     Update: {
-        Payload: { id: TypeAuth['id']; data: Partial<TypeAuth> };
+        Payload: { uid: TypeAuth['id']; data: Partial<TypeAuth> };
         Return: Promise<TypeAuth | null>;
     };
     Delete: {
-        Payload: { id: TypeAuth['id'] };
+        Payload: { uid: TypeAuth['id'] };
         Return: Promise<boolean>;
     };
 }

@@ -65,7 +65,7 @@ const signin = async (
             return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
         }
 
-        const auth = await AuthModel.get({ id: user.id });
+        const auth = await AuthModel.get({ uid: user.id });
         if (!auth || !validatePassword(password, auth.password)) {
             /** wrong password */
             return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
@@ -73,7 +73,7 @@ const signin = async (
 
         const accessToken = genToken(user.id, AppKey.accessToken);
         const refreshToken = genToken(user.id, AppKey.refreshToken);
-        await AuthModel.update({ id: user.id, data: { refreshToken } });
+        await AuthModel.update({ uid: user.id, data: { refreshToken } });
         setToken(res, { refreshToken });
 
         /** signin success */
@@ -95,11 +95,11 @@ const signout = async (
     res: App.ModuleAuth.Api.AuthControllerAction['Signout']['Response']
 ) => {
     const accessToken = getAccessToken(req);
-    const id = getUidFromToken(accessToken);
+    const uid = getUidFromToken(accessToken);
 
     try {
-        if (id) {
-            await AuthModel.update({ id, data: { refreshToken: '' } });
+        if (uid) {
+            await AuthModel.update({ uid, data: { refreshToken: '' } });
         }
     } catch {
         // do logging
@@ -115,27 +115,27 @@ const restart = async (
     next: NextFunction
 ) => {
     const accessToken = getAccessToken(req);
-    const id = getUidFromToken(accessToken);
+    const uid = getUidFromToken(accessToken);
 
-    if (!id) {
+    if (!uid) {
         /** wrong accessToken */
         return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'Invalid session!' }));
     }
 
     try {
         const refreshTokenCookie: string = req.cookies[AppKey.refreshToken];
-        const refreshToken = await AuthModel.getToken({ id });
+        const refreshToken = await AuthModel.getToken({ uid });
         if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
             /** wrong refreshToken */
             clearToken(res);
             return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
         }
 
-        const accessToken = genToken(id, AppKey.accessToken);
-        const newRefreshToken = genToken(id, AppKey.refreshToken);
+        const accessToken = genToken(uid, AppKey.accessToken);
+        const newRefreshToken = genToken(uid, AppKey.refreshToken);
         const [user] = await Promise.all([
-            UserModel.get({ id }),
-            AuthModel.update({ id, data: { refreshToken: newRefreshToken } })
+            UserModel.get({ uid }),
+            AuthModel.update({ uid, data: { refreshToken: newRefreshToken } })
         ]);
         setToken(res, { refreshToken: newRefreshToken });
 
@@ -188,8 +188,8 @@ const register = async (
             return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account already exists!' }));
         }
 
-        const id = genId('uid');
-        await Promise.all([UserModel.create({ id, email }), AuthModel.create({ id, password })]);
+        const uid = genId('uid');
+        await Promise.all([UserModel.create({ uid, email }), AuthModel.create({ uid, password })]);
 
         /** register success */
         return res.status(StatusCodes.OK).json(genResponse({ message: 'User registered successfully!' }));

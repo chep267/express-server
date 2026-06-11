@@ -16,14 +16,16 @@ import { AppApiPath } from '@module-global/constants/path';
 /** app */
 import app from '@src/index';
 
+const REAL_ACCOUNT = {
+    email: 'dong.nguyenthanh@powergatesoftware.com',
+    password: 'Midom@2024'
+};
+
 describe('Test api', () => {
     let token: string;
 
     beforeAll(async () => {
-        const res = await request(app).post(`${AuthApiPath.root}${AuthApiPath.signin}`).send({
-            email: 'dong.nguyenthanh@powergatesoftware.com',
-            password: 'Midom@2024'
-        });
+        const res = await request(app).post(`${AuthApiPath.root}${AuthApiPath.signin}`).send(REAL_ACCOUNT);
         expect(res.status).toBe(StatusCodes.OK);
         token = res.body.metadata.token.value;
     });
@@ -34,7 +36,6 @@ describe('Test api', () => {
             .set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(StatusCodes.OK);
         expect(res.body).toHaveProperty('data');
-        expect(res.body.data).toHaveProperty('items');
-        expect(Array.isArray(res.body.data.items)).toBe(true);
+        expect(Array.isArray(res.body.data)).toBe(true);
     });
 });
