@@ -7,10 +7,10 @@
 /** libs */
 import { ReasonPhrases } from 'http-status-codes';
 
-export const genResponse = <Data = unknown, Metadata = Record<string, unknown>>(
-    payload: Partial<App.ModuleBase.Api.ApiResponse<Data, Metadata>> = {}
+export const genResponse = <Data = App.ModuleBase.Api.Data, Metadata = App.ModuleBase.Api.Metadata>(
+    payload?: Partial<App.ModuleBase.Api.ApiResponse<Data, Metadata>>
 ): App.ModuleBase.Api.ApiResponse<Data, Metadata> => {
-    const { message = ReasonPhrases.OK, data = null, metadata = {} as Metadata } = payload;
+    const { message = ReasonPhrases.OK, data = null as Data, metadata = {} as Metadata } = payload ?? {};
 
     return {
         message,

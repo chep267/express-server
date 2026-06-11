@@ -17,8 +17,8 @@ import { genResponse } from '@module-base/utils/api';
 import type { NextFunction } from 'express';
 
 const get = async (
-    req: App.ModuleUser.Api.Users['Get']['Request'],
-    res: App.ModuleUser.Api.Users['Get']['Response'],
+    req: App.ModuleUser.Api.UserControllerAction['Get']['Request'],
+    res: App.ModuleUser.Api.UserControllerAction['Get']['Response'],
     next: NextFunction
 ) => {
     const { uid } = req.params;
@@ -27,7 +27,7 @@ const get = async (
 
         if (!user) {
             /** fail */
-            return res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: 'No user found!' }));
+            return res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: 'Not found!' }));
         }
 
         /** success */
@@ -38,8 +38,8 @@ const get = async (
 };
 
 const gets = async (
-    req: App.ModuleUser.Api.Users['Gets']['Request'],
-    res: App.ModuleUser.Api.Users['Gets']['Response'],
+    req: App.ModuleUser.Api.UserControllerAction['Gets']['Request'],
+    res: App.ModuleUser.Api.UserControllerAction['Gets']['Response'],
     next: NextFunction
 ) => {
     try {

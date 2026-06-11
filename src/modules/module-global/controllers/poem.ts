@@ -22,25 +22,29 @@ const items = poems.map((poem, index) => {
         description: '',
         content: poem,
         author: {
-            _id: faker.string.uuid(),
-            uid: faker.string.uuid(),
+            id: faker.string.uuid(),
             email: faker.internet.email(),
+            name: 'Chép nèe',
             phone: faker.phone.number(),
             role: faker.helpers.arrayElement(['admin', 'user']),
             status: faker.helpers.arrayElement(['online', 'offline', 'busy']),
-            name: 'Chép nèe',
-            photo: faker.image.avatar()
+            statusMessage: '',
+            blockedUsers: [],
+            fcmTokens: [],
+            photo: faker.image.avatar(),
+            lastActiveAt: faker.date.recent().toISOString(),
+            createdAt: faker.date.past().toISOString(),
+            updatedAt: faker.date.recent().toISOString()
         },
-        createdAt: faker.date.past().getTime(),
-        updatedAt: null
+        createdAt: faker.date.past().toISOString(),
+        updatedAt: faker.date.recent().toISOString()
     };
     return item;
 });
 
-const getAll = (_req: Request, res: Response) => {
-    const itemIds = items.map((item) => item.id);
-    res.status(StatusCodes.OK).json(genResponse({ data: { itemIds, items } }));
+const gets = (_req: Request, res: Response) => {
+    res.status(StatusCodes.OK).json(genResponse({ data: items }));
 };
 export const poemController = {
-    getAll
+    gets
 };

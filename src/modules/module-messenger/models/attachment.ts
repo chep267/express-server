@@ -33,7 +33,7 @@ export const AttachmentSchema = new Schema<
 //     }
 // };
 
-export const AttachmentModel = model<App.ModuleMessenger.Data.TypeAttachment, App.ModuleMessenger.Model.AttachmentModel>(
-    MessengerDatabaseKey.Attachments,
-    AttachmentSchema
-);
+export const AttachmentModel = model<
+    App.ModuleMessenger.Data.TypeAttachment,
+    App.ModuleMessenger.Model.AttachmentModel
+>(MessengerDatabaseKey.Attachments, AttachmentSchema);

@@ -6,7 +6,6 @@
 
 /** libs */
 import { Router } from 'express';
-// import multer from 'multer';
 
 /** constants */
 import { UserApiPath } from '@module-user/constants/path';
@@ -14,10 +13,8 @@ import { UserApiPath } from '@module-user/constants/path';
 /** controllers */
 import { userController } from '@module-user/controllers';
 
-// const upload = multer();
 const userRouter = Router();
 
-/** user */
 userRouter.get(UserApiPath.user, userController.get);
 userRouter.get(UserApiPath.users, userController.gets);
 

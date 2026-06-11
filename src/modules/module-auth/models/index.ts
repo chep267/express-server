@@ -17,7 +17,7 @@ import { genToken } from '@module-auth/utils/token';
 
 export const AuthSchema = new Schema<App.ModuleAuth.Data.TypeAuth, App.ModuleAuth.Model.AuthModel>(
     {
-        uid: {
+        id: {
             type: String,
             required: true,
             unique: true
@@ -32,47 +32,59 @@ export const AuthSchema = new Schema<App.ModuleAuth.Data.TypeAuth, App.ModuleAut
         }
     },
     {
-        timestamps: true
+        timestamps: true,
+        toObject: {
+            versionKey: false
+        }
     }
 );
 
 AuthSchema.statics = {
-    get: async function (payload: App.ModuleAuth.Model.Auths['Get']['Payload']): App.ModuleAuth.Model.Auths['Get']['Return'] {
-        const { uid } = payload;
-        const Auth = await this.findOne({ $or: [{ uid }] }).exec();
-        return Auth ? Auth.toObject({ versionKey: false }) : Auth;
+    get: async function (
+        payload: App.ModuleAuth.Model.AuthModelAction['Get']['Payload']
+    ): App.ModuleAuth.Model.AuthModelAction['Get']['Return'] {
+        const { id } = payload;
+        return await this.findOne({ $or: [{ id }] })
+            .select('-_id -__v')
+            .lean()
+            .exec();
     },
     getToken: async function (
-        payload: App.ModuleAuth.Model.Auths['GetToken']['Payload']
-    ): App.ModuleAuth.Model.Auths['GetToken']['Return'] {
-        const { uid } = payload;
-        const Auth = await this.findOne({ uid }).exec();
-        return Auth ? Auth.toObject({ versionKey: false }).refreshToken : null;
+        payload: App.ModuleAuth.Model.AuthModelAction['GetToken']['Payload']
+    ): App.ModuleAuth.Model.AuthModelAction['GetToken']['Return'] {
+        const { id } = payload;
+        const auth = await this.findOne({ id }).select('-_id -__v').lean().exec();
+        return auth?.refreshToken ?? null;
     },
     create: async function (
-        payload: App.ModuleAuth.Model.Auths['Create']['Payload']
-    ): App.ModuleAuth.Model.Auths['Create']['Return'] {
-        const { uid, password } = payload;
+        payload: App.ModuleAuth.Model.AuthModelAction['Create']['Payload']
+    ): App.ModuleAuth.Model.AuthModelAction['Create']['Return'] {
+        const { id, password } = payload;
         const hash = bcrypt.hashSync(password, 10);
-        const Auth = new this({
-            uid,
+        const auth = await new this({
+            id,
             password: hash,
-            refreshToken: genToken(uid, AppKey.refreshToken)
-        });
-        return Auth.toObject({ versionKey: false });
+            refreshToken: genToken(id, AppKey.refreshToken)
+        }).save();
+
+        return auth.toObject();
     },
     update: async function (
-        payload: App.ModuleAuth.Model.Auths['Update']['Payload']
-    ): App.ModuleAuth.Model.Auths['Update']['Return'] {
-        const { data } = payload;
-        const Auth = await this.findOneAndUpdate({ uid: data.uid }, data, { returnDocument: 'after' }).exec();
-        return Auth ? Auth.toObject({ versionKey: false }) : Auth;
+        payload: App.ModuleAuth.Model.AuthModelAction['Update']['Payload']
+    ): App.ModuleAuth.Model.AuthModelAction['Update']['Return'] {
+        const { id, data } = payload;
+        const auth = await this.findOneAndUpdate({ id }, data, {
+            returnDocument: 'after',
+            lean: true,
+            projection: { _id: 0, __v: 0 }
+        }).exec();
+        return auth ?? null;
     },
     delete: async function (
-        payload: App.ModuleAuth.Model.Auths['Delete']['Payload']
-    ): App.ModuleAuth.Model.Auths['Delete']['Return'] {
-        const { uid } = payload;
-        await this.deleteOne({ uid }).exec();
+        payload: App.ModuleAuth.Model.AuthModelAction['Delete']['Payload']
+    ): App.ModuleAuth.Model.AuthModelAction['Delete']['Return'] {
+        const { id } = payload;
+        await this.deleteOne({ id }).exec();
         return true;
     }
 };

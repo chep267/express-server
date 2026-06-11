@@ -5,12 +5,12 @@
  */
 
 /** types */
+import type { Request, Response } from 'express';
 import type { ApiResponse } from '@module-base/types/api.d';
 import type { TypeUser } from '@module-user/types/data.d';
-import type { Request, Response } from 'express';
 
 /** auths */
-export interface Auths {
+export interface AuthControllerAction {
     Signin: {
         Request: Omit<Request, 'body'> & { body: { email: string; password: string } };
         Response: Response<ApiResponse<TypeUser, { token: { exp: number; value: string } }>>;

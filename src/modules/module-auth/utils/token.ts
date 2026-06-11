@@ -48,13 +48,14 @@ export const getAccessToken = (req: Request) => {
 };
 
 export const genToken = (
-    uid: App.ModuleUser.Data.TypeUser['uid'],
+    id: App.ModuleUser.Data.TypeUser['id'],
     type: typeof AppKey.accessToken | typeof AppKey.refreshToken
 ) => {
     const iat = Date.now();
-    const exp = iat + (type === AppKey.accessToken ? AppEnv.appAccessTokenExpiredTime : AppEnv.appRefreshTokenExpiredTime);
+    const exp =
+        iat + (type === AppKey.accessToken ? AppEnv.appAccessTokenExpiredTime : AppEnv.appRefreshTokenExpiredTime);
     const data = {
-        uid,
+        id,
         iat,
         exp,
         type
@@ -68,7 +69,7 @@ export const validateToken = (token?: string) => {
         const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
         const now = Date.now();
         const exp = verified.exp ?? 0;
-        return now < exp && Boolean(verified.uid);
+        return now < exp && Boolean(verified.id);
     } catch {
         return false;
     }
@@ -83,7 +84,7 @@ export const getUidFromToken = (token?: string) => {
     if (!token) return undefined;
     try {
         const verified = jwt.verify(token, AppEnv.appJwtSecretKey) as JwtPayload;
-        return verified.uid as string;
+        return verified.id as string;
     } catch {
         return undefined;
     }

@@ -8,7 +8,7 @@
 import type { TypeUser } from '@module-user/types/data.d';
 
 export interface TypeAuth {
-    uid: TypeUser['uid'];
+    id: TypeUser['id'];
     password: string;
     refreshToken: string;
 }

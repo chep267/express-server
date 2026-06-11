@@ -9,18 +9,17 @@ export type UserStatus = 'online' | 'offline' | 'away' | 'busy';
 export type UserRole = 'admin' | 'moderator' | 'user';
 
 export interface TypeUser {
-    _id: string;
-    uid: string;
-    email?: string;
-    name?: string;
-    phone?: string;
-    photo?: string;
+    id: string;
+    email: string;
+    name: string;
+    phone: string;
+    photo: string;
     role: UserRole;
     status: UserStatus;
-    statusMessage?: string;
-    blockedUsers?: string[];
-    fcmTokens?: string[];
-    lastActiveAt?: string;
-    createdAt?: string;
-    updatedAt?: string;
+    statusMessage: string;
+    blockedUsers: string[];
+    fcmTokens: string[];
+    lastActiveAt: string;
+    createdAt: string;
+    updatedAt: string;
 }

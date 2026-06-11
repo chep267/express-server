@@ -10,7 +10,7 @@ import type { ApiResponse, ApiSearchResponse, SearchParam } from '@module-base/t
 import type { TypeUser } from '@module-user/types/data.d';
 
 /** users */
-export interface Users {
+export interface UserControllerAction {
     Get: {
         Request: Omit<Request, 'params'> & {
             params: { uid: string };
@@ -18,8 +18,7 @@ export interface Users {
         Response: Response<ApiResponse<TypeUser>>;
     };
     Gets: {
-        Request: Omit<Request, 'params' | 'query'> & {
-            params: { tid: string };
+        Request: Omit<Request, 'query'> & {
             query: SearchParam;
         };
         Response: Response<ApiSearchResponse<TypeUser[]>>;
@@ -29,7 +28,7 @@ export interface Users {
         Response: Response<ApiResponse<TypeUser>>;
     };
     Update: {
-        Request: Omit<Request, 'body'> & { body: { data: TypeUser } };
+        Request: Omit<Request, 'params' | 'body'> & { params: { uid: string }; body: { data: Partial<TypeUser> } };
         Response: Response<ApiResponse<TypeUser | null>>;
     };
 }

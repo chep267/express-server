@@ -16,17 +16,20 @@ import { AppEnv } from '@module-base/constants/AppEnv';
 import { connected } from '@module-base/utils/log';
 
 import app from '@src/index';
+import { initSocket } from '@module-base/utils/socket';
 
 const dirname = path.resolve();
 
-https
-    .createServer(
-        {
-            key: fs.readFileSync(path.join(dirname, 'cert', 'server.key')),
-            cert: fs.readFileSync(path.join(dirname, 'cert', 'server.cert'))
-        },
-        app
-    )
-    .listen(AppEnv.appPort, () => {
-        console.log(connected(`chep-server https start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));
-    });
+const httpsServer = https.createServer(
+    {
+        key: fs.readFileSync(path.join(dirname, 'cert', 'server.key')),
+        cert: fs.readFileSync(path.join(dirname, 'cert', 'server.cert'))
+    },
+    app
+);
+
+initSocket(httpsServer);
+
+httpsServer.listen(AppEnv.appPort, () => {
+    console.log(connected(`chep-server https start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));
+});

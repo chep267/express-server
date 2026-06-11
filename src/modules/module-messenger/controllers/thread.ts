@@ -13,14 +13,17 @@ import { genResponse } from '@module-base/utils/api';
 import { getAccessToken, getUidFromToken } from '@module-auth/utils/token';
 
 /** models */
-import { ThreadModel } from '@module-messenger/models';
+import { ThreadModel } from '@module-messenger/models/thread';
+
+/** socket */
+import { io } from '@module-base/utils/socket';
 
 /** types */
 import type { NextFunction } from 'express';
 
 const gets = async (
-    req: App.ModuleMessenger.Api.Threads['Gets']['Request'],
-    res: App.ModuleMessenger.Api.Threads['Gets']['Response'],
+    req: App.ModuleMessenger.Api.ThreadControllerAction['Gets']['Request'],
+    res: App.ModuleMessenger.Api.ThreadControllerAction['Gets']['Response'],
     next: NextFunction
 ) => {
     try {
@@ -34,28 +37,50 @@ const gets = async (
 };
 
 const create = async (
-    req: App.ModuleMessenger.Api.Threads['Create']['Request'],
-    res: App.ModuleMessenger.Api.Threads['Create']['Response'],
+    req: App.ModuleMessenger.Api.ThreadControllerAction['Create']['Request'],
+    res: App.ModuleMessenger.Api.ThreadControllerAction['Create']['Response'],
     next: NextFunction
 ) => {
     try {
         const { data } = req.body;
         const tid = genId('tid');
-        const thread = await ThreadModel.create({ data: { ...data, tid } });
+        const thread = await ThreadModel.create({ data: { ...data, id: tid } });
         return res.status(StatusCodes.CREATED).json(genResponse({ data: thread }));
     } catch (error) {
         next(error);
     }
 };
 
-const update = async (
-    req: App.ModuleMessenger.Api.Threads['Update']['Request'],
-    res: App.ModuleMessenger.Api.Threads['Update']['Response'],
+const read = async (
+    req: App.ModuleMessenger.Api.ThreadControllerAction['Read']['Request'],
+    res: App.ModuleMessenger.Api.ThreadControllerAction['Read']['Response'],
     next: NextFunction
 ) => {
+    const { tid } = req.params;
+    const accessToken = getAccessToken(req);
+    const uid = getUidFromToken(accessToken) ?? '';
     try {
-        const thread = await ThreadModel.update(req.body);
+        const thread = await ThreadModel.read({ tid, uid });
         return res.status(StatusCodes.OK).json(genResponse({ data: thread }));
+    } catch (error) {
+        next(error);
+    }
+};
+
+const remove = async (
+    req: App.ModuleMessenger.Api.ThreadControllerAction['Remove']['Request'],
+    res: App.ModuleMessenger.Api.ThreadControllerAction['Remove']['Response'],
+    next: NextFunction
+) => {
+    const { tid } = req.params;
+    try {
+        const thread = await ThreadModel.remove({ tid });
+        if (thread) {
+            thread.uids.forEach((id) => {
+                io?.to(id).emit('THREAD_REMOVED', { id: thread.id });
+            });
+        }
+        return res.status(StatusCodes.OK).json(genResponse({ data: Boolean(thread) }));
     } catch (error) {
         next(error);
     }
@@ -64,5 +89,6 @@ const update = async (
 export const threadController = {
     gets,
     create,
-    update
+    read,
+    remove
 };

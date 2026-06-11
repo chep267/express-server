@@ -29,7 +29,9 @@ describe('Test api', () => {
     });
 
     it('GET /poems', async () => {
-        const res = await request(app).get(`${AppApiPath.root}${AppApiPath.poems}`).set('Authorization', `Bearer ${token}`);
+        const res = await request(app)
+            .get(`${AppApiPath.root}${AppApiPath.poems}`)
+            .set('Authorization', `Bearer ${token}`);
         expect(res.status).toBe(StatusCodes.OK);
         expect(res.body).toHaveProperty('data');
         expect(res.body.data).toHaveProperty('items');

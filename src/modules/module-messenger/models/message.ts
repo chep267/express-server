@@ -8,7 +8,7 @@
 import { model, Schema } from 'mongoose';
 
 /** models */
-import { AttachmentSchema } from '@module-messenger/models/attachmentModel';
+import { AttachmentSchema } from '@module-messenger/models/attachment';
 
 /** constants */
 import { MessengerDatabaseKey } from '@module-messenger/constants/key';
@@ -18,7 +18,7 @@ import type { QueryFilter } from 'mongoose';
 
 const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, App.ModuleMessenger.Model.MessageModel>(
     {
-        mid: {
+        id: {
             type: String,
             required: true,
             unique: true
@@ -31,15 +31,16 @@ const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, App.Modul
             type: String,
             required: true
         },
-        content: {
-            type: String,
-            default: ''
-        },
         type: {
             type: String,
             enum: ['text', 'image', 'video', 'file', 'audio', 'sticker', 'system'],
             default: 'text'
         },
+        content: {
+            type: String,
+            default: ''
+        },
+
         attachments: {
             type: [AttachmentSchema],
             default: []
@@ -49,44 +50,40 @@ const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, App.Modul
             enum: ['sending', 'sent', 'received', 'seen', 'failed'],
             default: 'sent'
         },
-        replyTo: {
-            type: new Schema(
-                {
-                    mid: { type: String, required: true },
-                    uid: { type: String, required: true },
-                    content: { type: String, default: '' },
-                    type: { type: String }
-                },
-                { _id: false }
-            ),
-            default: null
-        },
-        isRevoke: {
-            type: Boolean,
-            default: false
-        },
-        isDeleted: {
-            type: Boolean,
-            default: false
-        },
-        isPinned: {
-            type: Boolean,
-            default: false
-        },
         metadata: {
             type: Schema.Types.Mixed,
-            default: {}
+            default: {
+                replyTo: {
+                    type: String,
+                    default: ''
+                },
+                isRevoked: {
+                    type: Boolean,
+                    default: false
+                },
+                isDeleted: {
+                    type: Boolean,
+                    default: false
+                },
+                isPinned: {
+                    type: Boolean,
+                    default: false
+                }
+            }
         }
     },
     {
-        timestamps: true
+        timestamps: true,
+        toObject: {
+            versionKey: false
+        }
     }
 );
 
 MessageSchema.statics = {
     gets: async function (
-        payload: App.ModuleMessenger.Model.Messages['Gets']['Payload']
-    ): App.ModuleMessenger.Model.Messages['Gets']['Return'] {
+        payload: App.ModuleMessenger.Model.MessageModelAction['Gets']['Payload']
+    ): App.ModuleMessenger.Model.MessageModelAction['Gets']['Return'] {
         const { tid, q = '', page = '1', limit = '20' } = payload;
         const searchKey = q.trim();
         const pageNumber = Math.max(1, Number(page));
@@ -99,7 +96,7 @@ MessageSchema.statics = {
         }
 
         const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeMessage> = {
-            tid
+            id: tid
         };
         if (searchKey) {
             queryCondition.content = { $regex: searchKey, $options: 'i' };
@@ -122,26 +119,39 @@ MessageSchema.statics = {
         };
     },
     create: async function (
-        payload: App.ModuleMessenger.Model.Messages['Create']['Payload']
-    ): App.ModuleMessenger.Model.Messages['Create']['Return'] {
+        payload: App.ModuleMessenger.Model.MessageModelAction['Create']['Payload']
+    ): App.ModuleMessenger.Model.MessageModelAction['Create']['Return'] {
         const { data } = payload;
-        const newMessageDoc = new this({
+
+        const message = await new this({
+            id: data.id,
             tid: data.tid,
             uid: data.uid,
-            mid: data.mid,
-            content: data.content ?? '',
             type: data.type ?? 'text',
+            content: data.content ?? '',
             attachments: data.attachments ?? [],
-            replyTo: data.replyTo,
-            isRevoke: data.isRevoke ?? false,
-            isDeleted: data.isDeleted ?? false,
-            isPinned: data.isPinned ?? false,
-            metadata: data.metadata ?? {}
-        });
+            metadata: {
+                replyTo: data.metadata?.replyTo ?? '',
+                isRevoked: data.metadata?.isRevoked ?? false,
+                isDeleted: data.metadata?.isDeleted ?? false,
+                isPinned: data.metadata?.isPinned ?? false
+            }
+        }).save();
 
-        // Lưu vào Database
-        const savedMessage = await newMessageDoc.save();
-        return savedMessage.toObject({ versionKey: false });
+        return message.toObject();
+    },
+    remove: async function (
+        payload: App.ModuleMessenger.Model.MessageModelAction['Remove']['Payload']
+    ): App.ModuleMessenger.Model.MessageModelAction['Remove']['Return'] {
+        const { mid } = payload;
+
+        return await this.findOneAndDelete(
+            { id: mid },
+            {
+                projection: { _id: 0, __v: 0 },
+                lean: true
+            }
+        ).exec();
     }
 };
 

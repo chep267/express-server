@@ -46,8 +46,8 @@ const verify = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const signin = async (
-    req: App.ModuleAuth.Api.Auths['Signin']['Request'],
-    res: App.ModuleAuth.Api.Auths['Signin']['Response'],
+    req: App.ModuleAuth.Api.AuthControllerAction['Signin']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Signin']['Response'],
     next: NextFunction
 ) => {
     const { email, password } = req.body;
@@ -65,15 +65,15 @@ const signin = async (
             return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
         }
 
-        const auth = await AuthModel.get({ uid: user.uid });
+        const auth = await AuthModel.get({ id: user.id });
         if (!auth || !validatePassword(password, auth.password)) {
             /** wrong password */
             return res.status(StatusCodes.BAD_REQUEST).json(genResponse({ message: 'Invalid email or password!' }));
         }
 
-        const accessToken = genToken(user.uid, AppKey.accessToken);
-        const refreshToken = genToken(user.uid, AppKey.refreshToken);
-        await AuthModel.update({ data: { uid: user.uid, refreshToken } });
+        const accessToken = genToken(user.id, AppKey.accessToken);
+        const refreshToken = genToken(user.id, AppKey.refreshToken);
+        await AuthModel.update({ id: user.id, data: { refreshToken } });
         setToken(res, { refreshToken });
 
         /** signin success */
@@ -91,15 +91,15 @@ const signin = async (
 };
 
 const signout = async (
-    req: App.ModuleAuth.Api.Auths['Signout']['Request'],
-    res: App.ModuleAuth.Api.Auths['Signout']['Response']
+    req: App.ModuleAuth.Api.AuthControllerAction['Signout']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Signout']['Response']
 ) => {
     const accessToken = getAccessToken(req);
-    const uid = getUidFromToken(accessToken);
+    const id = getUidFromToken(accessToken);
 
     try {
-        if (uid) {
-            await AuthModel.update({ data: { uid, refreshToken: '' } });
+        if (id) {
+            await AuthModel.update({ id, data: { refreshToken: '' } });
         }
     } catch {
         // do logging
@@ -110,32 +110,32 @@ const signout = async (
 };
 
 const restart = async (
-    req: App.ModuleAuth.Api.Auths['Restart']['Request'],
-    res: App.ModuleAuth.Api.Auths['Restart']['Response'],
+    req: App.ModuleAuth.Api.AuthControllerAction['Restart']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Restart']['Response'],
     next: NextFunction
 ) => {
     const accessToken = getAccessToken(req);
-    const uid = getUidFromToken(accessToken);
+    const id = getUidFromToken(accessToken);
 
-    if (!uid) {
+    if (!id) {
         /** wrong accessToken */
         return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'Invalid session!' }));
     }
 
     try {
         const refreshTokenCookie: string = req.cookies[AppKey.refreshToken];
-        const refreshToken = await AuthModel.getToken({ uid });
+        const refreshToken = await AuthModel.getToken({ id });
         if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
             /** wrong refreshToken */
             clearToken(res);
             return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
         }
 
-        const accessToken = genToken(uid, AppKey.accessToken);
-        const newRefreshToken = genToken(uid, AppKey.refreshToken);
+        const accessToken = genToken(id, AppKey.accessToken);
+        const newRefreshToken = genToken(id, AppKey.refreshToken);
         const [user] = await Promise.all([
-            UserModel.get({ uid }),
-            AuthModel.update({ data: { uid, refreshToken: newRefreshToken } })
+            UserModel.get({ id }),
+            AuthModel.update({ id, data: { refreshToken: newRefreshToken } })
         ]);
         setToken(res, { refreshToken: newRefreshToken });
 
@@ -159,8 +159,8 @@ const restart = async (
 };
 
 const register = async (
-    req: App.ModuleAuth.Api.Auths['Register']['Request'],
-    res: App.ModuleAuth.Api.Auths['Register']['Response'],
+    req: App.ModuleAuth.Api.AuthControllerAction['Register']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Register']['Response'],
     next: NextFunction
 ) => {
     const { email, password } = req.body;
@@ -188,8 +188,8 @@ const register = async (
             return res.status(StatusCodes.CONFLICT).json(genResponse({ message: 'Account already exists!' }));
         }
 
-        const uid = genId('uid');
-        await Promise.all([UserModel.create({ uid, email }), AuthModel.create({ uid, password })]);
+        const id = genId('uid');
+        await Promise.all([UserModel.create({ id, email }), AuthModel.create({ id, password })]);
 
         /** register success */
         return res.status(StatusCodes.OK).json(genResponse({ message: 'User registered successfully!' }));
@@ -199,8 +199,8 @@ const register = async (
 };
 
 const recover = async (
-    req: App.ModuleAuth.Api.Auths['Recover']['Request'],
-    res: App.ModuleAuth.Api.Auths['Recover']['Response'],
+    req: App.ModuleAuth.Api.AuthControllerAction['Recover']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Recover']['Response'],
     next: NextFunction
 ) => {
     const { email } = req.body;

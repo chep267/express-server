@@ -10,9 +10,9 @@ import type { SearchParam, SearchResponse } from '@module-base/types/api';
 import type { TypeUser } from '@module-user/types/data.d';
 
 /** users */
-export interface Users {
+export interface UserModelAction {
     Get: {
-        Payload: { uid?: string; email?: string };
+        Payload: { uid?: TypeUser['id']; email?: TypeUser['email'] };
         Return: Promise<TypeUser | null>;
     };
     Gets: {
@@ -20,28 +20,28 @@ export interface Users {
         Return: Promise<SearchResponse<TypeUser[]>>;
     };
     Check: {
-        Payload: { uid?: string; email?: string };
+        Payload: { uid?: TypeUser['id']; email?: TypeUser['email'] };
         Return: Promise<boolean>;
     };
     Create: {
-        Payload: { uid: string; email: string };
+        Payload: { uid: TypeUser['id']; email: TypeUser['email'] };
         Return: Promise<TypeUser>;
     };
     Update: {
-        Payload: { data: TypeUser };
+        Payload: { uid: TypeUser['id']; data: Partial<TypeUser> };
         Return: Promise<TypeUser | null>;
     };
     Delete: {
-        Payload: { uid: string };
+        Payload: { uid: TypeUser['id'] };
         Return: Promise<boolean>;
     };
 }
 
 interface UserModel extends Model<TypeUser> {
-    get(payload: Users['Get']['Payload']): Users['Get']['Return'];
-    gets(payload: Users['Gets']['Payload']): Users['Gets']['Return'];
-    check(payload: Users['Check']['Payload']): Users['Check']['Return'];
-    create(payload: Users['Create']['Payload']): Users['Create']['Return'];
-    update(payload: Users['Update']['Payload']): Users['Update']['Return'];
-    delete(payload: Users['Delete']['Payload']): Users['Delete']['Return'];
+    get(payload: UserModelAction['Get']['Payload']): UserModelAction['Get']['Return'];
+    gets(payload: UserModelAction['Gets']['Payload']): UserModelAction['Gets']['Return'];
+    check(payload: UserModelAction['Check']['Payload']): UserModelAction['Check']['Return'];
+    create(payload: UserModelAction['Create']['Payload']): UserModelAction['Create']['Return'];
+    update(payload: UserModelAction['Update']['Payload']): UserModelAction['Update']['Return'];
+    delete(payload: UserModelAction['Delete']['Payload']): UserModelAction['Delete']['Return'];
 }

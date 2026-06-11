@@ -4,32 +4,33 @@
  *
  */
 
-export type SearchParam<Param = Record<string, string>> = {
+export type Data = unknown;
+export type Metadata = Record<string, unknown>;
+export type Param = Record<string, string>;
+
+export type SearchParam<P = Param> = {
     q?: string;
     page?: string;
     skip?: string;
     limit?: string;
-} & Param;
+} & P;
 
-export type SearchResponse<Data = unknown, Metadata = Record<string, unknown>> = {
-    data: Data | null;
+export type SearchResponse<D = Data, M = Metadata> = {
+    data: D;
     metadata: {
         currentItems: number;
         totalItems: number;
         totalPages: number;
         currentPage: number;
-    } & Metadata;
+    } & M;
 };
 
-export interface ApiResponse<Data = unknown, Metadata = Record<string, unknown>> {
+export type ApiResponse<D = Data, M = Metadata> = {
     message: string;
-    data: Data | null;
-    metadata: Metadata;
-}
+    data: D;
+    metadata: M;
+};
 
-export interface ApiSearchResponse<Data = unknown, Metadata = Record<string, unknown>> extends SearchResponse<
-    Data,
-    Metadata
-> {
+export type ApiSearchResponse<D = Data, M = Metadata> = SearchResponse<D, M> & {
     message: string;
-}
+};

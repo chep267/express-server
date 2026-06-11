@@ -8,6 +8,7 @@
 import { model, Schema } from 'mongoose';
 
 /** constants */
+import { AppRegex } from '@module-base/constants/AppRegex';
 import { UserDatabaseKey } from '@module-user/constants/key';
 
 /** types */
@@ -15,7 +16,7 @@ import type { QueryFilter } from 'mongoose';
 
 export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, App.ModuleUser.Model.UserModel>(
     {
-        uid: {
+        id: {
             type: String,
             required: true,
             unique: true
@@ -23,8 +24,8 @@ export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, App.ModuleUse
         email: {
             type: String,
             lowercase: true,
-            required: [true, "can't be blank"],
-            match: [/\S+@\S+\.\S+/, 'is invalid'],
+            required: true,
+            match: [AppRegex.email, 'is invalid'],
             unique: true
         },
         name: {
@@ -33,6 +34,7 @@ export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, App.ModuleUse
         },
         phone: {
             type: String,
+            match: [AppRegex.phone, 'is invalid'],
             default: ''
         },
         photo: {
@@ -63,22 +65,25 @@ export const UserSchema = new Schema<App.ModuleUser.Data.TypeUser, App.ModuleUse
         },
         lastActiveAt: {
             type: String,
-            default: () => new Date().toISOString()
+            default: ''
         }
     },
     {
-        timestamps: true
+        timestamps: true,
+        toObject: {
+            versionKey: false
+        }
     }
 );
 
 UserSchema.statics = {
     check: async function (
-        payload: App.ModuleUser.Model.Users['Check']['Payload']
-    ): App.ModuleUser.Model.Users['Check']['Return'] {
+        payload: App.ModuleUser.Model.UserModelAction['Check']['Payload']
+    ): App.ModuleUser.Model.UserModelAction['Check']['Return'] {
         const { uid, email } = payload;
         const conditions: Array<Partial<App.ModuleUser.Data.TypeUser>> = [];
 
-        if (uid) conditions.push({ uid });
+        if (uid) conditions.push({ id: uid });
         if (email) conditions.push({ email });
 
         if (conditions.length === 0) return false;
@@ -86,21 +91,22 @@ UserSchema.statics = {
         const result = await this.exists({ $or: conditions }).exec();
         return !!result;
     },
-    get: async function (payload: App.ModuleUser.Model.Users['Get']['Payload']): App.ModuleUser.Model.Users['Get']['Return'] {
+    get: async function (
+        payload: App.ModuleUser.Model.UserModelAction['Get']['Payload']
+    ): App.ModuleUser.Model.UserModelAction['Get']['Return'] {
         const { uid, email } = payload;
         const conditions: Array<Partial<App.ModuleUser.Data.TypeUser>> = [];
 
-        if (uid) conditions.push({ uid });
+        if (uid) conditions.push({ id: uid });
         if (email) conditions.push({ email });
 
         if (conditions.length === 0) return null;
 
-        const user = await this.findOne({ $or: conditions }).exec();
-        return user?.toObject({ versionKey: false }) ?? null;
+        return await this.findOne({ $or: conditions }).select('-_id -__v').lean().exec();
     },
     gets: async function (
-        payload: App.ModuleUser.Model.Users['Gets']['Payload']
-    ): App.ModuleUser.Model.Users['Gets']['Return'] {
+        payload: App.ModuleUser.Model.UserModelAction['Gets']['Payload']
+    ): App.ModuleUser.Model.UserModelAction['Gets']['Return'] {
         const { q = '', page = '1', limit = '20' } = payload;
         const searchKey = q.trim();
         const pageNumber = Math.max(1, Number(page));
@@ -113,13 +119,19 @@ UserSchema.statics = {
         }
 
         const [items, totalItems] = await Promise.all([
-            this.find(queryCondition).skip(skip).limit(limitNumber).sort({ name: -1 }).exec(),
+            this.find(queryCondition)
+                .skip(skip)
+                .limit(limitNumber)
+                .sort({ name: -1 })
+                .select('-_id -__v')
+                .lean()
+                .exec(),
             this.countDocuments(queryCondition).exec()
         ]);
         const totalPages = Math.ceil(totalItems / limitNumber);
 
         return {
-            data: items.map((item) => item.toObject({ versionKey: false })),
+            data: items,
             metadata: {
                 currentPage: pageNumber,
                 currentItems: items.length,
@@ -129,28 +141,34 @@ UserSchema.statics = {
         };
     },
     create: async function (
-        payload: App.ModuleUser.Model.Users['Create']['Payload']
-    ): App.ModuleUser.Model.Users['Create']['Return'] {
+        payload: App.ModuleUser.Model.UserModelAction['Create']['Payload']
+    ): App.ModuleUser.Model.UserModelAction['Create']['Return'] {
         const { uid, email } = payload;
-        const user = new this({
-            uid,
+
+        const user = await new this({
+            id: uid,
             email,
             name: email?.split('@')[0].split('.')[0]
-        });
-        return user.toObject({ versionKey: false });
+        }).save();
+
+        return user.toObject();
     },
     update: async function (
-        payload: App.ModuleUser.Model.Users['Update']['Payload']
-    ): App.ModuleUser.Model.Users['Update']['Return'] {
-        const { data } = payload;
-        const user = await this.findOneAndUpdate({ uid: data.uid }, data, { returnDocument: 'after' }).exec();
-        return user?.toObject({ versionKey: false }) ?? null;
+        payload: App.ModuleUser.Model.UserModelAction['Update']['Payload']
+    ): App.ModuleUser.Model.UserModelAction['Update']['Return'] {
+        const { uid, data } = payload;
+
+        return await this.findOneAndUpdate({ id: uid }, data, {
+            returnDocument: 'after',
+            lean: true,
+            projection: { _id: 0, __v: 0 }
+        }).exec();
     },
     delete: async function (
-        payload: App.ModuleUser.Model.Users['Delete']['Payload']
-    ): App.ModuleUser.Model.Users['Delete']['Return'] {
+        payload: App.ModuleUser.Model.UserModelAction['Delete']['Payload']
+    ): App.ModuleUser.Model.UserModelAction['Delete']['Return'] {
         const { uid } = payload;
-        await this.deleteOne({ uid }).exec();
+        await this.deleteOne({ id: uid }).exec();
         return true;
     }
 };

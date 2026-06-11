@@ -34,6 +34,8 @@ rootRouter.use(AuthApiPath.root, authRouter);
 rootRouter.use(AppApiPath.root, appRouter);
 
 /** not found */
-rootRouter.use((_req, res) => res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: ReasonPhrases.NOT_FOUND })));
+rootRouter.use((_req, res) =>
+    res.status(StatusCodes.NOT_FOUND).json(genResponse({ message: ReasonPhrases.NOT_FOUND }))
+);
 
 export { rootRouter };

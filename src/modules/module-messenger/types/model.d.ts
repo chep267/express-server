@@ -9,8 +9,47 @@ import type { Model } from 'mongoose';
 import type { SearchParam, SearchResponse } from '@module-base/types/api';
 import type { TypeThread, TypeMessage, TypeAttachment } from '@module-messenger/types/data.d';
 
+/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+/** threads */
+export interface ThreadModelAction {
+    Gets: {
+        Payload: SearchParam<{ uid: string }>;
+        Return: Promise<SearchResponse<TypeThread[]>>;
+    };
+    Create: {
+        Payload: { data: Partial<TypeThread> };
+        Return: Promise<TypeThread>;
+    };
+    Update: {
+        Payload: { tid: string; data: Partial<TypeMessage> };
+        Return: Promise<TypeThread | null>;
+    };
+    AddMessage: {
+        Payload: { tid: string; mid: string; uid: string };
+        Return: Promise<TypeThread | null>;
+    };
+    Read: {
+        Payload: { tid: string; uid: string };
+        Return: Promise<TypeThread | null>;
+    };
+    Remove: {
+        Payload: { tid: string };
+        Return: Promise<TypeThread | null>;
+    };
+}
+
+interface ThreadModel extends Model<TypeThread> {
+    gets(payload: ThreadModelAction['Gets']['Payload']): ThreadModelAction['Gets']['Return'];
+    create(payload: ThreadModelAction['Create']['Payload']): ThreadModelAction['Create']['Return'];
+    update(payload: ThreadModelAction['Update']['Payload']): ThreadModelAction['Update']['Return'];
+    addMessage(payload: ThreadModelAction['AddMessage']['Payload']): ThreadModelAction['AddMessage']['Return'];
+    read(payload: ThreadModelAction['Read']['Payload']): ThreadModelAction['Read']['Return'];
+    remove(payload: ThreadModelAction['Remove']['Payload']): ThreadModelAction['Remove']['Return'];
+}
+
+/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /** messages */
-export interface Messages {
+export interface MessageModelAction {
     Gets: {
         Payload: SearchParam<{ tid: string }>;
         Return: Promise<SearchResponse<TypeMessage[]>>;
@@ -23,48 +62,24 @@ export interface Messages {
         Payload: { data: Partial<TypeMessage> };
         Return: Promise<TypeMessage | null>;
     };
+    Remove: {
+        Payload: { mid: string };
+        Return: Promise<TypeMessage | null>;
+    };
 }
 
 interface MessageModel extends Model<TypeMessage> {
-    gets(payload: Messages['Gets']['Payload']): Messages['Gets']['Return'];
-    create(payload: Messages['Create']['Payload']): Messages['Create']['Return'];
-    update(payload: Messages['Update']['Payload']): Messages['Update']['Return'];
+    gets(payload: MessageModelAction['Gets']['Payload']): MessageModelAction['Gets']['Return'];
+    create(payload: MessageModelAction['Create']['Payload']): MessageModelAction['Create']['Return'];
+    update(payload: MessageModelAction['Update']['Payload']): MessageModelAction['Update']['Return'];
+    remove(payload: MessageModelAction['Remove']['Payload']): MessageModelAction['Remove']['Return'];
 }
 
-/**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-
-/** threads */
-export interface Threads {
-    Gets: {
-        Payload: SearchParam<{ uid: string }>;
-        Return: Promise<SearchResponse<TypeThread[]>>;
-    };
-    Create: {
-        Payload: { data: Partial<TypeThread> };
-        Return: Promise<TypeThread>;
-    };
-    Update: {
-        Payload: { data: TypeMessage };
-        Return: Promise<TypeThread | null>;
-    };
-}
-
-interface ThreadModel extends Model<TypeThread> {
-    gets(payload: Threads['Gets']['Payload']): Threads['Gets']['Return'];
-    create(payload: Threads['Create']['Payload']): Threads['Create']['Return'];
-    update(payload: Threads['Update']['Payload']): Threads['Update']['Return'];
-}
-
-/**
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- */
-
+/** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /** attachments */
-export interface Attachments {
+export interface AttachmentModelAction {
     Gets: {
-        Payload: SearchParam<{ uid: string }>;
+        Payload: SearchParam<{ id: string }>;
         Return: Promise<SearchResponse<TypeAttachment[]>>;
     };
     Create: {
@@ -78,7 +93,7 @@ export interface Attachments {
 }
 
 interface AttachmentModel extends Model<TypeAttachment> {
-    gets(payload: Attachments['Gets']['Payload']): Attachments['Gets']['Return'];
-    create(payload: Attachments['Create']['Payload']): Attachments['Create']['Return'];
-    update(payload: Attachments['Update']['Payload']): Attachments['Update']['Return'];
+    gets(payload: AttachmentModelAction['Gets']['Payload']): AttachmentModelAction['Gets']['Return'];
+    create(payload: AttachmentModelAction['Create']['Payload']): AttachmentModelAction['Create']['Return'];
+    update(payload: AttachmentModelAction['Update']['Payload']): AttachmentModelAction['Update']['Return'];
 }
