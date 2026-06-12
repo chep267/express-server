@@ -12,10 +12,10 @@ import cors from 'cors';
 import logger from 'morgan';
 
 /** constant */
-import { AppEnv } from '@module-base/constants/AppEnv';
+import { AppEnv } from '@module-base/constants/env';
 
 /** configs */
-import { mongoose as chepDB, dbConfig } from '@module-base/configs/database';
+import { AppDatabase, dbConfig } from '@module-base/configs/database';
 
 /** routes */
 import { rootRouter } from '@module-global/routers';
@@ -42,6 +42,6 @@ app.use(cookieParser());
 app.use(logger('dev'));
 app.use(rootRouter);
 
-chepDB.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: true }).then();
+AppDatabase.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: true }).then();
 
 export default app;

@@ -9,8 +9,8 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 /** constants */
-import { AppKey } from '@module-base/constants/AppKey';
-import { AppEnv } from '@module-base/constants/AppEnv';
+import { AppKey } from '@module-base/constants/key';
+import { AppEnv } from '@module-base/constants/env';
 
 /** types */
 import type { Request, Response } from 'express';

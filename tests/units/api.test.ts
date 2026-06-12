@@ -13,24 +13,30 @@ import { StatusCodes } from 'http-status-codes';
 import { AuthApiPath } from '@module-auth/constants/path';
 import { AppApiPath } from '@module-global/constants/path';
 
+/** utils */
+import { AccountTest } from '@tests/utils';
+
 /** app */
 import app from '@src/index';
-
-const REAL_ACCOUNT = {
-    email: 'dong.nguyenthanh@powergatesoftware.com',
-    password: 'Midom@2024'
-};
 
 describe('Test api', () => {
     let token: string;
 
     beforeAll(async () => {
-        const res = await request(app).post(`${AuthApiPath.root}${AuthApiPath.signin}`).send(REAL_ACCOUNT);
+        if (!AccountTest.email && !AccountTest.password) {
+            expect(true);
+            return;
+        }
+        const res = await request(app).post(`${AuthApiPath.root}${AuthApiPath.signin}`).send(AccountTest);
         expect(res.status).toBe(StatusCodes.OK);
         token = res.body.metadata.token.value;
     });
 
     it('GET /poems', async () => {
+        if (!AccountTest.email && !AccountTest.password) {
+            expect(true);
+            return;
+        }
         const res = await request(app)
             .get(`${AppApiPath.root}${AppApiPath.poems}`)
             .set('Authorization', `Bearer ${token}`);

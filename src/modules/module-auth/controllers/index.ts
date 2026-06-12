@@ -8,9 +8,9 @@
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 /** constants */
-import { AppKey } from '@module-base/constants/AppKey';
-import { AppEnv } from '@module-base/constants/AppEnv';
-import { AppRegex } from '@module-base/constants/AppRegex';
+import { AppKey } from '@module-base/constants/key';
+import { AppEnv } from '@module-base/constants/env';
+import { AppRegex } from '@module-base/constants/regex';
 
 /** utils */
 import { genId } from '@module-base/utils/gen';

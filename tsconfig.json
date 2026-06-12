@@ -8,6 +8,7 @@
         "moduleResolution": "bundler",
 
         /* Output */
+        "rootDir": "./",
         "outDir": "./dist",
         "sourceMap": false,
         "esModuleInterop": true,
@@ -19,8 +20,8 @@
         /* Module & Alias */
         "paths": {
             "@/*": ["./src/*"],
-            "@test/*": ["./test/*"],
             "@src/*": ["./src/*"],
+            "@tests/*": ["./tests/*"],
             "@langs/*": ["./src/langs/*"],
             "@modules/*": ["./src/modules/*"],
             "@module-base/*": ["./src/modules/module-base/*"],
@@ -46,6 +47,6 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": ["src/**/*", "test/**/*"],
+    "include": ["src/**/*", "tests/**/*"],
     "exclude": ["node_modules", "dist"]
 }

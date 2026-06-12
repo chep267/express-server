@@ -8,7 +8,7 @@
 import { model, Schema } from 'mongoose';
 
 /** constants */
-import { AppRegex } from '@module-base/constants/AppRegex';
+import { AppRegex } from '@module-base/constants/regex';
 import { UserDatabaseKey } from '@module-user/constants/key';
 
 /** types */

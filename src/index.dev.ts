@@ -10,13 +10,12 @@ import fs from 'fs';
 import https from 'https';
 
 /** constant */
-import { AppEnv } from '@module-base/constants/AppEnv';
+import { AppEnv } from '@module-base/constants/env';
 
 /** utils */
 import { connected } from '@module-base/utils/log';
-
-import app from '@src/index';
 import { initSocket } from '@module-base/utils/socket';
+import app from '@src/index';
 
 const dirname = path.resolve();
 

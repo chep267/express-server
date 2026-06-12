@@ -8,7 +8,7 @@
 import nodemailer from 'nodemailer';
 
 /** libs */
-import { AppEnv } from '@module-base/constants/AppEnv';
+import { AppEnv } from '@module-base/constants/env';
 
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',

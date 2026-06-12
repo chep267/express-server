@@ -8,7 +8,7 @@
 import mongoose from 'mongoose';
 
 /** constant */
-import { AppEnv } from '@module-base/constants/AppEnv';
+import { AppEnv } from '@module-base/constants/env';
 
 /** utils */
 import { connected, disconnected, error, termination } from '@module-base/utils/log';
@@ -35,4 +35,4 @@ process.on('SIGINT', () => {
     process.exit(0);
 });
 
-export { mongoose };
+export { mongoose as AppDatabase };

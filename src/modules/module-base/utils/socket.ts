@@ -9,7 +9,7 @@ import { Server } from 'socket.io';
 import type { Server as HTTPServer } from 'https';
 
 /** constant */
-import { AppEnv } from '@module-base/constants/AppEnv';
+import { AppEnv } from '@module-base/constants/env';
 
 export let io: Server;
 

@@ -9,7 +9,7 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 /** constants */
-import { AppKey } from '@module-base/constants/AppKey';
+import { AppKey } from '@module-base/constants/key';
 import { AuthDatabaseKey } from '@module-auth/constants/key';
 
 /** utils */
