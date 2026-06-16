@@ -12,6 +12,10 @@ import type { TypeThread, TypeMessage, TypeAttachment } from '@module-messenger/
 /** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /** threads */
 export interface ThreadModelAction {
+    Get: {
+        Payload: SearchParam<{ tid: string }>;
+        Return: Promise<TypeThread | null>;
+    };
     Gets: {
         Payload: SearchParam<{ uid: string }>;
         Return: Promise<SearchResponse<TypeThread[]>>;
@@ -39,6 +43,7 @@ export interface ThreadModelAction {
 }
 
 interface ThreadModel extends Model<TypeThread> {
+    get(payload: ThreadModelAction['Get']['Payload']): ThreadModelAction['Get']['Return'];
     gets(payload: ThreadModelAction['Gets']['Payload']): ThreadModelAction['Gets']['Return'];
     create(payload: ThreadModelAction['Create']['Payload']): ThreadModelAction['Create']['Return'];
     update(payload: ThreadModelAction['Update']['Payload']): ThreadModelAction['Update']['Return'];
@@ -50,6 +55,10 @@ interface ThreadModel extends Model<TypeThread> {
 /** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /** messages */
 export interface MessageModelAction {
+    Get: {
+        Payload: SearchParam<{ mid: string }>;
+        Return: Promise<TypeMessage | null>;
+    };
     Gets: {
         Payload: SearchParam<{ tid: string }>;
         Return: Promise<SearchResponse<TypeMessage[]>>;
@@ -69,6 +78,7 @@ export interface MessageModelAction {
 }
 
 interface MessageModel extends Model<TypeMessage> {
+    get(payload: MessageModelAction['Get']['Payload']): MessageModelAction['Get']['Return'];
     gets(payload: MessageModelAction['Gets']['Payload']): MessageModelAction['Gets']['Return'];
     create(payload: MessageModelAction['Create']['Payload']): MessageModelAction['Create']['Return'];
     update(payload: MessageModelAction['Update']['Payload']): MessageModelAction['Update']['Return'];

@@ -81,6 +81,17 @@ const MessageSchema = new Schema<App.ModuleMessenger.Data.TypeMessage, App.Modul
 );
 
 MessageSchema.statics = {
+    get: async function (
+        payload: App.ModuleMessenger.Model.MessageModelAction['Get']['Payload']
+    ): App.ModuleMessenger.Model.MessageModelAction['Get']['Return'] {
+        const { mid } = payload;
+        return await this.findOne({
+            id: mid
+        })
+            .select('-_id -__v')
+            .lean()
+            .exec();
+    },
     gets: async function (
         payload: App.ModuleMessenger.Model.MessageModelAction['Gets']['Payload']
     ): App.ModuleMessenger.Model.MessageModelAction['Gets']['Return'] {
@@ -95,9 +106,7 @@ MessageSchema.statics = {
             return { data: [], metadata: { currentPage: 1, currentItems: 0, totalPages: 1, totalItems: 0 } };
         }
 
-        const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeMessage> = {
-            id: tid
-        };
+        const queryCondition: QueryFilter<App.ModuleMessenger.Data.TypeMessage> = { tid };
         if (searchKey) {
             queryCondition.content = { $regex: searchKey, $options: 'i' };
         }

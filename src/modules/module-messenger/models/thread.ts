@@ -62,6 +62,17 @@ const ThreadSchema = new Schema<App.ModuleMessenger.Data.TypeThread, App.ModuleM
 );
 
 ThreadSchema.statics = {
+    get: async function (
+        payload: App.ModuleMessenger.Model.ThreadModelAction['Get']['Payload']
+    ): App.ModuleMessenger.Model.ThreadModelAction['Get']['Return'] {
+        const { tid } = payload;
+        return await this.findOne({
+            id: tid
+        })
+            .select('-_id -__v')
+            .lean()
+            .exec();
+    },
     gets: async function (
         payload: App.ModuleMessenger.Model.ThreadModelAction['Gets']['Payload']
     ): App.ModuleMessenger.Model.ThreadModelAction['Gets']['Return'] {

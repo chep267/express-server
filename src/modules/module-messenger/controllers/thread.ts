@@ -21,6 +21,19 @@ import { io } from '@module-base/utils/socket';
 /** types */
 import type { NextFunction } from 'express';
 
+const get = async (
+    req: App.ModuleMessenger.Api.ThreadControllerAction['Get']['Request'],
+    res: App.ModuleMessenger.Api.ThreadControllerAction['Get']['Response'],
+    next: NextFunction
+) => {
+    try {
+        const thread = await ThreadModel.get(req.params);
+        return res.status(StatusCodes.OK).json(genResponse({ data: thread }));
+    } catch (error) {
+        next(error);
+    }
+};
+
 const gets = async (
     req: App.ModuleMessenger.Api.ThreadControllerAction['Gets']['Request'],
     res: App.ModuleMessenger.Api.ThreadControllerAction['Gets']['Response'],
@@ -87,6 +100,7 @@ const remove = async (
 };
 
 export const threadController = {
+    get,
     gets,
     create,
     read,

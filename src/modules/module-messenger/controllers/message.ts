@@ -18,6 +18,19 @@ import { MessageModel } from '@module-messenger/models/message';
 /** types */
 import type { NextFunction } from 'express';
 
+const get = async (
+    req: App.ModuleMessenger.Api.MessageControllerAction['Get']['Request'],
+    res: App.ModuleMessenger.Api.MessageControllerAction['Get']['Response'],
+    next: NextFunction
+) => {
+    try {
+        const thread = await MessageModel.get(req.params);
+        return res.status(StatusCodes.OK).json(genResponse({ data: thread }));
+    } catch (error) {
+        next(error);
+    }
+};
+
 const gets = async (
     req: App.ModuleMessenger.Api.MessageControllerAction['Gets']['Request'],
     res: App.ModuleMessenger.Api.MessageControllerAction['Gets']['Response'],
@@ -70,6 +83,7 @@ const remove = async (
 };
 
 export const messageController = {
+    get,
     gets,
     create,
     remove

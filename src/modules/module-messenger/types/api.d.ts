@@ -12,6 +12,10 @@ import type { TypeThread, TypeMessage, TypeAttachment } from '@module-messenger/
 /** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /** threads */
 export interface ThreadControllerAction {
+    Get: {
+        Request: Omit<Request, 'params'> & { params: { tid: string } };
+        Response: Response<ApiResponse<TypeThread | null>>;
+    };
     Gets: {
         Request: Omit<Request, 'query'> & { query: SearchParam };
         Response: Response<ApiSearchResponse<TypeThread[]>>;
@@ -37,6 +41,10 @@ export interface ThreadControllerAction {
 /** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /** messages */
 export interface MessageControllerAction {
+    Get: {
+        Request: Omit<Request, 'params'> & { params: { mid: string } };
+        Response: Response<ApiResponse<TypeMessage | null>>;
+    };
     Gets: {
         Request: Omit<Request, 'params' | 'query'> & {
             params: { tid: string };
