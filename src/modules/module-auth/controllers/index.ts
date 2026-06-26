@@ -13,6 +13,7 @@ import { AppEnv } from '@module-base/constants/env';
 import { AppRegex } from '@module-base/constants/regex';
 
 /** utils */
+import { pusherServer } from '@module-base/utils/pusher';
 import { genId } from '@module-base/utils/gen';
 import { genResponse } from '@module-base/utils/api';
 import { sendRecoverEmail } from '@module-auth/utils/mail';
@@ -85,6 +86,24 @@ const signin = async (
                 }
             })
         );
+    } catch (error) {
+        next(error);
+    }
+};
+
+const socket = async (
+    req: App.ModuleAuth.Api.AuthControllerAction['Signout']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Signout']['Response'],
+    next: NextFunction
+) => {
+    const accessToken = getAccessToken(req);
+    const uid = getUidFromToken(accessToken);
+    try {
+        if (!uid) {
+            throw new Error('❌ Không tìm thấy uid');
+        }
+        pusherServer.authorizeChannel(uid, uid);
+        return res.status(StatusCodes.OK).json(genResponse());
     } catch (error) {
         next(error);
     }
@@ -227,4 +246,4 @@ const recover = async (
     }
 };
 
-export const authController = { verify, signin, signout, restart, register, recover };
+export const authController = { verify, signin, socket, signout, restart, register, recover };

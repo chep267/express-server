@@ -17,6 +17,7 @@ import { AuthApiPath } from '@module-auth/constants/path';
 const upload = multer();
 const authRouter = Router();
 
+authRouter.post(AuthApiPath.socket, upload.none(), authController.socket);
 authRouter.post(AuthApiPath.signin, upload.none(), authController.signin);
 authRouter.post(AuthApiPath.signout, upload.none(), authController.signout);
 authRouter.post(AuthApiPath.restart, upload.none(), authController.restart);

@@ -7,16 +7,17 @@
 /** libs */
 import { StatusCodes } from 'http-status-codes';
 
+/** constants */
+import { MessengerSocketEvent } from '@module-messenger/constants/key';
+
 /** utils */
+import { pusherServer } from '@module-base/utils/pusher';
 import { genId } from '@module-base/utils/gen';
 import { genResponse } from '@module-base/utils/api';
 import { getAccessToken, getUidFromToken } from '@module-auth/utils/token';
 
 /** models */
 import { ThreadModel } from '@module-messenger/models/thread';
-
-/** socket */
-import { io } from '@module-base/utils/socket';
 
 /** types */
 import type { NextFunction } from 'express';
@@ -58,6 +59,9 @@ const create = async (
         const { data } = req.body;
         const tid = genId('tid');
         const thread = await ThreadModel.create({ data: { ...data, id: tid } });
+        thread?.uids.forEach((uid) => {
+            pusherServer.trigger(uid, MessengerSocketEvent.THREAD_CREATED, thread);
+        });
         return res.status(StatusCodes.CREATED).json(genResponse({ data: thread }));
     } catch (error) {
         next(error);
@@ -88,11 +92,9 @@ const remove = async (
     const { tid } = req.params;
     try {
         const thread = await ThreadModel.remove({ tid });
-        if (thread) {
-            thread.uids.forEach((id) => {
-                io?.to(id).emit('THREAD_REMOVED', { id: thread.id });
-            });
-        }
+        thread?.uids.forEach((uid) => {
+            pusherServer.trigger(uid, MessengerSocketEvent.THREAD_REMOVED, thread);
+        });
         return res.status(StatusCodes.OK).json(genResponse({ data: Boolean(thread) }));
     } catch (error) {
         next(error);

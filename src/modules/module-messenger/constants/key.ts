@@ -9,3 +9,12 @@ export const MessengerDatabaseKey = {
     messages: 'messages',
     Attachments: 'attachments'
 } as const;
+
+export const MessengerSocketEvent = {
+    MESSAGE_CREATED: 'MESSAGE_CREATED',
+    MESSAGE_REMOVED: 'MESSAGE_REMOVED',
+
+    THREAD_CREATED: 'THREAD_CREATED',
+
+    THREAD_REMOVED: 'THREAD_REMOVED'
+} as const;

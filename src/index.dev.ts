@@ -14,7 +14,6 @@ import { AppEnv } from '@module-base/constants/env';
 
 /** utils */
 import { connected } from '@module-base/utils/log';
-import { initSocket } from '@module-base/utils/socket';
 import app from '@src/index';
 
 const dirname = path.resolve();
@@ -26,8 +25,6 @@ const httpsServer = https.createServer(
     },
     app
 );
-
-initSocket(httpsServer);
 
 httpsServer.listen(AppEnv.appPort, () => {
     console.log(connected(`chep-server https start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));

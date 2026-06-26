@@ -26,5 +26,12 @@ export const AppEnv = {
     service: {
         mail: process.env.CHEP_SERVER_SERVICE_MAIL,
         smtp: process.env.CHEP_SERVER_SERVICE_SMTP
+    },
+
+    pusher: {
+        appId: process.env.CHEP_SERVER_PUSHER_APP_ID,
+        key: process.env.CHEP_SERVER_PUSHER_KEY,
+        secret: process.env.CHEP_SERVER_PUSHER_SECRET,
+        cluster: process.env.CHEP_SERVER_PUSHER_CLUSTER
     }
 } as const;

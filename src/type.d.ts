@@ -24,5 +24,10 @@ declare namespace NodeJS {
 
         readonly CHEP_SERVER_ACC_TEST_EMAIL: string;
         readonly CHEP_SERVER_ACC_TEST_PASSWORD: string;
+
+        readonly CHEP_SERVER_PUSHER_APP_ID: string;
+        readonly CHEP_SERVER_PUSHER_KEY: string;
+        readonly CHEP_SERVER_PUSHER_SECRET: string;
+        readonly CHEP_SERVER_PUSHER_CLUSTER: string;
     }
 }

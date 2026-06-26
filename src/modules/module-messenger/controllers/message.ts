@@ -7,9 +7,13 @@
 /** libs */
 import { StatusCodes } from 'http-status-codes';
 
+/** constants */
+import { MessengerSocketEvent } from '@module-messenger/constants/key';
+
 /** utils */
 import { genId } from '@module-base/utils/gen';
 import { genResponse } from '@module-base/utils/api';
+import { pusherServer } from '@module-base/utils/pusher';
 
 /** models */
 import { ThreadModel } from '@module-messenger/models/thread';
@@ -53,10 +57,14 @@ const create = async (
     try {
         const { data } = req.body;
         const mid = genId('mid');
-        const [message] = await Promise.all([
+        const [message, thread] = await Promise.all([
             MessageModel.create({ data: { ...data, id: mid } }),
             ThreadModel.addMessage({ tid: data.tid, uid: data.uid, mid })
         ]);
+
+        thread?.uids.forEach((uid) => {
+            pusherServer.trigger(uid, MessengerSocketEvent.MESSAGE_CREATED, message);
+        });
         return res.status(StatusCodes.CREATED).json(genResponse({ data: message }));
     } catch (error) {
         next(error);
@@ -70,13 +78,15 @@ const remove = async (
 ) => {
     const { mid } = req.params;
     try {
-        const thread = await MessageModel.remove({ mid });
-        // if (thread) {
-        //     thread.uids.forEach((id) => {
-        //         io?.to(id).emit('THREAD_REMOVED', { id: thread.id });
-        //     });
-        // }
-        return res.status(StatusCodes.OK).json(genResponse({ data: Boolean(thread) }));
+        const message = await MessageModel.remove({ mid });
+        if (message) {
+            const thread = await ThreadModel.get({ tid: message.tid });
+            thread?.uids.forEach((uid) => {
+                pusherServer.trigger(uid, MessengerSocketEvent.MESSAGE_REMOVED, message);
+            });
+        }
+
+        return res.status(StatusCodes.OK).json(genResponse({ data: true }));
     } catch (error) {
         next(error);
     }

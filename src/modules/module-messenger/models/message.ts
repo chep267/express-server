@@ -112,13 +112,19 @@ MessageSchema.statics = {
         }
 
         const [items, totalItems] = await Promise.all([
-            this.find(queryCondition).skip(skip).limit(limitNumber).sort({ createdAt: -1 }).exec(),
+            this.find(queryCondition)
+                .skip(skip)
+                .limit(limitNumber)
+                .sort({ createdAt: -1 })
+                .select('-_id -__v')
+                .lean()
+                .exec(),
             this.countDocuments(queryCondition).exec()
         ]);
         const totalPages = Math.ceil(totalItems / limitNumber);
 
         return {
-            data: items.map((item) => item.toObject({ versionKey: false })),
+            data: items,
             metadata: {
                 currentPage: pageNumber,
                 currentItems: items.length,

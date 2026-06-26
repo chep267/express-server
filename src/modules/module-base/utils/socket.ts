@@ -28,7 +28,7 @@ export const initSocket = (server: HTTPServer) => {
     });
 
     io.on('connection', (socket) => {
-        const id = socket.handshake.query.id as string;
+        const id = socket.handshake.query.uid as string;
         if (id) {
             socket.join(id);
             console.log(`User ${id} connected with socket ${socket.id}`);

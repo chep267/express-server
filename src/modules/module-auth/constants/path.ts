@@ -6,6 +6,7 @@
 
 export const AuthApiPath = {
     root: '/auth',
+    socket: '/socket',
     signin: '/signin',
     signout: '/signout',
     restart: '/restart',
