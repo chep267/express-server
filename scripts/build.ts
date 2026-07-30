@@ -9,7 +9,7 @@ import * as esbuild from 'esbuild';
 
 esbuild
     .build({
-        entryPoints: ['dist/index.js'],
+        entryPoints: ['dist/main.js'],
         bundle: true,
         platform: 'node',
         external: ['node:events', 'fs', 'path', 'os', 'http', 'https', 'express', 'morgan', 'cookie-parser'],

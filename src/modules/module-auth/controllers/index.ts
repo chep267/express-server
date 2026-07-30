@@ -17,15 +17,7 @@ import { pusherServer } from '@module-base/utils/pusher';
 import { genId } from '@module-base/utils/gen';
 import { genResponse } from '@module-base/utils/api';
 import { sendRecoverEmail } from '@module-auth/utils/mail';
-import {
-    getAccessToken,
-    getUidFromToken,
-    genToken,
-    setToken,
-    clearToken,
-    validatePassword,
-    validateToken
-} from '@module-auth/utils/token';
+import { getAccessToken, getUidFromToken, genToken, validatePassword, validateToken } from '@module-auth/utils/token';
 
 /** models */
 import { UserModel } from '@module-user/models';
@@ -75,7 +67,6 @@ const signin = async (
         const accessToken = genToken(user.id, AppKey.accessToken);
         const refreshToken = genToken(user.id, AppKey.refreshToken);
         await AuthModel.update({ uid: user.id, data: { refreshToken } });
-        setToken(res, { refreshToken });
 
         /** signin success */
         return res.status(StatusCodes.OK).json(
@@ -122,9 +113,8 @@ const signout = async (
         }
     } catch {
         // do logging
-    } finally {
-        clearToken(res);
     }
+
     return res.status(StatusCodes.OK).json(genResponse());
 };
 
@@ -142,11 +132,9 @@ const restart = async (
     }
 
     try {
-        const refreshTokenCookie: string = req.cookies[AppKey.refreshToken];
         const refreshToken = await AuthModel.getToken({ uid });
-        if (refreshTokenCookie !== refreshToken || !validateToken(refreshToken)) {
+        if (!refreshToken || !validateToken(refreshToken)) {
             /** wrong refreshToken */
-            clearToken(res);
             return res.status(StatusCodes.UNAUTHORIZED).json(genResponse({ message: 'This session has expired!' }));
         }
 
@@ -156,7 +144,6 @@ const restart = async (
             UserModel.get({ uid }),
             AuthModel.update({ uid, data: { refreshToken: newRefreshToken } })
         ]);
-        setToken(res, { refreshToken: newRefreshToken });
 
         if (!user) {
             /** wrong email */

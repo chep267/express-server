@@ -6,29 +6,27 @@
 
 /** libs */
 import globals from 'globals';
+import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
-import tsEslint from 'typescript-eslint';
-import pluginPrettier from 'eslint-plugin-prettier';
+import tslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
 
-export default tsEslint.config(
+export default defineConfig(
     {
-        ignores: ['dist/**', 'node_modules/**', 'public/**', '.vercel/**']
+        ignores: ['dist/**/*', 'node_modules/**/*', 'public/**/*', '.vercel/**/*']
     },
     {
         files: ['**/*.{js,mjs,cjs,ts,jsx,tsx,vue}'],
-        extends: [eslint.configs.recommended, ...tsEslint.configs.recommended],
-        plugins: {
-            prettier: pluginPrettier
-        },
+        extends: [eslint.configs.recommended, ...tslint.configs.recommended],
         languageOptions: {
-            globals: globals.node,
-            parserOptions: {
-                parser: '@typescript-eslint/parser'
-            }
+            ecmaVersion: 'latest',
+            parser: tslint.parser,
+            globals: globals.node
         },
         rules: {
             '@typescript-eslint/no-explicit-any': 'warn',
             '@typescript-eslint/no-unused-vars': 'warn'
         }
-    }
+    },
+    prettierConfig
 );

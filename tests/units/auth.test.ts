@@ -16,7 +16,7 @@ import { AuthApiPath } from '@module-auth/constants/path';
 import { AccountTest } from '@tests/utils';
 
 /** app */
-import app from '@src/index';
+import app from '@src/main';
 
 const AccountFake = {
     email: 'abc@d.com',
