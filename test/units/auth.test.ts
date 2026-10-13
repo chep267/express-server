@@ -13,7 +13,7 @@ import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 import { AuthApiPath } from '@module-auth/constants/path';
 
 /** utils */
-import { AccountTest } from '@tests/utils';
+import { AccountTest } from '@test/utils';
 
 /** app */
 import app from '@src/main';

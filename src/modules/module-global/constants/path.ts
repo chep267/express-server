@@ -6,5 +6,6 @@
 
 export const AppApiPath = {
     root: '/app',
+    feeds: '/feeds',
     poems: '/poems'
 } as const;

@@ -12,6 +12,7 @@ import { AppApiPath } from '@module-global/constants/path';
 
 /** controllers */
 import { authController } from '@module-auth/controllers';
+import { feedController } from '@module-global/controllers/feed';
 import { poemController } from '@module-global/controllers/poem';
 
 /** routers */
@@ -28,6 +29,9 @@ appRouter.use(userRouter);
 
 /** messenger */
 appRouter.use(messengerRouter);
+
+/** feed */
+appRouter.get(AppApiPath.feeds, feedController.gets);
 
 /** poem */
 appRouter.get(AppApiPath.poems, poemController.gets);

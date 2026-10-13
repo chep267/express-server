@@ -7,7 +7,7 @@
 /** types */
 import type { TypeUser } from '@module-user/types/data.d';
 
-export type TypePoemData = {
+export type TypePoem = {
     id: string;
     title: string;
     description: string;
@@ -15,4 +15,23 @@ export type TypePoemData = {
     author: TypeUser;
     createdAt: string;
     updatedAt: string;
+};
+
+export type Attachment = {
+    id: string;
+    url?: string | null;
+    type?: string | null;
+    size?: number | null;
+};
+
+export type TypeFeed = {
+    id: string;
+    authorId: string;
+    content?: string | null;
+    keywords?: string[] | null;
+    categories?: string[] | null;
+    attachments?: Attachment[] | null;
+    language?: string | null;
+    createdAt?: string | null;
+    updatedAt?: string | null;
 };

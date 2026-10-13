@@ -16,7 +16,7 @@ import { poems } from '@module-global/utils/poem';
 import type { Request, Response } from 'express';
 
 const items = poems.map((poem, index) => {
-    const item: App.ModuleGlobal.Data.TypePoemData = {
+    const item: App.ModuleGlobal.Data.TypePoem = {
         id: `${index + 1}`,
         title: 'Thơ chế',
         description: '',

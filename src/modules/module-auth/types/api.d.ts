@@ -19,6 +19,10 @@ export interface AuthControllerAction {
         Request: Request;
         Response: Response<ApiResponse<null>>;
     };
+    Socket: {
+        Request: Request;
+        Response: Response<ApiResponse<null>>;
+    };
     Restart: {
         Request: Request;
         Response: Response<ApiResponse<TypeUser, { token: { exp: number; value: string } }>>;

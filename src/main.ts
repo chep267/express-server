@@ -42,6 +42,6 @@ app.use(cookieParser());
 app.use(logger('dev'));
 app.use(rootRouter);
 
-AppDatabase.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: true }).then();
+void AppDatabase.connect(dbConfig.uri, { dbName: dbConfig.name, bufferCommands: true });
 
 export default app;

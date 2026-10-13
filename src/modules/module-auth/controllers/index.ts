@@ -83,16 +83,16 @@ const signin = async (
 };
 
 const socket = async (
-    req: App.ModuleAuth.Api.AuthControllerAction['Signout']['Request'],
-    res: App.ModuleAuth.Api.AuthControllerAction['Signout']['Response'],
+    req: App.ModuleAuth.Api.AuthControllerAction['Socket']['Request'],
+    res: App.ModuleAuth.Api.AuthControllerAction['Socket']['Response'],
     next: NextFunction
 ) => {
     const accessToken = getAccessToken(req);
     const uid = getUidFromToken(accessToken);
+    if (!uid) {
+        throw new Error('❌ Không tìm thấy uid');
+    }
     try {
-        if (!uid) {
-            throw new Error('❌ Không tìm thấy uid');
-        }
         pusherServer.authorizeChannel(uid, uid);
         return res.status(StatusCodes.OK).json(genResponse());
     } catch (error) {

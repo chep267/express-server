@@ -21,7 +21,7 @@
         "paths": {
             "@/*": ["./src/*"],
             "@src/*": ["./src/*"],
-            "@tests/*": ["./tests/*"],
+            "@test/*": ["./test/*"],
             "@langs/*": ["./src/langs/*"],
             "@modules/*": ["./src/modules/*"],
             "@module-base/*": ["./src/modules/module-base/*"],
@@ -47,6 +47,6 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": ["src/**/*", "tests/**/*"],
+    "include": ["src/**/*", "test/**/*"],
     "exclude": ["node_modules", "dist"]
 }
