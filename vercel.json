@@ -1,11 +1,15 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
-    "outputDirectory": "dist",
-    "framework": "express",
-    "rewrites": [
+    "builds": [
         {
-            "source": "/(.*)",
-            "destination": "dist/app.cjs"
+            "src": "dist/app.cjs",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "dist/app.cjs"
         }
     ]
 }
