@@ -14,7 +14,7 @@ import { AppEnv } from '@module-base/constants/env';
 
 /** utils */
 import { connected } from '@module-base/utils/log';
-import app from '@src/main';
+import app from '@src/index';
 
 const dirname = path.resolve();
 

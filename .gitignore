@@ -34,3 +34,4 @@ stats.html
 .env
 .env.*
 cert/**
+.env*

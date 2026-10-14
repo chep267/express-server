@@ -17,7 +17,7 @@ import { AppApiPath } from '@module-global/constants/path';
 import { AccountTest } from '@test/utils';
 
 /** app */
-import app from '@src/main';
+import app from '@src/index';
 
 describe('Test api', () => {
     let token: string;

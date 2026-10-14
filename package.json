@@ -9,11 +9,7 @@
         "test:coverage": "vitest run --coverage",
         "lint": "eslint . --fix",
         "format": "prettier --write .",
-        "dev": "npx nodemon src/main.*",
-        "dev:local": "npx nodemon src/dev.*",
-        "start": "vercel dev",
-        "build:ts": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths --resolve-full-extension .js",
-        "build": "npm run build:ts && node scripts/build.*",
+        "dev": "npx nodemon src/dev.*",
         "generate-module": "node scripts/generate-module.*"
     },
     "author": "dongntd",
