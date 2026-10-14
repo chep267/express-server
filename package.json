@@ -10,6 +10,8 @@
         "lint": "eslint . --fix",
         "format": "prettier --write .",
         "dev": "npx nodemon src/dev.*",
+        "build:ts": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths --resolve-full-extension .js",
+        "build": "npm run build:ts && node scripts/build.*",
         "generate-module": "node scripts/generate-module.*"
     },
     "author": "dongntd",
