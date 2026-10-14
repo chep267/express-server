@@ -7,7 +7,7 @@
 /** libs */
 import path from 'path';
 import fs from 'fs';
-import https from 'https';
+import https from 'node:https';
 
 /** constant */
 import { AppEnv } from '@module-base/constants/env';
