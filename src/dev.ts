@@ -27,5 +27,5 @@ const httpsServer = https.createServer(
 );
 
 httpsServer.listen(AppEnv.appPort, () => {
-    console.log(connected(`chep-server https start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));
+    console.log(connected(`dongntd-server start in: https://${AppEnv.appHost}:${AppEnv.appPort}`));
 });
