@@ -10,7 +10,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 
 /** constants */
-import { AuthApiPath } from '@module-auth/constants/path';
+import { AuthApiPath } from '@modules/auth/constants/path';
 
 /** utils */
 import { AccountTest } from '@test/utils';

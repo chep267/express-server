@@ -1,9 +1,11 @@
 {
-    "name": "chep-server",
+    "name": "dongntd-server",
     "version": "1.0.0",
     "packageManager": "pnpm@12.11.2",
-    "description": "",
+    "description": "server expressJS",
     "type": "module",
+    "author": "dongntd",
+    "license": "",
     "pnpm": {
         "overrides": {
             "braces": ">=3.0.3"
@@ -20,8 +22,6 @@
         "build": "pnpm build:ts && node scripts/build.*",
         "generate-module": "node scripts/generate-module.*"
     },
-    "author": "dongntd",
-    "license": "ISC",
     "dependencies": {
         "@faker-js/faker": "^10.6.0",
         "bcryptjs": "^3.0.3",

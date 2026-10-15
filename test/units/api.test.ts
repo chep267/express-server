@@ -10,8 +10,8 @@ import { describe, it, beforeAll, expect } from 'vitest';
 import { StatusCodes } from 'http-status-codes';
 
 /** constants */
-import { AuthApiPath } from '@module-auth/constants/path';
-import { AppApiPath } from '@module-global/constants/path';
+import { AuthApiPath } from '@modules/auth/constants/path';
+import { AppApiPath } from '@modules/global/constants/path';
 
 /** utils */
 import { AccountTest } from '@test/utils';

@@ -19,16 +19,9 @@
 
         /* Module & Alias */
         "paths": {
-            "@/*": ["./src/*"],
             "@src/*": ["./src/*"],
             "@test/*": ["./test/*"],
-            "@langs/*": ["./src/langs/*"],
-            "@modules/*": ["./src/modules/*"],
-            "@module-base/*": ["./src/modules/module-base/*"],
-            "@module-user/*": ["./src/modules/module-user/*"],
-            "@module-auth/*": ["./src/modules/module-auth/*"],
-            "@module-global/*": ["./src/modules/module-global/*"],
-            "@module-messenger/*": ["./src/modules/module-messenger/*"]
+            "@modules/*": ["./src/modules/*"]
         },
 
         /* Type Declaration */

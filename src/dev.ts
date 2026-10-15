@@ -10,10 +10,10 @@ import fs from 'fs';
 import https from 'node:https';
 
 /** constant */
-import { AppEnv } from '@module-base/constants/env';
+import { AppEnv } from '@modules/base/constants/env';
 
 /** utils */
-import { connected } from '@module-base/utils/log';
+import { connected } from '@modules/base/utils/log';
 import app from '@src/index';
 
 const dirname = path.resolve();
